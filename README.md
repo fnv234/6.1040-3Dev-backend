@@ -2,5 +2,3 @@
 
 ## Problem Framing
 See [@problem_framing](./problem_framing.md)
-
-Hello - Grace
