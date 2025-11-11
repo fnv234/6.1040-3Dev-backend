@@ -7,7 +7,7 @@ Social / social-gaming applications that generate personalized social insights a
 
 ## Problem 
 
-Awkward or shallow social interactions at gatherings and events make it hard for people to quickly connect. Host-run icebreakers are often boring, time-consuming, or embarrassing. The app addresses the need for a fun, low-friction way for groups to learn about each other, spark better conversation, and form deeper connections quickly.
+Awkward or shallow social interactions at gatherings and events make it hard for people to quickly connect. Host-run icebreakers can often be boring and time-consuming, as well as sometimes embarrassing. Our proposed app will address the need for a fun, low-friction way for groups to learn about each other, spark better conversation, and form these deeper connections quickly.
 
 ## Evidence 
 
