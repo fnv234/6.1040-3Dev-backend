@@ -15,7 +15,7 @@ The core functionality involves collecting lightweight, engaging inputs from par
 
 Social gatherings often suffer from several key issues that our application aims to address:
 
-1. **Initial Awkwardness**: 72% of adults experience social anxiety in group settings, leading to surface-level conversations and difficulty forming meaningful connections (Source: National Institute of Mental Health).
+1. **Initial Awkwardness**: 72% of adults who experience anxiety say it interferes with their lives, leading to difficulty forming meaningful connections and affects their workplace performance ([Source: ADAA](https://adaa.org/workplace-stress-anxiety-disorders-survey)).
 
 2. **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
    - Force participation in ways that can embarrass introverts
