@@ -3,33 +3,111 @@ Authors: Diego Peon, Francesca Venditti, Grace Zhou
 
 ## Domain
 
-Social / social-gaming applications that generate personalized social insights and conversation starters for small groups (friends, coworkers, event attendees) by collecting lightweight inputs (quizzes, playlists, short prompts) and producing personality summaries, group-dynamic analyses, compatibility notes, and icebreaker content.
+Our application operates at the intersection of social networking, behavioral psychology, and gamification. It's designed to enhance social interactions in small to medium-sized groups (3-20 people) across various settings including:
+- Social gatherings (parties, meetups, reunions)
+- Professional settings (team building, networking events, conferences)
+- Educational environments (classroom icebreakers, student orientation)
+- Online communities (virtual meetups, gaming groups, interest-based forums)
+
+The core functionality involves collecting lightweight, engaging inputs from participants through various interactive formats, then using this data to generate meaningful social insights, conversation starters, and group dynamics analysis that help break the ice and foster deeper connections.
 
 ## Problem 
 
-Awkward or shallow social interactions at gatherings and events make it hard for people to quickly connect. Host-run icebreakers can often be boring and time-consuming, as well as sometimes embarrassing. Our proposed app will address the need for a fun, low-friction way for groups to learn about each other, spark better conversation, and form these deeper connections quickly.
+Social gatherings often suffer from several key issues that our application aims to address:
+
+1. **Initial Awkwardness**: 72% of adults experience social anxiety in group settings, leading to surface-level conversations and difficulty forming meaningful connections (Source: National Institute of Mental Health).
+
+2. **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
+   - Force participation in ways that can embarrass introverts
+   - Don't account for different personality types
+   - Feel artificial and don't lead to natural conversations
+   - Are often forgotten once completed
+
+3. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging.
+
+4. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
+
+Our solution addresses these pain points by providing a structured yet flexible framework that makes social interactions more engaging, personalized, and effective at building genuine connections.
 
 ## Evidence 
 
-- Common social friction at meetups, parties, and networking events is widely reported: attendees skip introductions or stick to small cliques.
+- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event.
+[@link1](https://idontmind.com/journal/how-to-survive-a-social-event-when-you-have-social-anxiety)
+[@link2](https://www.etiquetteer.com/columns/2020/9/6/social-friction-vol-19-issue-49)
+[@link3](https://www.girlschase.com/article/dealing-social-friction-part-1-what-friction)
+[@link4](https://knowledge.wharton.upenn.edu/article/is-the-party-over-the-unintended-consequences-of-office-social-events/)
+
 
 - Popularity of short social quizzes, playlist sharing, and personality tests shows user appetite for light, gamified self-disclosure.
+[@link5](https://www.truity.com/)
+[@link6](https://www.16personalities.com/free-personality-test)
+[@link7](https://www.songshift.com/)
+[@link8](https://www.reddit.com/r/mbti/comments/5imgp9/what_are_some_other_goodfunaccuratelegit/)
 
 - Rising use of group games and apps (e.g., casual party apps, music-sharing social features) demonstrates demand for fast, playful group interaction tools.
+[@link9](https://crowdparty.app/quick)
+[@link10](https://www.realsimple.com/holidays-entertaining/entertaining/party-games-ideas)
 
 ## Comparables
 
-- Casual quiz apps and personality tests (BuzzFeed quizzes, 16Personalities) — strong on engagement, weak on privacy and group analysis.
+### 1. Personality & Quiz Platforms
+- **Examples**: 16Personalities, BuzzFeed Quizzes, Truity
+- **Strengths**:
+  - High user engagement through gamification
+  - Established frameworks for personality assessment
+  - Strong visual presentation of results
+- **Limitations**:
+  - Primarily individual-focused, lacking group dynamics analysis
+  - Limited privacy controls for sensitive personal data
+  - Static results without real-time interaction
+  - No facilitation of actual social connections
 
-- Party/game apps (e.g., Heads Up!, Jackbox) — strong on gameplay, less on personalized insight.
+### 2. Social Party Games
+- **Examples**: Jackbox Games, Heads Up!, Psych!
+- **Strengths**:
+  - Excellent at breaking the ice in group settings
+  - Simple, accessible gameplay mechanics
+  - Strong entertainment value
+- **Limitations**:
+  - Focused on entertainment rather than meaningful connection
+  - Limited personalization based on group dynamics
+  - No lasting value or relationship-building components
+  - Often requires a shared screen or physical presence
 
-- Social music features (Spotify group sessions, shared playlists) — good for shared context but limited to music signals.
+### 3. Music-Based Social Platforms
+- **Examples**: Spotify Group Session, JQBX, Rave
+- **Strengths**:
+  - Music as a universal conversation starter
+  - Real-time synchronization features
+  - Strong emotional connection through shared experiences
+- **Limitations**:
+  - Limited to music as the primary interaction medium
+  - Less effective for non-musical connections
+  - Privacy concerns with music taste data
+  - Limited structured interaction beyond listening
 
-This product blends elements: quiz/games + social insight + group synthesis.
+### 4. Professional Networking Tools
+- **Examples**: LinkedIn Icebreakers, Donut for Slack
+- **Strengths**:
+  - Purpose-built for professional contexts
+  - Integration with workplace tools
+  - Focus on meaningful professional connections
+- **Limitations**:
+  - Often feels transactional
+  - Limited personal expression
+  - Can feel forced or inauthentic
+
+### Our Unique Value Proposition
+Our solution synthesizes the best elements of these platforms while addressing their limitations:
+- Combines the psychological depth of personality tests with the engagement of party games
+- Creates meaningful, personalized connections like networking tools but in a more natural, social context
+- Uses multiple input methods (not just music) to accommodate different personalities and preferences
+- Focuses on both immediate icebreaking and ongoing relationship building
+- Prioritizes privacy and user control while enabling rich social interactions
 
 ## Features 
 
-- Multiple input modes: quiz-style prompts, “what song are you listening to” lists, short free-text prompts, reaction emojis.
+- Multiple input modes: quiz-style prompts, "what song are you listening to" lists, short free-text prompts, reaction emojis.
 
 - Automated personality summaries for each participant (short, shareable).
 
@@ -71,7 +149,7 @@ This product blends elements: quiz/games + social insight + group synthesis.
 
 **One person, multiple roles**
 
-A team lead (Aisha) organizes an offsite and creates the session (direct stakeholder as Host). Later she joins another company-wide “fun” session created by someone else and fills out prompts as a participant (direct stakeholder as Participant). Separately, HR reads exported group summaries after the event (Aisha becomes an indirect stakeholder whose profile influences decisions she did not control).
+A team lead (Aisha) organizes an offsite and creates the session (direct stakeholder as Host). Later she joins another company-wide "fun" session created by someone else and fills out prompts as a participant (direct stakeholder as Participant). Separately, HR reads exported group summaries after the event (Aisha becomes an indirect stakeholder whose profile influences decisions she did not control).
 
 **Non-targeted / nefarious use**
 
@@ -92,28 +170,28 @@ Design must include screen-reader labels, text transcripts for audio, large-targ
 
 **Changing hands (account transfer)**
 
-Accounts may be passed between people (e.g., a party organizer hands a recurring session to a friend). Challenges: ownership of stored group data, ambiguous consent for previously collected inputs. Features to smooth transfer: clear ownership metadata, a one-click “transfer ownership” with consent notifications to participants, and configurable data retention/export policies.
+Accounts may be passed between people (e.g., a party organizer hands a recurring session to a friend). Challenges: ownership of stored group data, ambiguous consent for previously collected inputs. Features to smooth transfer: clear ownership metadata, a one-click "transfer ownership" with consent notifications to participants, and configurable data retention/export policies.
 
 **Consider children (seven-year-old scenario)**
 
-A seven-year-old creates a “class sleepover” game and asks classmates to add favorite songs and draw emojis. The app produces a playful “friendship map.” Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language.
+A seven-year-old creates a "class sleepover" game and asks classmates to add favorite songs and draw emojis. The app produces a playful "friendship map." Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language.
 
-**Ethics insights (each: observation + design response; 30–75 words each)**
+**Ethics insights (each: observation + design response)**
 1. 
 - *Observation* (Non-targeted use / Features): The app’s group synthesis feature could be repurposed to single out and shame an individual by aggregating negative prompts.
-- *Design response*: Limit per-session visibility controls and require explicit consent before publishing individual-level summaries. Add a “no single-target” rule enforced by automated detection that prevents sessions whose inputs focus adversarially on one person.
+- *Design response*: Limit per-session visibility controls and require explicit consent before publishing individual-level summaries. Add a "no single-target" rule enforced by automated detection that prevents sessions whose inputs focus adversarially on one person.
 2. 
 - *Observation* (Privacy / Stakeholders): Participants may not understand downstream uses of their inputs (exports, integration with music services), leading to unexpected sharing.
 - Design response: Implement clear, inline consent dialogs per input type, a privacy dashboard showing where data went, and granular export controls; default to minimal sharing and require opt-in for integrations and exports.
 3. 
 - *Observation* (Variation in Ability / Features): Relying on music or audio as primary signals excludes deaf users and disadvantages those with limited bandwidth.
-- *Design response*: Provide equivalent text-based inputs (song title text, mood tags) and automatic transcript generation; ensure group reports synthesize non-audio signals equally and include an explicit “audio optional” mode.
+- *Design response*: Provide equivalent text-based inputs (song title text, mood tags) and automatic transcript generation; ensure group reports synthesize non-audio signals equally and include an explicit "audio optional" mode.
 4. 
 - *Observation* (Changing Hands / Data lifecycle): When ownership transfers, previous participants may not want older data accessible under new ownership, causing privacy harm.
 - *Design response*: Introduce transfer workflows that notify all prior participants and offer a 14-day window to revoke or anonymize their past inputs before ownership changes take effect.
 5. 
 - *Observation* (Children / Ethical framing): Presenting personality labels to children risks fixed-mindset formation and peer categorization.
-- *Design response*: For under-13 users, use playful, growth-focused language (e.g., “things you like to try”), avoid deterministic labels, and require parental controls that limit sharing outside the immediate group.
+- *Design response*: For under-13 users, use playful, growth-focused language (e.g., "things you like to try"), avoid deterministic labels, and require parental controls that limit sharing outside the immediate group.
 6. 
 - *Observation* (Indirect stakeholders / Employers): Exports or screenshots could be used by managers to make HR decisions based on informal group content.
-- *Design response*: Watermark exported summaries with context (session date, “non-clinical, non-validated”) and offer an enterprise setting that disables export/printing for workplace templates to reduce misuse.
+- *Design response*: Watermark exported summaries with context (session date, "non-clinical, non-validated") and offer an enterprise setting that disables export/printing for workplace templates to reduce misuse.
