@@ -150,7 +150,7 @@ The core functionality involves collecting lightweight, engaging inputs from par
 
 **One person, multiple roles**
 
-A team lead (Aisha) organizes an offsite and creates the session (direct stakeholder as Host). Later she joins another company-wide "fun" session created by someone else and fills out prompts as a participant (direct stakeholder as Participant). Separately, HR reads exported group summaries after the event (Aisha becomes an indirect stakeholder whose profile influences decisions she did not control).
+A team lead organizes an offsite and creates the session (direct stakeholder as Host). Later, she joins another company-wide "fun" session created by someone else and fills out prompts as a participant (direct stakeholder as Participant). Separately, HR reads exported group summaries after the event (she becomes an indirect stakeholder whose profile influences decisions she did not control).
 
 **Non-targeted / nefarious use**
 
