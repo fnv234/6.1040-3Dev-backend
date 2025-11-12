@@ -21,9 +21,9 @@ Social gatherings often suffer from several key issues that our application aims
    - Feel artificial and don't lead to natural conversations
    - Are often forgotten once completed
 
-1. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging, specifically for Gen Z.
+3. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging, specifically for Gen Z.
 
-2. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
+4. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
 
 Our solution addresses these pain points by providing a structured yet flexible framework that makes social interactions more engaging, personalized, and effective at building genuine connections.
 
