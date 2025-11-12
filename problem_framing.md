@@ -137,7 +137,7 @@ Our solution synthesizes the best elements of these platforms while addressing t
 
 - Developers / product team — design features and privacy controls.
 
-**Indirect stakeholders (3–5, each with a concern):**
+**Indirect stakeholders:**
 
 - Non-participating observers (people in photos/mentions) — Concern: being described or profiled without consent if referenced in free text or photos.
 
