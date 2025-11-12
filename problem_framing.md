@@ -13,7 +13,7 @@ Our application operates at the intersection of social networking, behavioral ps
 
 Social gatherings often suffer from several key issues that our application aims to address:
 
-1. **Initial Awkwardness**: 72% of adults who experience anxiety say it interferes with their lives, leading to difficulty forming meaningful connections and affects their workplace performance ([Source: ADAA](https://adaa.org/workplace-stress-anxiety-disorders-survey)).
+1. **Initial Awkwardness**: 72% of adults who experience anxiety say it interferes with their lives, leading to difficulty forming meaningful connections and affects their workplace performance ([Source: ADAA](https://adaa.org/workplace-stress-anxiety-disorders-survey)). 
 
 2. **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
    - Force participation in ways that can embarrass introverts
@@ -21,15 +21,15 @@ Social gatherings often suffer from several key issues that our application aims
    - Feel artificial and don't lead to natural conversations
    - Are often forgotten once completed
 
-3. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging.
+1. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging, specifically for Gen Z.
 
-4. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
+2. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
 
 Our solution addresses these pain points by providing a structured yet flexible framework that makes social interactions more engaging, personalized, and effective at building genuine connections.
 
 ## Evidence 
 
-- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event. The following links describe the frequent feelings of social anxiety, social friction, and the negative consequences of uncomfortable social situations from research and blog standpoints. 
+- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event, despite actually wanting to create new connections. The following links describe the frequent feelings of social anxiety, social friction, and the negative consequences of uncomfortable social situations from research and blog standpoints. 
   - [How to survive a social event when you have social anxiety](https://idontmind.com/journal/how-to-survive-a-social-event-when-you-have-social-anxiety)
   - [Social Friction](https://www.etiquetteer.com/columns/2020/9/6/social-friction-vol-19-issue-49)
   - [Dealing with social friction](https://www.girlschase.com/article/dealing-social-friction-part-1-what-friction)
@@ -54,7 +54,7 @@ Our solution addresses these pain points by providing a structured yet flexible 
 - **Strengths**:
   - High user engagement through gamification
   - Established frameworks for personality assessment
-  - Strong visual presentation of results
+  - Strong visual presentation of results for sharing
 - **Limitations**:
   - Primarily individual-focused, lacking group dynamics analysis
   - Limited privacy controls for sensitive personal data
@@ -84,6 +84,7 @@ Our solution addresses these pain points by providing a structured yet flexible 
   - Less effective for non-musical connections
   - Privacy concerns with music taste data
   - Limited structured interaction beyond listening
+  - Cannot create any generalizable conclusions about compatibility
 
 ### 4. Professional Networking Tools
 - **Examples**: LinkedIn Icebreakers, Donut for Slack
@@ -167,6 +168,7 @@ A team lead organizes an offsite and creates the session (direct stakeholder as 
 - Hearing: audio snippets (music) without captions exclude deaf users; voice prompts must have text alternatives.
 
 - Motor control: small drag-and-drop or timed games create barriers; rapid tap interactions can be infeasible.
+
 Design must include screen-reader labels, text transcripts for audio, large-target controls, and alternative input modes.
 
 **Changing hands (account transfer)**
@@ -175,7 +177,7 @@ Accounts may be passed between people (e.g., a party organizer hands a recurring
 
 **Consider children (seven-year-old scenario)**
 
-A seven-year-old creates a "class sleepover" game and asks classmates to add favorite songs and draw emojis. The app produces a playful "friendship map." Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language.
+A seven-year-old creates a "class sleepover" game and asks classmates to add favorite songs and draw emojis. The app produces a playful "friendship map." Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language. For this, the templates they'll be able to access will be restricted based on the user's reported age.
 
 **Ethics Insights (each: observation + design response)**
 
