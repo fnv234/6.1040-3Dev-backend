@@ -177,22 +177,23 @@ Accounts may be passed between people (e.g., a party organizer hands a recurring
 
 A seven-year-old creates a "class sleepover" game and asks classmates to add favorite songs and draw emojis. The app produces a playful "friendship map." Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language.
 
-**Ethics insights (each: observation + design response)**
+**Ethics Insights (each: observation + design response)**
+
 1. 
-- *Observation* (Non-targeted use / Features): The app’s group synthesis feature could be repurposed to single out and shame an individual by aggregating negative prompts.
-- *Design response*: Limit per-session visibility controls and require explicit consent before publishing individual-level summaries. Add a "no single-target" rule enforced by automated detection that prevents sessions whose inputs focus adversarially on one person.
+    - **Observation (Non-targeted use / Features)**: The app’s group synthesis feature could be repurposed to single out and shame an individual by aggregating negative prompts.
+    - **Design response**: Limit per-session visibility controls and require explicit consent before publishing individual-level summaries. Add a "no single-target" rule enforced by automated detection that prevents sessions whose inputs focus adversarially on one person.
 2. 
-- *Observation* (Privacy / Stakeholders): Participants may not understand downstream uses of their inputs (exports, integration with music services), leading to unexpected sharing.
-- Design response: Implement clear, inline consent dialogs per input type, a privacy dashboard showing where data went, and granular export controls; default to minimal sharing and require opt-in for integrations and exports.
+    - **Observation (Privacy / Stakeholders)**: Participants may not understand downstream uses of their inputs (exports, integration with music services), leading to unexpected sharing.
+    - **Design response**: Implement clear, inline consent dialogs per input type, a privacy dashboard showing where data went, and granular export controls; default to minimal sharing and require opt-in for integrations and exports.
 3. 
-- *Observation* (Variation in Ability / Features): Relying on music or audio as primary signals excludes deaf users and disadvantages those with limited bandwidth.
-- *Design response*: Provide equivalent text-based inputs (song title text, mood tags) and automatic transcript generation; ensure group reports synthesize non-audio signals equally and include an explicit "audio optional" mode.
+    - **Observation (Variation in Ability / Features)**: Relying on music or audio as primary signals excludes deaf users and disadvantages those with limited bandwidth.
+    - **Design response**: Provide equivalent text-based inputs (song title text, mood tags) and automatic transcript generation; ensure group reports synthesize non-audio signals equally and include an explicit "audio optional" mode.
 4. 
-- *Observation* (Changing Hands / Data lifecycle): When ownership transfers, previous participants may not want older data accessible under new ownership, causing privacy harm.
-- *Design response*: Introduce transfer workflows that notify all prior participants and offer a 14-day window to revoke or anonymize their past inputs before ownership changes take effect.
+    - **Observation (Changing Hands / Data lifecycle)**: When ownership transfers, previous participants may not want older data accessible under new ownership, causing privacy harm.
+    - **Design response**: Introduce transfer workflows that notify all prior participants and offer a 14-day window to revoke or anonymize their past inputs before ownership changes take effect.
 5. 
-- *Observation* (Children / Ethical framing): Presenting personality labels to children risks fixed-mindset formation and peer categorization.
-- *Design response*: For under-13 users, use playful, growth-focused language (e.g., "things you like to try"), avoid deterministic labels, and require parental controls that limit sharing outside the immediate group.
+    - **Observation (Children / Ethical framing)**: Presenting personality labels to children risks fixed-mindset formation and peer categorization.
+    - **Design response**: For under-13 users, use playful, growth-focused language (e.g., "things you like to try"), avoid deterministic labels, and require parental controls that limit sharing outside the immediate group.
 6. 
-- *Observation* (Indirect stakeholders / Employers): Exports or screenshots could be used by managers to make HR decisions based on informal group content.
-- *Design response*: Watermark exported summaries with context (session date, "non-clinical, non-validated") and offer an enterprise setting that disables export/printing for workplace templates to reduce misuse.
+    - **Observation (Indirect stakeholders / Employers)**: Exports or screenshots could be used by managers to make HR decisions based on informal group content.
+    - **Design response**: Watermark exported summaries with context (session date, "non-clinical, non-validated") and offer an enterprise setting that disables export/printing for workplace templates to reduce misuse.
