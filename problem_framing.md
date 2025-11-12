@@ -1,15 +1,13 @@
 # Problem Framing 
-Authors: Diego Peon, Francesca Venditti, Grace Zhou
+**Authors**: Diego Peon, Francesca Venditti, Grace Zhou
 
 ## Domain
 
 Our application operates at the intersection of social networking, behavioral psychology, and gamification. It's designed to enhance social interactions in small to medium-sized groups (3-20 people) across various settings including:
-- Social gatherings (parties, meetups, reunions)
-- Professional settings (team building, networking events, conferences)
-- Educational environments (classroom icebreakers, student orientation)
-- Online communities (virtual meetups, gaming groups, interest-based forums)
-
-The core functionality involves collecting lightweight, engaging inputs from participants through various interactive formats, then using this data to generate meaningful social insights, conversation starters, and group dynamics analysis that help break the ice and foster deeper connections.
+1. *Social gatherings* (parties, meetups, reunions)
+2. *Professional settings* (team building, networking events, conferences)
+3. *Educational environments* (classroom icebreaker, student orientation)
+4. *Online communities* (virtual meetups, gaming groups, interest-based forums)
 
 ## Problem 
 
@@ -31,22 +29,23 @@ Our solution addresses these pain points by providing a structured yet flexible 
 
 ## Evidence 
 
-- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event.
-[@link1](https://idontmind.com/journal/how-to-survive-a-social-event-when-you-have-social-anxiety)
-[@link2](https://www.etiquetteer.com/columns/2020/9/6/social-friction-vol-19-issue-49)
-[@link3](https://www.girlschase.com/article/dealing-social-friction-part-1-what-friction)
-[@link4](https://knowledge.wharton.upenn.edu/article/is-the-party-over-the-unintended-consequences-of-office-social-events/)
+- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event. The following links describe the frequent feelings of social anxiety, social friction, and the negative consequences of uncomfortable social situations from research and blog standpoints. 
+  - [How to survive a social event when you have social anxiety](https://idontmind.com/journal/how-to-survive-a-social-event-when-you-have-social-anxiety)
+  - [Social Friction](https://www.etiquetteer.com/columns/2020/9/6/social-friction-vol-19-issue-49)
+  - [Dealing with social friction](https://www.girlschase.com/article/dealing-social-friction-part-1-what-friction)
+  - [The unintended consequences of team-building activities - a UPenn study](https://knowledge.wharton.upenn.edu/article/is-the-party-over-the-unintended-consequences-of-office-social-events/)
 
 
 - Popularity of short social quizzes, playlist sharing, and personality tests shows user appetite for light, gamified self-disclosure.
-[@link5](https://www.truity.com/)
-[@link6](https://www.16personalities.com/free-personality-test)
-[@link7](https://www.songshift.com/)
-[@link8](https://www.reddit.com/r/mbti/comments/5imgp9/what_are_some_other_goodfunaccuratelegit/)
+  - [Common social quizzes](https://www.truity.com/)
+  - [16Personalities MBTI Quiz - 4.9 million shares](https://www.16personalities.com/free-personality-test)
+  - [SongShift - transfer music playlists across streaming platforms](https://www.songshift.com/)
+  - [Spotify Blend - combines the music you and other people in the Blend listen to](https://support.spotify.com/us/article/social-recommendations-in-playlists/)
+  - [Blog post: popular personality tests](https://www.reddit.com/r/mbti/comments/5imgp9/what_are_some_other_goodfunaccuratelegit/)
 
 - Rising use of group games and apps (e.g., casual party apps, music-sharing social features) demonstrates demand for fast, playful group interaction tools.
-[@link9](https://crowdparty.app/quick)
-[@link10](https://www.realsimple.com/holidays-entertaining/entertaining/party-games-ideas)
+  - [Crowd Party](https://crowdparty.app/quick)
+  - [Blog - popular party games](https://www.realsimple.com/holidays-entertaining/entertaining/party-games-ideas)
 
 ## Comparables
 
@@ -107,23 +106,25 @@ Our solution synthesizes the best elements of these platforms while addressing t
 
 ## Features 
 
-- Multiple input modes: quiz-style prompts, "what song are you listening to" lists, short free-text prompts, reaction emojis.
+The core functionality involves collecting lightweight, engaging inputs from participants through various interactive formats, then using this data to generate meaningful social insights, conversation starters, and group dynamics analysis that help break the ice and foster deeper connections.
 
-- Automated personality summaries for each participant (short, shareable).
+1. Multiple input modes: quiz-style prompts, "what song are you listening to" lists, playlists from music streaming platforms, short free-text prompts, reaction emojis, etc.
 
-- Group dynamic report: role archetypes, dominant traits, conversational hooks, predicted conflicts/compatibilities.
+2. Automated personality summaries for each participant (short, shareable).
 
-- Icebreaker generator: tailored questions and game suggestions based on group profile.
+3. Group dynamic report: role archetypes, dominant traits, conversational hooks, predicted conflicts/compatibilities.
 
-- Privacy controls: per-item visibility (private, group, anonymous), deletion, export.
+4. Icebreaker generator: tailored questions and game suggestions based on group profile.
 
-- Onboarding templates for different settings (party, networking, team offsite).
+5. Privacy controls: per-item visibility (private, group, anonymous), deletion, export.
 
-- Accessibility options: screen-reader friendly, high-contrast UI, captioned audio clips for music inputs.
+6. Onboarding templates for different settings (party, networking, team offsite).
 
-- Moderation tools and reporting for abusive or manipulative content.
+7. Accessibility options: screen-reader friendly, high-contrast UI, captioned audio clips for music inputs.
 
-- Optional integrations: music services, calendar invites, messaging platforms.
+8. Moderation tools and reporting for abusive or manipulative content.
+
+9. Optional integrations: music services, calendar invites, messaging platforms.
 
 ## Ethical analysis (Stakeholders)
 
