@@ -3,29 +3,21 @@
 
 ## Domain
 
-Our application operates at the intersection of social networking, behavioral psychology, and gamification. It's designed to enhance social interactions in small to medium-sized groups (3-20 people) across various settings including:
-1. *Social gatherings* (parties, meetups, reunions)
-2. *Professional settings* (team building, networking events, conferences)
-3. *Educational environments* (classroom icebreaker, student orientation)
-4. *Online communities* (virtual meetups, gaming groups, interest-based forums)
+[FV CHANGED 11-13, delete this comment before submission] Our application operates at the intersection of remote collaboration, behavioral psychology, and human-computer interaction, with a focus on improving social cohesion and engagement within remote or hybrid teams. We are building a better team dynamics analysis app.
+
 
 ## Problem 
 
-Social gatherings often suffer from several key issues that our application aims to address:
+[FV CHANGED 11-13, delete this comment before submission] In distributed workplaces, maintaining team connection and psychological safety is a growing challenge. While tools like Slack, Zoom, and Teams support coordination, they do not foster the kind of informal, trust-building interactions that occur naturally in physical offices, while also providing insights about the group as a whole. Our application aims to fill this gap by facilitating authentic, low-friction social connection within remote work environments as well as an automated analysis of team dynamics in this professional setting. We mainly wish to address the following:
 
-1. **Initial Awkwardness**: 72% of adults who experience anxiety say it interferes with their lives, leading to difficulty forming meaningful connections and affects their workplace performance ([Source: ADAA](https://adaa.org/workplace-stress-anxiety-disorders-survey)). 
-
-2. **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
+ **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
    - Force participation in ways that can embarrass introverts
    - Don't account for different personality types
    - Feel artificial and don't lead to natural conversations
    - Are often forgotten once completed
+   - Do not provide useful insights into group dynamics
 
-3. **Digital Distraction**: In our increasingly digital world, people have fewer opportunities to practice and develop in-person social skills, making face-to-face interactions more challenging, specifically for Gen Z.
-
-4. **Missed Connections**: At events, people tend to stick with those they already know, missing opportunities to connect with new people who might share their interests or complement their personalities.
-
-Our solution addresses these pain points by providing a structured yet flexible framework that makes social interactions more engaging, personalized, and effective at building genuine connections.
+Our solution addresses this by providing a structured yet flexible framework that makes the team formation smoother and more comfortable as well as more insightful.
 
 ## Evidence 
 
