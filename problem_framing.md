@@ -17,7 +17,7 @@
    - Are often forgotten once completed
    - Do not provide useful insights into group dynamics
 
-Our solution addresses this by providing a structured yet flexible framework that makes the team formation smoother and more comfortable as well as more insightful.
+Our solution addresses this by providing a structured yet flexible framework that makes the team formation smoother and more comfortable as well as more insightful. We are building a lightweight app that helps team members and supervisors understand each other's communication styles, preferences, and personalities through reflective prompts.
 
 ## Evidence 
 
