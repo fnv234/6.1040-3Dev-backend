@@ -105,7 +105,7 @@ The core functionality is a web app that (1) imports or lets users input an org 
 
 1. Org chart/roster import: CSV, manual, or HRIS; role mapping (manager, report, peer).
 
-2. Cycle setup: templates and question bank for competencies; optional self-review.
+2. Cycle setup: templates and question bank for competencies or team specific matters; optional self-review.
 
 3. Rater selection and coverage rules: minimum raters per role; conflict-of-interest exceptions can be handled too.
 
@@ -177,7 +177,13 @@ When a team lead leaves and a new manager takes over, ownership of the 360 cycle
 
 **Consider children (seven-year-old scenario)**
 
-A seven-year-old uses a school-adapted version of the app where classmates rate each other on teamwork for a group project. The app generates a "team strengths" report. Influence: it may reinforce social hierarchies, teach early labeling behaviors ("leader" vs. "follower"), and expose children to peer judgment. The app should use age-appropriate, growth-oriented language, require parental and teacher consent, limit data retention, and avoid deterministic labels or rankings.
+A seven-year-old uses a school-adapted version of the app where classmates rate each other on teamwork for a group project. The app generates a "team strengths" report. Influence: it may reinforce social hierarchies, teach early labeling behaviors ("leader" vs. "follower"), and expose children to peer judgment. 
+
+The app should  
+ - use age-appropriate, growth-oriented language
+ - require parental and teacher consent
+ - limit data retention, 
+ - avoid deterministic labels or rankings
 
 **Ethics Insights (each: observation + design response)**
 
