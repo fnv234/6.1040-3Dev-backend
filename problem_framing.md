@@ -3,21 +3,20 @@
 
 ## Domain
 
-[FV CHANGED 11-13, delete this comment before submission] Our application operates at the intersection of remote collaboration, behavioral psychology, and human-computer interaction, with a focus on improving social cohesion and engagement within remote or hybrid teams. We are building a better team dynamics analysis app.
+Our application operates at the intersection of organizational psychology, performance management, people analytics, and human–computer interaction. We focus on 360-degree feedback for workplaces and student teams: orchestrating role-aware rater selection, collection, and synthesis across manager, direct-report, peer, and self reviews to produce timely, privacy-preserving, actionable reports at both the individual and team level.
 
 
 ## Problem 
 
-[FV CHANGED 11-13, delete this comment before submission] In distributed workplaces, maintaining team connection and psychological safety is a growing challenge. While tools like Slack, Zoom, and Teams support coordination, they do not foster the kind of informal, trust-building interactions that occur naturally in physical offices, while also providing insights about the group as a whole. Our application aims to fill this gap by facilitating authentic, low-friction social connection within remote work environments as well as an automated analysis of team dynamics in this professional setting. We mainly wish to address the following:
+In many organizations, 360 reviews are irregular, biased, and administratively heavy. Existing HR suites are over-configured for small teams, while DIY surveys and spreadsheets break anonymity and stall follow-through. Feedback may arrive late or not at all, also lacking synthesis and actionability.
 
- **Ineffective Icebreakers**: Traditional icebreakers often fail because they:
-   - Force participation in ways that can embarrass introverts
-   - Don't account for different personality types
-   - Feel artificial and don't lead to natural conversations
-   - Are often forgotten once completed
-   - Do not provide useful insights into group dynamics
+ - Brittle role-aware linking: uncertainty about who should rate whom; conflicts of interest.
+ - Anonymity and safety: small-team deanonymization and fear of retaliation reduce honesty.
+ - Concise reporting: redundant, noisy comments make overarching themes hard to see.
+ - Delayed, non-actionable outputs: long cycle times; no action tracking, lack of fixed and visible deadlines.
+ - Privacy/compliance ambiguity: unclear retention, access, and purpose limits.
 
-Our solution addresses this by providing a structured yet flexible framework that makes the team formation smoother and more comfortable as well as more insightful. We are building a lightweight app that helps team members and supervisors understand each other's communication styles, preferences, and personalities through reflective prompts.
+We propose a 360 management web app that imports an org chart or roster, automatically solicits reviews from the right people, and assembles anonymous, role-aware reports (optionally using an LLM to summarize themes and team throughlines) so teams can act accordingly.
 
 ## Evidence 
 
@@ -90,34 +89,38 @@ Our solution addresses this by providing a structured yet flexible framework tha
   - Can feel forced or inauthentic
 
 ### Our Unique Value Proposition
-Our solution synthesizes the best elements of these platforms while addressing their limitations:
-- Combines the psychological depth of personality tests with the engagement of party games
-- Creates meaningful, personalized connections like networking tools but in a more natural, social context
-- Uses multiple input methods (not just music) to accommodate different personalities and preferences
-- Focuses on both immediate icebreaking and ongoing relationship building
-- Prioritizes privacy and user control while enabling rich social interactions
+Our solution focuses on hierarchy or role-aware automation and trustworthy synthesis:
+- Org-graph aware solicitation engine: import org chart/roster and auto-build reviewer sets by hierarchy.
+- Anonymity by design: k-anonymity thresholds and degradations for small teams.
+- Optional LLM-assisted, human-in-the-loop synthesis with quote-level provenance.
+- Action plans with follow-through reminders and team-level themes.
 
 ## Features 
+The core functionality is a web app that imports or lets users input an org chart/roster and auto-builds reviewer sets by hierarchy, then prompting users to complete reviews and assembling insightful reports.
 
-The core functionality involves collecting lightweight, engaging inputs from participants through various interactive formats, then using this data to generate meaningful social insights, conversation starters, and group dynamics analysis that help break the ice and foster deeper connections.
+1. Org chart/roster import: CSV, manual, or HRIS; role mapping (manager, report, peer).
 
-1. Multiple input modes: quiz-style prompts, "what song are you listening to" lists, playlists from music streaming platforms, short free-text prompts, reaction emojis, etc.
+2. Cycle setup: templates and question bank for competencies; optional self-review.
 
-2. Automated personality summaries for each participant (short, shareable).
+3. Rater selection and coverage rules: minimum raters per role; conflict-of-interest exceptions can be handled too.
 
-3. Group dynamic report: role archetypes, dominant traits, conversational hooks, predicted conflicts/compatibilities.
+4. Solicitation engine: schedules, reminders, and load balancing to avoid rater fatigue.
 
-4. Icebreaker generator: tailored questions and game suggestions based on group profile.
+5. Anonymity and privacy: k-anonymity thresholds, role-based access, and separate private-to-manager vs private-to-individual channels.
 
-5. Privacy controls: per-item visibility (private, group, anonymous), deletion, export.
+6. Collection UX: structured rubrics + free text; evidence attachments; guidance for behavior-based feedback and to avoid unstructured and noisy commenting.
 
-6. Onboarding templates for different settings (party, networking, team offsite).
+7. Optional LLM summarization: thematic clustering, quote extraction with provenance (with person of interest redaction); human review required.
 
-7. Accessibility options: screen-reader friendly, high-contrast UI, captioned audio clips for music inputs.
+8. Reports: individual strengths, growth areas, and suggested actions; team-level aggregates and risk flags.
 
-8. Moderation tools and reporting for abusive or manipulative content.
+9. Bias and quality analytics: balance checks, outlier detection, sentiment/toxicity filters.
 
-9. Optional integrations: music services, calendar invites, messaging platforms.
+10. Action tracking: goals, follow-ups, reminders, and check-ins between cycles.
+
+11. Integrations: Slack/Email notifications, SSO, HRIS sync, and controlled exports.
+
+12. Accessibility options: screen-reader friendly, high-contrast UI, colorblind-friendly palette.
 
 ## Ethical analysis (Stakeholders)
 
