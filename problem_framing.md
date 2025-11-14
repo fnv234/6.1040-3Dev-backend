@@ -16,15 +16,14 @@ In many organizations, 360 reviews are irregular, biased, and administratively h
  - Delayed, non-actionable outputs: long cycle times; no action tracking, lack of fixed and visible deadlines.
  - Privacy/compliance ambiguity: unclear retention, access, and purpose limits.
 
-We propose a 360 management web app that imports an org chart or roster, automatically solicits reviews from the right people, and assembles anonymous, role-aware reports (optionally using an LLM to summarize themes and team throughlines) so teams can act accordingly.
+We propose a 360 management web app that imports an org chart or roster, automatically solicits reviews for everyone in the chart or select people from relevant peoeple, and assembles anonymous, role-aware reports (optionally using an LLM to summarize themes and team throughlines) so teams can understand team dynamics, act accordingly, etc.
 
 ## Evidence 
 
-- Organizations struggle with 360 review logistics: establishing reviewer-recipient relationships is complex and time-consuming, find it difficult to convert raw feedback into actionable insights.
+- Organizations struggle with 360 review logistics: establishing reviewer-recipient relationships is complex and time-consuming. It is particularly difficult to convert raw feedback into actionable insights.
   - [360-Degree Feedback: You Are Probably Doing It Wrong](https://birgitpohl.medium.com/360-degree-feedback-you-are-probably-doing-it-wrong-8a6f0927e9bf)
   - [The Fatal Flaw With 360-Degree Surveys](https://hbr.org/2011/10/the-fatal-flaw-with-360-survey)
   - [Evidence-Based Answers to 15 Questions About Leveraging 360-Degree Feedback](https://www.apa.org/pubs/journals/features/cpb-64-3-157.pdf)
-
 
 - Anonymity concerns undermine honesty and candor, especially in small teams. Employees fear retaliation and self-censor upward feedback when they believe managers can identify them.
   - [Are Anonymous Reviews Destructive?](https://www.shrm.org/topics-tools/news/employee-relations/anonymous-reviews-destructive)
@@ -102,7 +101,7 @@ Our solution focuses on hierarchy or role-aware automation and trustworthy synth
 - Action plans with follow-through reminders and team-level themes.
 
 ## Features 
-The core functionality is a web app that imports or lets users input an org chart/roster and auto-builds reviewer sets by hierarchy, then prompting users to complete reviews and assembling insightful reports.
+The core functionality is a web app that (1) imports or lets users input an org chart/roster, (2) auto-builds reviewer sets by hierarchy, then (3) prompts users to complete reviews and assembles insightful reports.
 
 1. Org chart/roster import: CSV, manual, or HRIS; role mapping (manager, report, peer).
 
