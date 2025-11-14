@@ -3,7 +3,7 @@
 
 ## Domain
 
-Our application operates at the intersection of organizational psychology, performance management, people analytics, and human–computer interaction. We focus on 360-degree feedback for workplaces and student teams: orchestrating role-aware rater selection, collection, and synthesis across manager, direct-report, peer, and self reviews to produce timely, privacy-preserving, actionable reports at both the individual and team level.
+Our application operates at the intersection of organizational psychology, performance management, people analytics, and human–computer interaction. We focus on *360-degree feedback* for workplaces and student teams: orchestrating role-aware rater selection, collection, and synthesis across manager, direct-report, peer, and self reviews to produce timely, privacy-preserving, actionable reports at both the individual and team level.
 
 
 ## Problem 
