@@ -20,73 +20,79 @@ We propose a 360 management web app that imports an org chart or roster, automat
 
 ## Evidence 
 
-- Common social friction at meetups, parties, and other types of events is widely reported: attendees skip introductions or stick to small cliques, and some have anxiety related to the event, despite actually wanting to create new connections. The following links describe the frequent feelings of social anxiety, social friction, and the negative consequences of uncomfortable social situations from research and blog standpoints. 
-  - [How to survive a social event when you have social anxiety](https://idontmind.com/journal/how-to-survive-a-social-event-when-you-have-social-anxiety)
-  - [Social Friction](https://www.etiquetteer.com/columns/2020/9/6/social-friction-vol-19-issue-49)
-  - [Dealing with social friction](https://www.girlschase.com/article/dealing-social-friction-part-1-what-friction)
-  - [The unintended consequences of team-building activities - a UPenn study](https://knowledge.wharton.upenn.edu/article/is-the-party-over-the-unintended-consequences-of-office-social-events/)
+- Organizations struggle with 360 review logistics: establishing reviewer-recipient relationships is complex and time-consuming, find it difficult to convert raw feedback into actionable insights.
+  - [360-Degree Feedback: You Are Probably Doing It Wrong](https://birgitpohl.medium.com/360-degree-feedback-you-are-probably-doing-it-wrong-8a6f0927e9bf)
+  - [The Fatal Flaw With 360-Degree Surveys](https://hbr.org/2011/10/the-fatal-flaw-with-360-survey)
+  - [Evidence-Based Answers to 15 Questions About Leveraging 360-Degree Feedback](https://www.apa.org/pubs/journals/features/cpb-64-3-157.pdf)
 
 
-- Popularity of short social quizzes, playlist sharing, and personality tests shows user appetite for light, gamified self-disclosure.
-  - [Common social quizzes](https://www.truity.com/)
-  - [16Personalities MBTI Quiz - 4.9 million shares](https://www.16personalities.com/free-personality-test)
-  - [SongShift - transfer music playlists across streaming platforms](https://www.songshift.com/)
-  - [Spotify Blend - combines the music you and other people in the Blend listen to](https://support.spotify.com/us/article/social-recommendations-in-playlists/)
-  - [Blog post: popular personality tests](https://www.reddit.com/r/mbti/comments/5imgp9/what_are_some_other_goodfunaccuratelegit/)
+- Anonymity concerns undermine honesty and candor, especially in small teams. Employees fear retaliation and self-censor upward feedback when they believe managers can identify them.
+  - [Are Anonymous Reviews Destructive?](https://www.shrm.org/topics-tools/news/employee-relations/anonymous-reviews-destructive)
+  - [The Horrible Truth About 360-Degree Feedback](https://www.forbes.com/sites/lizryan/2015/10/21/the-horrible-truth-about-360-degree-feedback/)
+  - [StackExchange: How to Approach the Request to Provide an Unstructured 360-Degree Evaluation for a Manager](https://workplace.stackexchange.com/questions/169075/how-to-approach-the-request-to-provide-an-unstructured-360-degree-evaluation-for)
 
-- Rising use of group games and apps (e.g., casual party apps, music-sharing social features) demonstrates demand for fast, playful group interaction tools.
-  - [Crowd Party](https://crowdparty.app/quick)
-  - [Blog - popular party games](https://www.realsimple.com/holidays-entertaining/entertaining/party-games-ideas)
+- Lack of synthesis and action planning: managers report receiving difficult to parse data. Negative stigma around 360 reviewing make managers disillusioned despite 360-degree feedback's effectiveness.
+  - [360-Degree Feedback as a Tool for Improving Employee Performance](https://www.researchgate.net/publication/374978873_360-Degree_Feedback_as_a_Tool_for_Improving_Employee_Performance)
+  - [360 Reviews: good/bad idea?](https://www.manager-tools.com/forums/360-reviews-goodbad-idea)
 
 ## Comparables
 
-### 1. Personality & Quiz Platforms
-- **Examples**: 16Personalities, BuzzFeed Quizzes, Truity
+### 1. Enterprise Performance Management Platforms
+- **Examples**: CultureAmp, Lattice, 15Five, Workday, BambooHR
 - **Strengths**:
-  - High user engagement through gamification
-  - Established frameworks for personality assessment
-  - Strong visual presentation of results for sharing
+  - Comprehensive HRIS integration and SSO support
+  - Built-in goals, performance reviews, and engagement surveys
+  - Strong compliance and audit trail features
+  - Professional support and training resources
 - **Limitations**:
-  - Primarily individual-focused, lacking group dynamics analysis
-  - Limited privacy controls for sensitive personal data
-  - Static results without real-time interaction
-  - No facilitation of actual social connections
+  - Complex setup requiring IT and HR coordination
+  - Expensive licensing models unsuitable for small teams or academic settings
+  - Generic templates don't account for org-specific hierarchies
+  - Limited automated rater selection based on org charts
+  - Rigid anonymity controls that may not adapt to small team constraints
 
-### 2. Social Party Games
-- **Examples**: Jackbox Games, Heads Up!, Psych!
+### 2. Survey and Spreadsheet Workflows
+- **Examples**: Google Forms + Sheets, SurveyMonkey, Typeform, Microsoft Forms
 - **Strengths**:
-  - Excellent at breaking the ice in group settings
-  - Simple, accessible gameplay mechanics
-  - Strong entertainment value
+  - Fast to set up with low or no cost
+  - Flexible question design and customization
+  - Familiar tools with shallow learning curve
+  - Easy export to CSV for manual analysis
 - **Limitations**:
-  - Focused on entertainment rather than meaningful connection
-  - Limited personalization based on group dynamics
-  - No lasting value or relationship-building components
-  - Often requires a shared screen or physical presence
+  - Entirely manual rater selection and assignment
+  - No automated reminders or progress tracking
+  - Weak or nonexistent anonymity guarantees (response metadata visible)
+  - No built-in synthesis, theming, or action tracking
+  - High administrative burden for coordinators
+  - No role-based access or compliance features
 
-### 3. Music-Based Social Platforms
-- **Examples**: Spotify Group Session, JQBX, Rave
+### 3. Education-Focused Peer Review Tools
+- **Examples**: TEAMMATES, Peergrade, Kritik, Canvas Peer Review
 - **Strengths**:
-  - Music as a universal conversation starter
-  - Real-time synchronization features
-  - Strong emotional connection through shared experiences
+  - Designed for course-based team evaluations
+  - Clear rubric and structured feedback flows
+  - Instructor dashboards for monitoring completion
+  - Free or low-cost for academic use
 - **Limitations**:
-  - Limited to music as the primary interaction medium
-  - Less effective for non-musical connections
-  - Privacy concerns with music taste data
-  - Limited structured interaction beyond listening
-  - Cannot create any generalizable conclusions about compatibility
+  - Limited to flat peer structures, not org-chart hierarchies
+  - Minimal enterprise privacy, compliance, or SSO features
+  - No manager/direct-report/peer role distinctions
+  - Weak anonymization in small groups
+  - Not designed for workplace competency frameworks
 
-### 4. Professional Networking Tools
-- **Examples**: LinkedIn Icebreakers, Donut for Slack
+### 4. Collaboration Platform Add-ons
+- **Examples**: Microsoft Viva Insights, Slack feedback bots, Officevibe
 - **Strengths**:
-  - Purpose-built for professional contexts
-  - Integration with workplace tools
-  - Focus on meaningful professional connections
+  - Embedded in daily workflow (Slack, Teams, email)
+  - Lightweight pulse surveys and quick feedback prompts
+  - Low friction for participants
+  - Good for continuous micro-feedback
 - **Limitations**:
-  - Often feels transactional
-  - Limited personal expression
-  - Can feel forced or inauthentic
+  - Shallow feedback not suited for comprehensive 360 reviews
+  - Limited anonymity (tied to platform identity)
+  - No org-chart-aware rater assignment
+  - Minimal reporting and synthesis capabilities
+  - Not designed for formal review cycles with action plans
 
 ### Our Unique Value Proposition
 Our solution focuses on hierarchy or role-aware automation and trustworthy synthesis:
@@ -126,71 +132,71 @@ The core functionality is a web app that imports or lets users input an org char
 
 **Direct stakeholders (key roles):**
 
-- Participants (friends, coworkers) — provide inputs and receive insights.
+- Employees being reviewed — receive feedback reports and action plans.
 
-- Hosts/organizers — create sessions, invite participants, choose templates.
+- Raters (peers, managers, direct reports) — provide structured and free-text feedback.
 
-- App moderators / content reviewers — manage reports, content quality.
+- HR administrators / team leads — set up cycles, choose templates, view team-level reports, monitor for toxicity, bias, and quality issues.
 
-- Developers / product team — design features and privacy controls.
+- Developers / product team — design features, privacy controls, and LLM integration.
 
 **Indirect stakeholders:**
 
-- Non-participating observers (people in photos/mentions) — Concern: being described or profiled without consent if referenced in free text or photos.
+- Job candidates and future teammates — Concern: hiring or promotion decisions influenced by 360 reports they cannot see or contest.
 
-- Employers / HR (if used in work settings) — Concern: inadvertent profiling could influence hiring/promotion or workplace dynamics.
+- Legal/compliance officers — Concern: data retention, GDPR/privacy law compliance, and audit requirements.
 
-- Minors / parents — Concern: children’s data or personality summaries could be stored or shared without appropriate safeguards.
+- LLM service providers (if enabled) — Concern: processing sensitive employee feedback; data sharing agreements.
 
-- Public figures / acquaintances — Concern: their name or content used in group prompts could lead to reputation issues.
+- Former employees — Concern: historical review data may persist and influence references or re-hiring decisions.
 
 **One person, multiple roles**
 
-A team lead organizes an offsite and creates the session (direct stakeholder as Host). Later, she joins another company-wide "fun" session created by someone else and fills out prompts as a participant (direct stakeholder as Participant). Separately, HR reads exported group summaries after the event (she becomes an indirect stakeholder whose profile influences decisions she did not control).
+A team lead sets up a 360 cycle for her team (direct stakeholder as Administrator). She is also reviewed by her manager and peers in the same cycle (direct stakeholder as Reviewee). Later, she provides upward feedback on her manager (direct stakeholder as Rater). In each role, she has different privacy expectations and power dynamics.
 
 **Non-targeted / nefarious use**
 
-- Coordinated profiling for harassment: bad actors create groups to produce targeted summaries used to manipulate or ostracize an individual.
+- Retaliation and surveillance: managers use the system to identify and penalize employees who give critical feedback, stunting honesty.
 
-- Social engineering: group insights could be mined to craft persuasive scams (e.g., personalized phishing).
+- Gaming and collusion: groups of employees coordinate to inflate or deflate ratings for specific individuals.
 
-- Surveillance / workplace monitoring: managers use the app as a covert assessment tool to evaluate employees’ traits.
+- Weaponized reports: malicious actors submit false or exaggerated negative feedback to harm a colleague's standing or career.
 
 **Variation in human ability & breakdowns**
 
-- Vision: users with low vision may fail to read personality charts or color-coded group maps. If visual cues are primary, they miss nuance.
+- Vision: users with low vision struggle with small text in reporting, or admins with color-coded charts without labels or image-heavy dashboards.
 
-- Hearing: audio snippets (music) without captions exclude deaf users; voice prompts must have text alternatives.
+- Cognitive load: complex rubrics, jargon-heavy prompts, or multi-step workflows create barriers for neurodivergent users or those with limited literacy.
 
-- Motor control: small drag-and-drop or timed games create barriers; rapid tap interactions can be infeasible.
+- Motor control: small drag-and-drop interactions, small click targets, or time-limited forms exclude users with motor impairments.
 
-Design must include screen-reader labels, text transcripts for audio, large-target controls, and alternative input modes.
+Design must include accessible UI, screen-reader support, high-contrast and colorblind-friendly palettes, clear language, and flexible interaction modes.
 
 **Changing hands (account transfer)**
 
-Accounts may be passed between people (e.g., a party organizer hands a recurring session to a friend). Challenges: ownership of stored group data, ambiguous consent for previously collected inputs. Features to smooth transfer: clear ownership metadata, a one-click "transfer ownership" with consent notifications to participants, and configurable data retention/export policies.
+When a team lead leaves and a new manager takes over, ownership of the 360 cycle and historical reports may transfer. Challenges: consent for data access by the new owner, ambiguous retention policies, and potential misuse of old feedback out of context. Features to smooth transfer: explicit ownership metadata, transfer workflows with participant notifications, and configurable data expiry or anonymization.
 
 **Consider children (seven-year-old scenario)**
 
-A seven-year-old creates a "class sleepover" game and asks classmates to add favorite songs and draw emojis. The app produces a playful "friendship map." Influence: it may shape how the child categorizes peers (in-group/out-group), teach labeling behaviors, and introduce privacy concepts early. The app should limit data retention for minors, require parental consent, and present results in age-appropriate, non-evaluative language. For this, the templates they'll be able to access will be restricted based on the user's reported age.
+A seven-year-old uses a school-adapted version of the app where classmates rate each other on teamwork for a group project. The app generates a "team strengths" report. Influence: it may reinforce social hierarchies, teach early labeling behaviors ("leader" vs. "follower"), and expose children to peer judgment. The app should use age-appropriate, growth-oriented language, require parental and teacher consent, limit data retention, and avoid deterministic labels or rankings.
 
 **Ethics Insights (each: observation + design response)**
 
 1. 
-    - **Observation (Non-targeted use / Features)**: The app’s group synthesis feature could be repurposed to single out and shame an individual by aggregating negative prompts.
-    - **Design response**: Limit per-session visibility controls and require explicit consent before publishing individual-level summaries. Add a "no single-target" rule enforced by automated detection that prevents sessions whose inputs focus adversarially on one person.
+    - **Observation (Stakeholders — power asymmetry / Features: role-based access)**: Managers with access to individual-level comments may identify and retaliate against employees who provide critical upward feedback, undermining honesty and psychological safety.
+    - **Design response**: Default to role-aggregated, anonymized reports with k-anonymity thresholds; provide separate private-to-manager and private-to-individual channels with clear disclosure; allow employees to mark sensitive comments as redacted from manager view; audit and flag unusual access patterns.
 2. 
-    - **Observation (Privacy / Stakeholders)**: Participants may not understand downstream uses of their inputs (exports, integration with music services), leading to unexpected sharing.
-    - **Design response**: Implement clear, inline consent dialogs per input type, a privacy dashboard showing where data went, and granular export controls; default to minimal sharing and require opt-in for integrations and exports.
+    - **Observation (Time — short-term burden vs. long-term culture / Features: solicitation engine)**: One-shot annual review cycles create rater fatigue, generic feedback, and long delays between feedback and action, reducing effectiveness over time and eroding a culture of continuous improvement.
+    - **Design response**: Introduce feedback windows, and frequency caps per rater; more frequent cycles compound into sustained behavior change rather than annual check-the-box exercises.
 3. 
-    - **Observation (Variation in Ability / Features)**: Relying on music or audio as primary signals excludes deaf users and disadvantages those with limited bandwidth.
-    - **Design response**: Provide equivalent text-based inputs (song title text, mood tags) and automatic transcript generation; ensure group reports synthesize non-audio signals equally and include an explicit "audio optional" mode.
+    - **Observation (Pervasiveness — surveillance risk / Features: data collection scope)**: If widely adopted, continuous 360 cycles could become a form of workplace surveillance, archiving subjective judgments that lose context over time and stunt experimentation or risk-taking.
+    - **Design response**: Enforce strict retention limits with automatic expiry, and governance controls that prevent repurposing data; prohibit off-hours or non-work monitoring; make data scopes visible and reviewable by participants.
 4. 
-    - **Observation (Changing Hands / Data lifecycle)**: When ownership transfers, previous participants may not want older data accessible under new ownership, causing privacy harm.
-    - **Design response**: Introduce transfer workflows that notify all prior participants and offer a 14-day window to revoke or anonymize their past inputs before ownership changes take effect.
+    - **Observation (Values — fairness and bias / Features: LLM summarization)**: Automated summarization may amplify majority opinions, wash out minority voices, or introduce stereotyped language, unfairly harming individuals from underrepresented groups or with dissenting viewpoints.
+    - **Design response**: Require human-in-the-loop review of LLM outputs; run bias and balance checks; attach quote-level provenance; enforce neutral phrasing guidance; allow recipients to challenge summaries and append context; make LLM use opt-in per cycle with transparency about model providers.
 5. 
-    - **Observation (Children / Ethical framing)**: Presenting personality labels to children risks fixed-mindset formation and peer categorization.
-    - **Design response**: For under-13 users, use playful, growth-focused language (e.g., "things you like to try"), avoid deterministic labels, and require parental controls that limit sharing outside the immediate group.
+    - **Observation (Stakeholders — small-team anonymity / Features: k-anonymity thresholds)**: In small teams, role-labeled feedback (e.g., "from your direct reports") combined with writing style can deanonymize raters, deterring honest critique and exposing vulnerable employees to retaliation.
+    - **Design response**: Enforce per-role k-anonymity minimums; if thresholds are not met, aggregate roles or suppress attributions entirely; warn administrators before launching under-threshold cycles; offer trusted-only aggregate fallback mode.
 6. 
-    - **Observation (Indirect stakeholders / Employers)**: Exports or screenshots could be used by managers to make HR decisions based on informal group content.
-    - **Design response**: Watermark exported summaries with context (session date, "non-clinical, non-validated") and offer an enterprise setting that disables export/printing for workplace templates to reduce misuse.
+    - **Observation (Time — data lifecycle and consent / Features: retention, exports)**: Long-term storage of sensitive feedback creates future harm as organizational context changes, people leave, and old judgments are repurposed beyond their original intent without renewed consent.
+    - **Design response**: Set default retention limits per cycle with automatic archival or deletion; support reversible anonymization; watermark and scope exports with context ("not for HR decisions"); maintain immutable access logs; provide participant data access requests and deletion rights consistent with privacy law.
