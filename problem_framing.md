@@ -16,7 +16,7 @@ In many organizations, 360 reviews are irregular, biased, and administratively h
  - Delayed, non-actionable outputs: long cycle times; no action tracking, lack of fixed and visible deadlines.
  - Privacy/compliance ambiguity: unclear retention, access, and purpose limits.
 
-We propose a 360 management web app that imports an org chart or roster, automatically solicits reviews for everyone in the chart or select people from relevant peoeple, and assembles anonymous, role-aware reports (optionally using an LLM to summarize themes and team throughlines) so teams can understand team dynamics, act accordingly, etc.
+We propose a 360 management web app that imports an org chart or roster, automatically solicits reviews for everyone in the chart or select people from relevant people, and assembles anonymous, role-aware reports (optionally using an LLM to summarize themes and team throughlines) so teams can understand team dynamics, act accordingly, etc.
 
 ## Evidence 
 
