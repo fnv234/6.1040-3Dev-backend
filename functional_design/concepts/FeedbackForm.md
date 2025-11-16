@@ -1,46 +1,50 @@
-# concept: FeedbackForm
+# concept: FeedbackForm[Employee]
+  
+  **purpose**
+  
+    collect employees' feedback on an assigned target employee
 
-* **concept**: FeedbackForm[Employee]
+  **principle**
 
-* **purpose**: collect employees' feedback on an assigned target employee
+    HR users format and create these forms, sending them out for employees to fill out and later aggregate into insightful reports
 
-* **principle**: HR users format and create these forms, sending them out for employees to fill out and later aggregate into insightful reports
+  **state**
 
-* **state**:
- * A set of `FeedbackForm` with:
-   * an `_id` of type `ID`
-   * a `reviewer` of type `Employee`
-   * a `target` of type `Employee`
-   * a `status` of type `String` (in "Created", "Sent", "Completed")
-   * a `createdDate` of type `Date`
-   * a `completedDate` of type `Date`
-   * a set of `FeedbackQuestion` with:
-     * a `prompt` of type `String`
-     * a `type` of type `String` (in "Multiple Choice", "Free", "Scale")
-     * an optional `response` of type `String` 
+    a set of FeedbackForm with
+      an _id of type Identifier
+      a reviewer of type Employee
+      a target of type Employee
+      a status of type Text (in "Created", "Sent", "Completed")
+      a createdDate of type Text
+      a completedDate of type Text
+      a set of FeedbackQuestion with
+        a prompt of type Text
+        a type of type Text (in "Multiple Choice", "Free", "Scale")
+        an response of type optional Text
 
-* **actions**:
+  **actions**
 
- * `createFeedbackForm(reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)`
-  * **requires**: questions are valid, target is not reviewer and both are valid Employees
-  * **effect**: creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
+    createFeedbackForm (reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
+      **requires** questions are valid, target is not reviewer and both are valid Employees
+      **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
 
-* `sendFeedbackForm(feedbackForm: FeedbackForm): (link: String)`
- * **requires**: feedbackForm is in "Created" status
- * **effect**: returns a link to the feedback form, updates the status to "Sent"
+    sendFeedbackForm (feedbackForm: FeedbackForm): (link: Text)
+      **requires** feedbackForm is in "Created" status
+      **effects** returns a link to the feedback form, updates the status to "Sent"
 
-* `submitFeedbackForm(feedbackForm: FeedbackForm): ()`
- * **requires**: feedbackForm is in "Sent" status, all FeedbackQuestions have non-empty responses
- * **effect**: updates the status to "Completed" and completedDate to the current time
+    submitFeedbackForm (feedbackForm: FeedbackForm): ()
+      **requires** feedbackForm is in "Sent" status, all FeedbackQuestions have non-empty responses
+      **effects** updates the status to "Completed" and completedDate to the current time
 
-* `getFeedbackForm(id: ID): (feedbackForm: FeedbackForm)`
- * **requires**: id is a valid ID for an existing FeedbackForm
- * **effect**: returns the feedback form
+    getFeedbackForm (id: Identifier): (feedbackForm: FeedbackForm)
+      **requires** id is a valid Identifier for an existing FeedbackForm
+      **effects** returns the feedback form
 
-* `getFeedbackFormsByTarget(target: Employee, startDate: Date, endDate: Date): (feedbackForms: List<FeedbackForm>)`
- * **requires**: target is a valid Employee, startDate and endDate are valid dates
- * **effect**: returns a list of feedback forms for the target created and completed between the given dates
+    getFeedbackFormsByTarget (target: Employee, startDate: Text, endDate: Text): (feedbackForms: List<FeedbackForm>)
+      **requires** target is a valid Employee, startDate and endDate are valid Text
+      **effects** returns a list of feedback forms for the target created and completed between the given dates
 
-* **notes**:
- * This concept is the main component that structures the data that we'll be presenting in our 360 degree feedback web app. It specifies reviewer-reviewed relationship using the generic Employee type and dates for tracking when the form was created and completed to support review cycles.
- * We define two enums, status for Forms and type for Questions, which may be extended later
+  **notes**
+
+    This concept is the main component that structures the data that we'll be presenting in our 360 degree feedback web app. It specifies reviewer-reviewed relationship using the generic Employee type and dates for tracking when the form was created and completed to support review cycles.
+    We define two enums, status for Forms and type for Questions, which may be extended later
