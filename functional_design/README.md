@@ -29,8 +29,8 @@ See [slides](https://docs.google.com/presentation/d/1qaCZwhtAq79YcEKYSB5Wcbyv1F5
 
 ## Design Summary
 
-TODO
+See [@design-summary](./design_summary/summary.md)
 
 ## Development Plan
 
-TODO: Table
+See [@dev-plan](./development_plan/development_plan.md)
