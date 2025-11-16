@@ -1,0 +1,9 @@
+# Design Summary
+
+Our system is designed to streamline 360-degree feedback by automating reviewer selection, simplifying form distribution, and providing privacy-preserving insights. HR or team leads begin by logging in and importing an org chart, which lets the system automatically identify managers, direct reports, and peers. This removes the manual complexity that typically slows down feedback cycles and ensures reviewer groups are selected fairly and consistently.
+
+A core design priority is protecting respondent privacy. The system uses configurable k-anonymity thresholds to ensure that no report is shown unless enough responses are present, with automatic warnings or data degradation when anonymity cannot be guaranteed. This directly addresses ethical concerns about re-identification, retaliation risk, and psychological safety, especially in smaller teams. Responses are aggregated, and individual quotes are de-identified before being displayed.
+
+The platform also includes optional, human-in-the-loop AI summarization. Summaries come with quote-level provenance so admins can see exactly which responses informed each theme. This addresses concerns about opaque or biased AI outputs while still giving teams concise and actionable insights. HR retains full control over whether AI summaries are used and can edit or override them before sharing results.
+
+Overall, the design focuses on producing meaningful, actionable feedback without compromising privacy or fairness. By combining organizational awareness, strong anonymity protections, and transparent AI assistance, the system aims to foster honest participation and reduce administrative overhead. Remaining open questions include determining optimal anonymity thresholds for different team sizes, handling non-standard org structures, balancing anonymity with the need for specificity, and setting policies for long-term data storage and governance.
