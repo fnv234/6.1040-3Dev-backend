@@ -6,7 +6,13 @@ See updated [@problem_framing](../problem_framing.md)
 
 ## Concept Design
 
-See [@concepts](./concepts/)
+See [@concepts](./concepts/) (syncs included too). 
+
+Concepts Overview:
+  - FeedbackForm 
+  - OrgGraph
+  - ReportSynthesis
+  - ReviewSynthesis
 
 ## User Journey 
 
@@ -20,11 +26,17 @@ Sam sends this report to Mary's team, allowing them to gain a hollistic view of 
 
 ## UI Sketches 
 
-TODO: We can embed image here directly. 
+![UI sketches](ui_sketches.jpeg)
 
 ## Visual Design Study
 
-See [slides](https://docs.google.com/presentation/d/1qaCZwhtAq79YcEKYSB5Wcbyv1F5m83BpoCgsU2_H0uY/edit?usp=sharing) here. 
+See full slides [here](https://docs.google.com/presentation/d/1qaCZwhtAq79YcEKYSB5Wcbyv1F5m83BpoCgsU2_H0uY/edit?usp=sharing). 
+
+
+![cover](vds_cover.png)
+![vds_typography](vds_typography.png)
+
+![vds_color](vds_color.png)
 
 
 ## Design Summary

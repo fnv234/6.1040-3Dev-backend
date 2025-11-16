@@ -1,43 +1,73 @@
 # Syncs for Concepts
 
-sync buildReviewers
-  when
+**sync buildReviewers**
+
+  *when*
+
     ReviewCycle.autoBuildReviewers (cycle, target)
+
     OrgGraph.getManager (target): (manager)
+
     OrgGraph.getPeers (target): (peers)
+
     OrgGraph.getDirectReports (target): (reports)
-  then
+
+  *then*
+
     ReviewCycle.configureAssignments.addReviewers (
+
       cycle: cycle,
+
       target: target,
+      
       reviewers: {manager} ∪ peers ∪ reports
     )
+-----
+**sync ingestAndSanitize**
 
-sync ingestAndSanitize
-  when
+  *when*
+
     ReviewCycle.submitFeedback (cycle, target, reviewer, responses)
+    
     ReportSynthesis.ingestResponses (target, form, responses): (responseSet)
-  then
+
+  *then*
+
     ReportSynthesis.applyKAnonymity (responseSet)
+-----
+**sync prepareForSummary**
 
-sync prepareForSummary
-  when
+  *when*
+
     ReviewCycle.close (cycle)
+
     ReviewCycle.exportForSynthesis (cycle): (responseSets)
-  then
+
+  *then*
+
     for each responseSet in responseSets:
+
       ReportSynthesis.extractThemes (responseSet)
+-----
+**sync generateDrafts**
 
-sync generateDrafts
-  when
+  *when*
+
     ReportSynthesis.extractThemes (responseSet): (themes)
-  then
-    ReportSynthesis.draftSummaryLLM (responseSet, themes)
 
-sync finalizeReports
-  when
+  *then*
+
+    ReportSynthesis.draftSummaryLLM (responseSet, themes)
+-----
+**sync finalizeReports**
+
+  *when*
+
     ReportSynthesis.draftSummaryLLM (responseSet, draft): (draft)
+
     ReportSynthesis.approveSummary (responseSet, finalText, keyQuotes)
-  then
+
+  *then*
+  
     ReportSynthesis.getFinalReport (responseSet)
 

@@ -16,18 +16,16 @@
 
 ## Responsibilities
 
-[VERY PRELIMINARY FEEL FREE TO CHANGE but delete this comment before Tuesday night]
-
 | **Area**                                       | **Primary Owner** | **Secondary** | **Notes**                                             |
 | ---------------------------------------------- | ----------------- | ------------- | ----------------------------------------------------- |
 | **OrgGraph & Roles**                           | Diego             | Grace         | Data model, import flows, conflict-of-interest rules. |
 | **ReviewCycle + Solicitation Engine**          | Francesca         | Diego         | Workflows, reminders, deadlines, load balancing.      |
 | **FeedbackCollection + Privacy (k-anonymity)** | Grace             | Francesca     | Sensitive storage, role merging, redaction pipeline.  |
-| **ReportSynthesis (LLM + non-LLM)**            | Grace/Francesca             | Francesca     | Thematic clustering, quote provenancing, editor UI.   |
+| **ReportSynthesis (LLM + non-LLM)**            | Grace/Francesca             | Diego     | Thematic clustering, quote provenancing, editor UI.   |
 | **Front-end UX**                               | Diego         | Grace/Francesca         | Review submission UI, dashboard, accessibility.       |   |
 
 
-
+-----
 ### Checkpoint Alpha
 Expected Alpha Feature Set:
 
@@ -63,7 +61,6 @@ Expected Beta Feature Set:
 | ----------------------------------------------------- | -------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
 | **Org chart hierarchy parsing is complex**            | Reviewer grouping may fail       | Start with strict CSV template + simple parent/child model | Allow manual selection of reviewers instead of auto-building |
 | **k-anonymity threshold is tricky to implement**      | Could break anonymity guarantees | Start with simple “minimum group size = k” rule            | Disable anonymity for small groups; show warning instead     |
-| **LLM summarization takes too long or is unreliable** | Poor user experience during Beta | Cache responses, limit summary length, pre-process quotes  | Provide non-AI summaries plus raw quotes                     |
-| **Deployment issues / downtime**                      | Checkpoint submission could fail | Use Vercel + Railway with rollback commits                 | Provide backup local recording for video demo                |
+| **LLM summarization takes too long or is unreliable** | Poor user experience during Beta | Cache responses, limit summary length, pre-process quotes  | Provide non-AI summaries plus raw quotes                     |  
 | **Email/send-out workflow may be too complex**        | Could block Alpha                | Simulate “sending” with an in-app notification             | Full email delivery added only for Final Release             |
 | **Team bandwidth**                                    | Delays                           | Early scoping; weekly milestones                           | Cut optional features (templates, scheduling)                |
