@@ -3,6 +3,9 @@
 ## Problem Framing
 See [@problem_framing](./problem_framing.md)
 
+## Project Pitch
+Click [here](https://youtu.be/AW1pj0ti9iE) to view our project pitch. 
+
 ## Functional Design
 See [@functional_design](./functional_design)
 For the revised problem framing, see the same link as above.
