@@ -35,7 +35,6 @@ See full slides [here](https://docs.google.com/presentation/d/1qaCZwhtAq79YcEKYS
 
 ![cover](vds_cover.png)
 ![vds_typography](vds_typography.png)
-
 ![vds_color](vds_color.png)
 
 
