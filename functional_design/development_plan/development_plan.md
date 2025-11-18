@@ -62,5 +62,5 @@ Expected Beta Feature Set:
 | **Org chart hierarchy parsing is complex**            | Reviewer grouping may fail       | Start with strict CSV template + simple parent/child model | Allow manual selection of reviewers instead of auto-building |
 | **k-anonymity threshold is tricky to implement**      | Could break anonymity guarantees | Start with simple “minimum group size = k” rule            | Disable anonymity for small groups; show warning instead     |
 | **LLM summarization takes too long or is unreliable** | Poor user experience during Beta | Cache responses, limit summary length, pre-process quotes  | Provide non-AI summaries plus raw quotes                     |  
-| **Email/send-out workflow may be too complex**        | Could block Alpha                | Simulate “sending” with an in-app notification             | Full email delivery added only for Final Release             |
+| **Email/send-out workflow may be too complex**        | Could block Alpha                | Simulate “sending” with an in-app notification that users can see by logging in             | Full email delivery added only for Final Release             |
 | **Team bandwidth**                                    | Delays                           | Early scoping; weekly milestones                           | Cut optional features (templates, scheduling)                |
