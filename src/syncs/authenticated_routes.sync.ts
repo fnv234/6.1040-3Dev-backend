@@ -19,7 +19,7 @@ export const buildReviewers: Sync = ({ cycle, target }: Vars) => ({
     { cycle, target },
     {}
   ]),
-  then: actions([
+  then: actions(
     // Get manager
     [OrgGraph.getManager, { employee: target }, { manager: "manager" }],
     // Get peers
@@ -27,12 +27,16 @@ export const buildReviewers: Sync = ({ cycle, target }: Vars) => ({
     // Get direct reports
     [OrgGraph.getDirectReports, { employee: target }, { reports: "reports" }],
     // Add all as reviewers
-    [ReviewCycle.addReviewers, { 
-      cycle, 
-      target, 
-      reviewers: ({ manager, peers, reports }: Frames) => [manager, ...peers, ...reports]
-    }]
-  ])
+    [ReviewCycle.addReviewers, {
+      cycle,
+      target,
+      reviewers: ({ manager, peers, reports }: Frames) => [
+        manager,
+        ...peers,
+        ...reports,
+      ],
+    }],
+  )
 });
 
 // Sync for ingesting and sanitizing feedback responses
@@ -44,10 +48,9 @@ export const ingestAndSanitize: Sync = (
     { cycle, target, reviewer, responses },
     {}
   ]),
-  then: actions([
-    // This would typically ingest into ReportSynthesis and apply k-anonymity
-    // For now, we'll just pass through the submission
-  ])
+  // This would typically ingest into ReportSynthesis and apply k-anonymity
+  // For now, we'll just pass through the submission with no follow-up actions
+  then: [],
 });
 
 // Sync for preparing response sets for summary generation
@@ -59,9 +62,10 @@ export const prepareForSummary: Sync = ({ cycle }: Vars) => ({
   ]),
   then: actions([
     // Export response sets from the closed cycle
-    [ReviewCycle.exportForSynthesis, { cycle }, { responseSets: "responseSets" }],
-    // For each response set, extract themes (this would be done in a loop in practice)
-  ])
+    ReviewCycle.exportForSynthesis,
+    { cycle },
+    { responseSets: "responseSets" },
+  ]),
 });
 
 // Sync for generating draft summaries using LLM
@@ -72,8 +76,9 @@ export const generateDrafts: Sync = ({ responseSet, themes }: Vars) => ({
     { themes }
   ]),
   then: actions([
-    [ReportSynthesis.draftSummaryLLM, { responseSet, themes }]
-  ])
+    ReportSynthesis.draftSummaryLLM,
+    { responseSet, themes },
+  ]),
 });
 
 // Sync for finalizing reports after approval
@@ -86,8 +91,9 @@ export const finalizeReports: Sync = (
     {}
   ]),
   then: actions([
-    [ReportSynthesis.getFinalReport, { responseSet }]
-  ])
+    ReportSynthesis.getFinalReport,
+    { responseSet },
+  ]),
 });
 
 // Authentication passthrough syncs (placeholder until proper auth is implemented)
@@ -97,7 +103,7 @@ export const authenticatedFeedbackFormRoutes: Sync = (
   when: actions([
     Requesting.request,
     { path, ...params },
-    { request }
+    { request },
   ]),
   where: (frames: Frames) => {
     // Check if path is a FeedbackForm route
@@ -105,10 +111,9 @@ export const authenticatedFeedbackFormRoutes: Sync = (
     return pathStr.startsWith('/FeedbackForm/') ? frames : {};
   },
   then: actions([
-    // Route to appropriate FeedbackForm action based on path
-    // This is a simplified version - in practice you'd parse the path and route accordingly
-    [Requesting.respond, { request, success: true }]
-  ])
+    Requesting.respond,
+    { request, success: true },
+  ]),
 });
 
 export const authenticatedOrgGraphRoutes: Sync = (
@@ -117,15 +122,16 @@ export const authenticatedOrgGraphRoutes: Sync = (
   when: actions([
     Requesting.request,
     { path, ...params },
-    { request }
+    { request },
   ]),
   where: (frames: Frames) => {
     const pathStr = frames.path as string;
     return pathStr.startsWith('/OrgGraph/') ? frames : {};
   },
   then: actions([
-    [Requesting.respond, { request, success: true }]
-  ])
+    Requesting.respond,
+    { request, success: true },
+  ]),
 });
 
 export const authenticatedReviewCycleRoutes: Sync = (
@@ -134,15 +140,16 @@ export const authenticatedReviewCycleRoutes: Sync = (
   when: actions([
     Requesting.request,
     { path, ...params },
-    { request }
+    { request },
   ]),
   where: (frames: Frames) => {
     const pathStr = frames.path as string;
     return pathStr.startsWith('/ReviewCycle/') ? frames : {};
   },
   then: actions([
-    [Requesting.respond, { request, success: true }]
-  ])
+    Requesting.respond,
+    { request, success: true },
+  ]),
 });
 
 export const authenticatedReportSynthesisRoutes: Sync = (
@@ -158,6 +165,7 @@ export const authenticatedReportSynthesisRoutes: Sync = (
     return pathStr.startsWith('/ReportSynthesis/') ? frames : {};
   },
   then: actions([
-    [Requesting.respond, { request, success: true }]
-  ])
+    Requesting.respond,
+    { request, success: true },
+  ]),
 });
