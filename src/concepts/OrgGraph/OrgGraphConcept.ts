@@ -228,9 +228,15 @@ export default class OrgGraphConcept {
       throw new Error("Employee not found");
     }
 
+    // Peers are defined as employees who share the same manager,
+    // excluding the employee themselves.
+    if (!emp.manager) {
+      return { peers: [] };
+    }
+
     const peers = await this.employees
       .find({
-        team: emp.team,
+        manager: emp.manager,
         _id: { $ne: employee },
       })
       .toArray();

@@ -47,7 +47,7 @@ export const mockLLM = (): GeminiLLM => {
     mockResponse = "Mock response";
     mockCalls: any[] = [];
 
-    async executeLLM(prompt: string): Promise<string> {
+    override async executeLLM(prompt: string): Promise<string> {
       this.mockCalls.push(prompt);
       return this.mockResponse;
     }
