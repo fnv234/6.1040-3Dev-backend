@@ -25,12 +25,22 @@
  */
 
 export const inclusions: Record<string, string> = {
-  // Feel free to delete these example inclusions
-  // "/api/LikertSurvey/_getSurveyQuestions": "this is a public query",
-  // "/api/LikertSurvey/_getSurveyResponses": "responses are public",
-  // "/api/LikertSurvey/_getRespondentAnswers": "answers are visible",
-  // "/api/LikertSurvey/submitResponse": "allow anyone to submit response",
-  // "/api/LikertSurvey/updateResponse": "allow anyone to update their response",
+  // Public queries for organizational data
+  "/api/OrgGraph/getAllEmployees": "public query to get all employees for UI dropdowns",
+  "/api/OrgGraph/getAllTeams": "public query to get all teams for UI dropdowns",
+  "/api/OrgGraph/getTeamMembers": "public query to display team membership",
+  
+  // Public feedback form queries
+  "/api/FeedbackForm/getFeedbackForm": "public query to display feedback forms to reviewers",
+  "/api/FeedbackForm/getFeedbackFormsByReviewer": "public query for reviewers to see their assigned forms",
+  
+  // Public review cycle queries
+  "/api/ReviewCycle/getActiveCycles": "public query to display active review cycles",
+  "/api/ReviewCycle/getReviewerTasks": "public query for reviewers to see their pending tasks",
+  
+  // Public report queries
+  "/api/ReportSynthesis/getReportsByTarget": "public query for employees to view their reports",
+  "/api/ReportSynthesis/getFinalReport": "public query to display completed reports",
 };
 
 /**
@@ -44,7 +54,29 @@ export const inclusions: Record<string, string> = {
  */
 
 export const exclusions: Array<string> = [
-  // Feel free to delete these example exclusions
-  // "/api/LikertSurvey/createSurvey",
-  // "/api/LikertSurvey/addQuestion",
+  // Administrative actions that require authentication
+  "/api/FeedbackForm/createFeedbackForm",
+  "/api/FeedbackForm/sendFeedbackForm", 
+  "/api/FeedbackForm/submitFeedbackForm",
+  "/api/FeedbackForm/updateFeedbackFormResponse",
+  
+  // Organizational management actions
+  "/api/OrgGraph/importRoster",
+  "/api/OrgGraph/updateManager",
+  "/api/OrgGraph/updateTeam",
+  
+  // Review cycle management actions
+  "/api/ReviewCycle/createCycle",
+  "/api/ReviewCycle/configureAssignments",
+  "/api/ReviewCycle/addReviewers",
+  "/api/ReviewCycle/activate",
+  "/api/ReviewCycle/submitFeedback",
+  "/api/ReviewCycle/close",
+  
+  // Report synthesis actions
+  "/api/ReportSynthesis/ingestResponses",
+  "/api/ReportSynthesis/applyKAnonymity",
+  "/api/ReportSynthesis/extractThemes",
+  "/api/ReportSynthesis/draftSummaryLLM",
+  "/api/ReportSynthesis/approveSummary",
 ];
