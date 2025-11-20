@@ -1,4 +1,4 @@
-# concept: FeedbackForm[Employee]
+# concept: FeedbackForm[Employee, User]
   
   **purpose**
   
@@ -12,6 +12,7 @@
 
     a set of FeedbackForm with
       an _id of type Identifier
+      a creator of type User
       a reviewer of type Employee
       a target of type Employee
       a status of type Text (in "Created", "Sent", "Completed")
@@ -24,7 +25,7 @@
 
   **actions**
 
-    createFeedbackForm (reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
+    createFeedbackForm (creator: User, reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
       **requires** questions are valid, target is not reviewer and both are valid Employees
       **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
 
@@ -43,6 +44,14 @@
     getFeedbackFormsByTarget (target: Employee, startDate: Text, endDate: Text): (feedbackForms: List<FeedbackForm>)
       **requires** target is a valid Employee, startDate and endDate are valid Text
       **effects** returns a list of feedback forms for the target created and completed between the given dates
+    
+    getFeedbackFormsByReviewer (reviewer: Employee, startDate: Text, endDate: Text): (feedbackForms: List<FeedbackForm>)
+      **requires** reviewer is a valid Employee, startDate and endDate are valid Text
+      **effects** returns a list of feedback forms reviewed by the reviewer between the given dates
+
+    getFeedbackFormsByCreator (creator: User, startDate?: Text, endDate?: Text): (feedbackForms: List<FeedbackForm>)
+      **requires** creator is a valid User, startDate and endDate are valid Text
+      **effects** returns a list of feedback forms created by the creator between the given dates
 
   **notes**
 

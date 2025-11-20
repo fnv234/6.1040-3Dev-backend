@@ -7,6 +7,7 @@ const PREFIX = "FeedbackForm" + ".";
 // --- Type Definitions ---
 type Employee = ID;
 type FeedbackFormID = ID;
+type User = ID;
 
 interface FeedbackQuestion {
   prompt: string;
@@ -16,6 +17,7 @@ interface FeedbackQuestion {
 
 interface FeedbackFormDoc {
   _id: FeedbackFormID;
+  creator: User;
   reviewer: Employee;
   target: Employee;
   status: "Created" | "Sent" | "Completed";
@@ -35,15 +37,17 @@ export default class FeedbackFormConcept {
   }
 
   /**
-   * createFeedbackForm (reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
+   * createFeedbackForm (creator: User, reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
    * **requires** questions are valid, target is not reviewer and both are valid Employees
    * **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
    */
   async createFeedbackForm({
+    creator,
     reviewer,
     target,
     questions,
   }: {
+    creator: User;
     reviewer: Employee;
     target: Employee;
     questions: FeedbackQuestion[];
@@ -70,11 +74,15 @@ export default class FeedbackFormConcept {
     const feedbackFormId = freshID() as FeedbackFormID;
     const feedbackFormDoc: FeedbackFormDoc = {
       _id: feedbackFormId,
+      creator,
       reviewer,
       target,
       status: "Created",
       createdDate: new Date().toISOString(),
-      questions: questions.map((q: FeedbackQuestion) => ({ ...q, response: undefined })),
+      questions: questions.map((q: FeedbackQuestion) => ({
+        ...q,
+        response: undefined,
+      })),
     };
 
     await this.feedbackForms.insertOne(feedbackFormDoc);
@@ -102,7 +110,7 @@ export default class FeedbackFormConcept {
 
     await this.feedbackForms.updateOne(
       { _id: feedbackForm },
-      { $set: { status: "Sent" } }
+      { $set: { status: "Sent" } },
     );
 
     const link = `/feedback/${feedbackForm}`;
@@ -149,7 +157,7 @@ export default class FeedbackFormConcept {
           completedDate: new Date().toISOString(),
           questions: updatedQuestions,
         },
-      }
+      },
     );
 
     return {};
@@ -213,6 +221,34 @@ export default class FeedbackFormConcept {
   }
 
   /**
+   * getFeedbackFormsByCreator (creator: User, startDate?: Text, endDate?: Text): (feedbackForms: List<FeedbackForm>)
+   * **requires** creator is a valid User, startDate and endDate are valid Text
+   * **effects** returns a list of feedback forms created by the creator between the given dates
+   */
+  async getFeedbackFormsByCreator({
+    creator,
+    startDate,
+    endDate,
+  }: {
+    creator: User;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{ feedbackForms: FeedbackFormDoc[] }> {
+    const query: any = {
+      createdBy: creator,
+    };
+    if (startDate && endDate) {
+      query.createdDate = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    const forms = await this.feedbackForms.find(query).toArray();
+    return { feedbackForms: forms };
+  }
+
+  /**
    * updateFeedbackFormResponse (feedbackForm: FeedbackForm, questionIndex: number, response: string): ()
    * **requires** feedbackForm is in "Sent" status
    * **effects** updates the response for a specific question
@@ -247,7 +283,7 @@ export default class FeedbackFormConcept {
 
     await this.feedbackForms.updateOne(
       { _id: feedbackForm },
-      { $set: { questions: updatedQuestions } }
+      { $set: { questions: updatedQuestions } },
     );
 
     return {};

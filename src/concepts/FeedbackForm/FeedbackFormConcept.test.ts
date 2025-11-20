@@ -1,12 +1,9 @@
 import { testDb } from "@utils/database.ts";
 import FeedbackFormConcept from "./FeedbackFormConcept.ts";
 import { ID } from "@utils/types.ts";
-import {
-  assert,
-  assertEquals,
-  assertRejects,
-} from "jsr:@std/assert";
+import { assert, assertEquals, assertRejects } from "jsr:@std/assert";
 
+const creator = "creator-123" as ID;
 const reviewer = "reviewer-123" as ID;
 const target = "target-456" as ID;
 const questions = [
@@ -21,6 +18,7 @@ Deno.test("FeedbackForm: should create a feedback form", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const result = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -41,6 +39,7 @@ Deno.test("FeedbackForm: should not allow reviewer to be same as target", async 
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          creator,
           reviewer: target,
           target,
           questions,
@@ -61,6 +60,7 @@ Deno.test("FeedbackForm: should require questions", async () => {
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          creator,
           reviewer,
           target,
           questions: [],
@@ -85,6 +85,7 @@ Deno.test("FeedbackForm: should validate question types", async () => {
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          creator,
           reviewer,
           target,
           questions: invalidQuestions,
@@ -103,6 +104,7 @@ Deno.test("FeedbackForm: should send feedback form", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -126,6 +128,7 @@ Deno.test(
       const feedbackForm = new FeedbackFormConcept(db);
 
       const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+        creator,
         reviewer,
         target,
         questions,
@@ -134,8 +137,7 @@ Deno.test(
       await feedbackForm.sendFeedbackForm({ feedbackForm: formId });
 
       await assertRejects(
-        () =>
-          feedbackForm.sendFeedbackForm({ feedbackForm: formId }),
+        () => feedbackForm.sendFeedbackForm({ feedbackForm: formId }),
         Error,
         "Feedback form must be in 'Created' status to send",
       );
@@ -151,6 +153,7 @@ Deno.test("FeedbackForm: should submit feedback form with responses", async () =
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -181,6 +184,7 @@ Deno.test("FeedbackForm: should require all questions to be answered", async () 
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -212,6 +216,7 @@ Deno.test("FeedbackForm: should get feedback form by id", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -236,6 +241,7 @@ Deno.test("FeedbackForm: should get feedback forms by target", async () => {
     const startDate = new Date().toISOString();
 
     await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -262,6 +268,7 @@ Deno.test("FeedbackForm: should get feedback forms by reviewer", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,
@@ -278,12 +285,36 @@ Deno.test("FeedbackForm: should get feedback forms by reviewer", async () => {
   }
 });
 
+Deno.test("FeedbackForm: should get feedback forms by creator", async () => {
+  const [db, client] = await testDb();
+  try {
+    const feedbackForm = new FeedbackFormConcept(db);
+
+    await feedbackForm.createFeedbackForm({
+      creator,
+      reviewer,
+      target,
+      questions,
+    });
+
+    const result = await feedbackForm.getFeedbackFormsByCreator({
+      creator: creator,
+    });
+
+    assert(result.feedbackForms.length > 0);
+    assertEquals(result.feedbackForms[0].reviewer, reviewer);
+  } finally {
+    await client.close();
+  }
+});
+
 Deno.test("FeedbackForm: should update feedback form response", async () => {
   const [db, client] = await testDb();
   try {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      creator,
       reviewer,
       target,
       questions,

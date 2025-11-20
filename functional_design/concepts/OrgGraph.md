@@ -17,8 +17,8 @@
 
     a set of Employees with
       an id Identifier
+      an email String
       a manager optional Employee
-      a team Team
       a set of directReports Employees
 
     a set of Teams with
@@ -31,11 +31,19 @@
       **requires** sourceData is a valid roster containing employee ids, managers, and teams
       **effects** create or update Employees and Teams so that reporting lines and membership reflect the sourceData
 
+    createEmployee (email: String, team: Team, directReport: Set<Employee>): (employee: Employee)
+      **requires** email is not empty, team exists
+      **effects** create a new Employee with the given email
+
+    createTeam (name: Text, members?: Set<Employee>): (team: Team)
+      **requires** name is not empty, no other team with same name exists
+      **effects** create a new Team with the given name and members, empty if none provided
+
     updateManager (employee: Employee, newManager: Employee)
       **requires** both employees exist and newManager is not a direct report of employee (prevents cycles)
       **effects** set employee.manager = newManager and update corresponding directReports sets
 
-    updateTeam (employee: Employee, newTeam: Team)
+    updateTeam (employee: Employee, newTeam: Team): ()
       **requires** employee and newTeam exist
       **effects** move employee to newTeam's members and remove from old team
 
@@ -54,4 +62,23 @@
     checkKAnonymity (group: Set<Employee>, k: Number): (ok: Boolean)
       **requires** k > 0
       **effects** return true if size of group >= k, else false
+
+    getTeam (teamId: Identifier): (team: Team)
+      **requires** teamId is a valid Identifier for an existing Team
+      **effects** return the team with the given teamId
+
+    getTeamByName (teamName: Text): (team: Team)
+      **requires** teamName matches an existing Team name
+      **effects** return the team with the given name
+
+    getTeamsByEmployee (employee: Employee): (teams: Set<Team>)
+      **requires** employee exists
+      **effects** return the teams that employee is a member of
+
+    getAllTeams (): (teams: Set<Team>)
+      **effects** return all teams in the organization
+
+    getTeamMembers (teamId: Identifier): (members: Set<Employee>)
+      **requires** teamId is a valid Identifier for an existing Team
+      **effects** return all employees who are members of the team
 

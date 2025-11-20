@@ -10,13 +10,14 @@ type TeamID = ID;
 
 interface EmployeeDoc {
   _id: Employee;
+  email: string;
   manager?: Employee;
-  team: TeamID;
 }
 
 interface TeamDoc {
   _id: TeamID;
   name: string;
+  members: Employee[];
 }
 
 /**
@@ -42,22 +43,30 @@ export default class OrgGraphConcept {
     sourceData: {
       employees: Array<{
         id: Employee;
+        email: string;
         manager?: Employee;
-        teamName: string;
+        teamNames: string[];
       }>;
     };
   }): Promise<{}> {
-    // First, create or update teams
-    const teamNames = [...new Set(sourceData.employees.map(emp => emp.teamName))];
-    const teamMap = new Map<string, TeamID>();
+    // First, collect all unique team names
+    const allTeamNames = new Set<string>();
+    for (const emp of sourceData.employees) {
+      for (const teamName of emp.teamNames) {
+        allTeamNames.add(teamName);
+      }
+    }
 
-    for (const teamName of teamNames) {
+    // Create or get teams
+    const teamMap = new Map<string, TeamID>();
+    for (const teamName of allTeamNames) {
       let team = await this.teams.findOne({ name: teamName });
       if (!team) {
         const teamId = freshID() as TeamID;
         const teamDoc: TeamDoc = {
           _id: teamId,
           name: teamName,
+          members: [],
         };
         await this.teams.insertOne(teamDoc);
         teamMap.set(teamName, teamId);
@@ -66,35 +75,121 @@ export default class OrgGraphConcept {
       }
     }
 
-    // Then, create or update employees
+    // Create or update employees
     for (const empData of sourceData.employees) {
-      const teamId = teamMap.get(empData.teamName);
-      if (!teamId) {
-        throw new Error(`Team not found: ${empData.teamName}`);
-      }
-
-      // Check for circular reporting (manager cannot be a direct report)
+      // Check for circular reporting
       if (empData.manager) {
-        const managerEmployee = await this.employees.findOne({ _id: empData.manager });
+        const managerEmployee = await this.employees.findOne({
+          _id: empData.manager,
+        });
         if (managerEmployee && managerEmployee.manager === empData.id) {
-          throw new Error(`Circular reporting detected: ${empData.id} and ${empData.manager}`);
+          throw new Error(
+            `Circular reporting detected: ${empData.id} and ${empData.manager}`,
+          );
         }
       }
 
       const employeeDoc: EmployeeDoc = {
         _id: empData.id,
+        email: empData.email,
         manager: empData.manager,
-        team: teamId,
       };
 
       await this.employees.replaceOne(
         { _id: empData.id },
         employeeDoc,
-        { upsert: true }
+        { upsert: true },
       );
     }
 
+    // Update team memberships
+    for (const empData of sourceData.employees) {
+      for (const teamName of empData.teamNames) {
+        const teamId = teamMap.get(teamName);
+        if (teamId) {
+          await this.teams.updateOne(
+            { _id: teamId },
+            { $addToSet: { members: empData.id } },
+          );
+        }
+      }
+    }
+
     return {};
+  }
+
+  /**
+   * createEmployee (email: String, team: Team, directReport: Set<Employee>): (employee: Employee)
+   * **requires** email is not empty, team exists
+   * **effects** create a new Employee with the given email
+   */
+  async createEmployee({
+    email,
+    teamId,
+    manager,
+  }: {
+    email: string;
+    teamId?: TeamID;
+    manager?: Employee;
+  }): Promise<{ employee: Employee }> {
+    if (!email || email.trim() === "") {
+      throw new Error("Email cannot be empty");
+    }
+
+    const employeeId = freshID() as Employee;
+    const employeeDoc: EmployeeDoc = {
+      _id: employeeId,
+      email,
+      manager,
+    };
+
+    await this.employees.insertOne(employeeDoc);
+
+    // Add to team if specified
+    if (teamId) {
+      const team = await this.teams.findOne({ _id: teamId });
+      if (!team) {
+        throw new Error("Team not found");
+      }
+      await this.teams.updateOne(
+        { _id: teamId },
+        { $addToSet: { members: employeeId } },
+      );
+    }
+
+    return { employee: employeeId };
+  }
+
+  /**
+   * createTeam (name: Text, members?: Set<Employee>): (team: Team)
+   * **requires** name is not empty, no other team with same name exists
+   * **effects** create a new Team with the given name and members, empty if none provided
+   */
+  async createTeam({
+    name,
+    members,
+  }: {
+    name: string;
+    members?: Employee[];
+  }): Promise<{ team: TeamID }> {
+    if (!name || name.trim() === "") {
+      throw new Error("Team name cannot be empty");
+    }
+
+    const existingTeam = await this.teams.findOne({ name });
+    if (existingTeam) {
+      throw new Error("Team with this name already exists");
+    }
+
+    const teamId = freshID() as TeamID;
+    const teamDoc: TeamDoc = {
+      _id: teamId,
+      name,
+      members: members || [],
+    };
+
+    await this.teams.insertOne(teamDoc);
+    return { team: teamId };
   }
 
   /**
@@ -126,44 +221,44 @@ export default class OrgGraphConcept {
 
     await this.employees.updateOne(
       { _id: employee },
-      { $set: { manager: newManager } }
+      { $set: { manager: newManager } },
     );
 
     return {};
   }
 
   /**
-   * updateTeam (employee: Employee, newTeam: Team)
+   * updateTeam (employee: Employee, newTeam: Team): ()
    * **requires** employee and newTeam exist
    * **effects** move employee to newTeam's members and remove from old team
    */
   async updateTeam({
     employee,
-    newTeamName,
+    newTeamId,
   }: {
     employee: Employee;
-    newTeamName: string;
+    newTeamId: TeamID;
   }): Promise<{}> {
     const emp = await this.employees.findOne({ _id: employee });
     if (!emp) {
       throw new Error("Employee not found");
     }
 
-    let team = await this.teams.findOne({ name: newTeamName });
-    if (!team) {
-      // Create new team if it doesn't exist
-      const teamId = freshID() as TeamID;
-      const teamDoc: TeamDoc = {
-        _id: teamId,
-        name: newTeamName,
-      };
-      await this.teams.insertOne(teamDoc);
-      team = teamDoc;
+    const newTeam = await this.teams.findOne({ _id: newTeamId });
+    if (!newTeam) {
+      throw new Error("Team not found");
     }
 
-    await this.employees.updateOne(
-      { _id: employee },
-      { $set: { team: team._id } }
+    // Remove employee from all current teams
+    await this.teams.updateMany(
+      { members: employee },
+      { $pull: { members: employee } },
+    );
+
+    // Add employee to new team
+    await this.teams.updateOne(
+      { _id: newTeamId },
+      { $addToSet: { members: employee } },
     );
 
     return {};
@@ -228,20 +323,20 @@ export default class OrgGraphConcept {
       throw new Error("Employee not found");
     }
 
-    // Peers are defined as employees who share the same manager,
-    // excluding the employee themselves.
-    if (!emp.manager) {
-      return { peers: [] };
+    // Find all teams this employee is a member of
+    const teams = await this.teams.find({ members: employee }).toArray();
+
+    // Collect all unique peers from all teams
+    const peersSet = new Set<Employee>();
+    for (const team of teams) {
+      for (const member of team.members) {
+        if (member !== employee) {
+          peersSet.add(member);
+        }
+      }
     }
 
-    const peers = await this.employees
-      .find({
-        manager: emp.manager,
-        _id: { $ne: employee },
-      })
-      .toArray();
-
-    return { peers: peers.map((p: EmployeeDoc) => p._id) };
+    return { peers: Array.from(peersSet) };
   }
 
   /**
@@ -327,6 +422,25 @@ export default class OrgGraphConcept {
   }
 
   /**
+   * getTeamsByEmployee (employee: Employee): (teams: Set<Team>)
+   * **requires** employee exists
+   * **effects** return the teams that employee is a member of
+   */
+  async getTeamsByEmployee({
+    employee,
+  }: {
+    employee: Employee;
+  }): Promise<{ teams: TeamDoc[] }> {
+    const emp = await this.employees.findOne({ _id: employee });
+    if (!emp) {
+      throw new Error("Employee not found");
+    }
+
+    const teams = await this.teams.find({ members: employee }).toArray();
+    return { teams };
+  }
+
+  /**
    * getAllTeams (): (teams: TeamDoc[])
    * **effects** return all teams
    */
@@ -345,10 +459,11 @@ export default class OrgGraphConcept {
   }: {
     teamId: TeamID;
   }): Promise<{ members: Employee[] }> {
-    const members = await this.employees
-      .find({ team: teamId })
-      .toArray();
+    const team = await this.teams.findOne({ _id: teamId });
+    if (!team) {
+      throw new Error("Team not found");
+    }
 
-    return { members: members.map((m: EmployeeDoc) => m._id) };
+    return { members: team.members };
   }
 }
