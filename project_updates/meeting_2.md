@@ -47,3 +47,9 @@
   - We still have to create the frontend interaction for integrating the review cycles, the rest of the frontend is at some degree of functional
 
 ...
+
+Notes:
+
+- Unique link per employee would be great/viable
+- Feedback: purpose of 360 isnt just to generate a summary for HR to read but aggregate all responses and anonymized way --> people have to receive the summary about themselves?
+  - if implementable, then can do that but DO NOT HAVE TO 
