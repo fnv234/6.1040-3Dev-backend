@@ -12,6 +12,7 @@
 
     a set of FeedbackForm with
       an _id of type Identifier
+      a name of type Text
       a creator of type User
       a reviewer of type Employee
       a target of type Employee
@@ -25,7 +26,7 @@
 
   **actions**
 
-    createFeedbackForm (creator: User, reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
+    createFeedbackForm (name: Text, creator: User, reviewer: Employee, target: Employee, questions: List<FeedbackQuestion>): (feedbackForm: FeedbackForm)
       **requires** questions are valid, target is not reviewer and both are valid Employees
       **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
 

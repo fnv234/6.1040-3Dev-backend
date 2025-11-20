@@ -18,7 +18,7 @@
   - Added `buildReviewers`/`prepareForSummary`/`generateDrafts`/`finalizeReports` syncs to connect concepts along the review lifecycle.
 
 - **Frontend implementation**
-  - Created pages for Login, Dashboard, Teams and form creation that currently uses mock data
+  - Created pages for Login, Dashboard, Teams and form creation/management that currently uses mock data and accepts basic interaction through local storage
 
 - **Infrastructure / deployment**
   - Configured MongoDB access via `MONGODB_URL` and `DB_NAME` env vars in `database.ts`.
@@ -32,18 +32,18 @@
     - Gate routes by path prefix (e.g., `/FeedbackForm/`, `/OrgGraph/`, `/ReviewCycle/`, `/ReportSynthesis/`).
     - Currently act as pass-throughs via `Requesting.respond`, leaving room to plug in a real auth/session concept later.
     
-
 ## Issues
 
 - **Feedback Submission Flow**
  - We haven’t received feedback and questions from our project pitch which we need to adjust implementation
  - Want to determine the method that would cause the least friction to distribute these forms.
-    - Had the idea of distributing a unique link for each employee, but without the ability to set up an email that sends these this seems a bit obtuse. 
+    - Had the idea of distributing a unique link for each employee, but without the ability to set up an email that sends these this seems a bit obtuse. Is setting an email up possible?
     - Maybe best to have employees authenticate too?
 
--**
-
 ## Plans and Decisions
-Planning on completing the backend and moving to complete a prototype of the frontend.
+
+- **Checkpoint Alpha Submission**
+  - All concepts have been drafted out along with their implementation and tests. We're still iterating on these
+  - We still have to create the frontend interaction for integrating the review cycles, the rest of the frontend is at some degree of functional
 
 ...

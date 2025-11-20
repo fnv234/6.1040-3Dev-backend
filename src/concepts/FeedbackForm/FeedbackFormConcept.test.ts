@@ -6,6 +6,7 @@ import { assert, assertEquals, assertRejects } from "jsr:@std/assert";
 const creator = "creator-123" as ID;
 const reviewer = "reviewer-123" as ID;
 const target = "target-456" as ID;
+const formName = "Q3 2023 Performance Review";
 const questions = [
   { prompt: "How is their communication?", type: "Free" as const },
   { prompt: "Rate their leadership skills", type: "Scale" as const },
@@ -18,6 +19,7 @@ Deno.test("FeedbackForm: should create a feedback form", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const result = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -39,6 +41,7 @@ Deno.test("FeedbackForm: should not allow reviewer to be same as target", async 
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          name: formName,
           creator,
           reviewer: target,
           target,
@@ -60,6 +63,7 @@ Deno.test("FeedbackForm: should require questions", async () => {
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          name: formName,
           creator,
           reviewer,
           target,
@@ -85,6 +89,7 @@ Deno.test("FeedbackForm: should validate question types", async () => {
     await assertRejects(
       () =>
         feedbackForm.createFeedbackForm({
+          name: formName,
           creator,
           reviewer,
           target,
@@ -104,6 +109,7 @@ Deno.test("FeedbackForm: should send feedback form", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -128,9 +134,10 @@ Deno.test(
       const feedbackForm = new FeedbackFormConcept(db);
 
       const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+        name: formName,
         creator,
-        reviewer,
-        target,
+        reviewer: target,
+        target: reviewer,
         questions,
       });
 
@@ -153,6 +160,7 @@ Deno.test("FeedbackForm: should submit feedback form with responses", async () =
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -184,6 +192,7 @@ Deno.test("FeedbackForm: should require all questions to be answered", async () 
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -216,6 +225,7 @@ Deno.test("FeedbackForm: should get feedback form by id", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -241,6 +251,7 @@ Deno.test("FeedbackForm: should get feedback forms by target", async () => {
     const startDate = new Date().toISOString();
 
     await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -268,6 +279,7 @@ Deno.test("FeedbackForm: should get feedback forms by reviewer", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -291,6 +303,7 @@ Deno.test("FeedbackForm: should get feedback forms by creator", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,
@@ -314,6 +327,7 @@ Deno.test("FeedbackForm: should update feedback form response", async () => {
     const feedbackForm = new FeedbackFormConcept(db);
 
     const { feedbackForm: formId } = await feedbackForm.createFeedbackForm({
+      name: formName,
       creator,
       reviewer,
       target,

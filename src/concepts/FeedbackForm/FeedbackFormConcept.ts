@@ -17,6 +17,7 @@ interface FeedbackQuestion {
 
 interface FeedbackFormDoc {
   _id: FeedbackFormID;
+  name: string;
   creator: User;
   reviewer: Employee;
   target: Employee;
@@ -42,11 +43,13 @@ export default class FeedbackFormConcept {
    * **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
    */
   async createFeedbackForm({
+    name,
     creator,
     reviewer,
     target,
     questions,
   }: {
+    name: string;
     creator: User;
     reviewer: Employee;
     target: Employee;
@@ -74,6 +77,7 @@ export default class FeedbackFormConcept {
     const feedbackFormId = freshID() as FeedbackFormID;
     const feedbackFormDoc: FeedbackFormDoc = {
       _id: feedbackFormId,
+      name,
       creator,
       reviewer,
       target,
