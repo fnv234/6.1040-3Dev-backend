@@ -1,5 +1,8 @@
 # 6.104 Team 3Dev Backend
 
+## Updated Development Plan
+See updated [@development-plan](./functional_design/development_plan/development_plan.md)
+
 ## Problem Framing
 See updated [@problem_framing](./problem_framing.md)
 
