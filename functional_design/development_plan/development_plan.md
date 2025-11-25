@@ -34,12 +34,12 @@
 |---------------------------------|------------|----------------------|-----------|
 | **Authentication**              | ✅ Complete | - | Basic HR login implemented |
 | **Feedback Forms**              | ✅ Complete | - | Core CRUD operations working |
-| **Response Collection**         | 🟡 In Progress | Dec 10 | Basic submission working, needs UI polish |
-| **Org Chart Import**            | 🟡 In Progress | Dec 15 | Basic CSV parsing complete |
-| **Anonymous Mode**              | 🟡 In Progress | Dec 20 | Initial implementation started |
-| **Response Dashboard**          | ⬜ Not Started | Jan 5 | - |
-| **LLM-assisted Synthesis**      | ⬜ Not Started | Jan 15 | - |
-| **Deployment**                  | 🟡 In Progress | - | Basic setup complete |
+| **Response Collection**         | 🟡 In Progress | beta | Basic submission working, needs UI polish |
+| **Org Chart Import**            | 🟡 In Progress | beta | Basic CSV parsing complete |
+| **Anonymous Mode**              | 🟡 In Progress | beta | Initial implementation started |
+| **Response Dashboard**          | ⬜ Not Started | beta | - |
+| **LLM-assisted Synthesis**      | ⬜ Not Started | beta | - |
+| **Deployment**                  | 🟡 In Progress | beta | Basic setup complete |
 
 ## Key Changes to Original Plan
 
