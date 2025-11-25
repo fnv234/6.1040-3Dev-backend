@@ -1,66 +1,113 @@
-# Development Plan
+# Updated Development Plan - Progress & Adjustments
 
-## Feature Plans
-| **Feature**                               | **Alpha Checkpoint**                             | **Beta Checkpoint**                         | **Final Release**                                 |
-| ----------------------------------------- | ------------------------------------------------ | ------------------------------------------- | ------------------------------------------------- |
-| **Authentication (HR login only)**        | Basic login flow; HR can sign in                 | Employee accounts added as non-admin users  | Polished auth, password reset, improved UX        |
-| **Org chart import (CSV)**                | Upload CSV + display basic roster                | Improved parsing; hierarchy display         | Smart suggestions for reviewer groups             |
-| **Send feedback forms**                   | HR can select a user/team and send a simple form | Full cycle: form builder, email/send flow   | Scheduled cycles, templates, smarter routing      |
-| **Employee response UI**                  | Basic response form view                         | Polished UI & validation                    | Mobile-friendly, accessibility improvements       |
-| **Anonymous mode settings (k-anonymity)** | Stub: toggle in settings but not enforced        | Fully enforced anonymity + thresholds       | Degradation warnings, advanced privacy guardrails |
-| **Response dashboard**                    | HR sees list of responses (not anonymized yet)   | Aggregated + anonymized (if enabled) charts | Drill-down, theme extraction, history of cycles   |
-| **LLM-assisted synthesis**                | Stubbed button w/ placeholder text               | Working summarization w/ quote provenance   | Adjustable tone, theme clustering, action plans   |
-| **Deployment**                            | Temporary dev environment                        | Public URL for Beta                         | Stable hosted production                          |
-| **Screen recording (2 min)**              | Alpha demo recorded                              | Updated Beta walkthrough                    | Final polished video                              |
+## Progress Made (as of November 2025)
 
+### Completed Features
+- **Core Infrastructure**
+  - Basic server setup with Deno and MongoDB
+  - Authentication system with HR login
+  - Database models and schemas for all major components
 
-## Responsibilities
+- **Feedback System**
+  - Feedback form creation and management
+  - Form response submission and storage
+  - Basic form validation and error handling
+  - API endpoints for all CRUD operations
 
-| **Area**                                       | **Primary Owner** | **Secondary** | **Notes**                                             |
-| ---------------------------------------------- | ----------------- | ------------- | ----------------------------------------------------- |
-| **OrgGraph & Roles**                           | Diego             | Grace         | Data model, import flows, conflict-of-interest rules. |
-| **ReviewCycle + Solicitation Engine**          | Francesca         | Diego         | Workflows, reminders, deadlines, load balancing.      |
-| **FeedbackCollection + Privacy (k-anonymity)** | Grace             | Francesca     | Sensitive storage, role merging, redaction pipeline.  |
-| **ReportSynthesis (LLM + non-LLM)**            | Grace/Francesca             | Diego     | Thematic clustering, quote provenancing, editor UI.   |
-| **Front-end UX**                               | Diego         | Grace/Francesca         | Review submission UI, dashboard, accessibility.       |   |
+- **Testing**
+  - Unit tests for core functionality
+  - Integration tests for API endpoints
+  - Fixed critical issues in feedback form creation and retrieval
 
+### In Progress
+- **Org Chart & Hierarchy**
+  - Basic CSV import functionality
+  - Team and employee data models
 
------
-### Checkpoint Alpha
-Expected Alpha Feature Set:
+- **Privacy Features**
+  - Initial implementation of k-anonymity
+  - Role-based access controls
 
-- HR login
+## Updated Feature Plans
 
-- CSV roster import (minimal validation)
+| **Feature**                     | **Status** | **Target Completion** | **Notes** |
+|---------------------------------|------------|----------------------|-----------|
+| **Authentication**              | ✅ Complete | - | Basic HR login implemented |
+| **Feedback Forms**              | ✅ Complete | - | Core CRUD operations working |
+| **Response Collection**         | 🟡 In Progress | Dec 10 | Basic submission working, needs UI polish |
+| **Org Chart Import**            | 🟡 In Progress | Dec 15 | Basic CSV parsing complete |
+| **Anonymous Mode**              | 🟡 In Progress | Dec 20 | Initial implementation started |
+| **Response Dashboard**          | ⬜ Not Started | Jan 5 | - |
+| **LLM-assisted Synthesis**      | ⬜ Not Started | Jan 15 | - |
+| **Deployment**                  | 🟡 In Progress | - | Basic setup complete |
 
-- Send a basic feedback form
+## Adjusted Timeline
 
-- Employees can submit responses
+### Phase 1: Core Functionality (By Dec 15)
+- [x] Authentication system
+- [x] Basic feedback form management
+- [ ] Org chart import and hierarchy
+- [ ] Response collection and storage
+- [ ] Basic reporting dashboard
 
-- Non-anonymous response viewing
+### Phase 2: Advanced Features (By Jan 15)
+- [ ] Anonymous response handling
+- [ ] LLM-powered synthesis
+- [ ] Advanced analytics
+- [ ] Email notifications
 
-- Deployment link
+### Phase 3: Polish & Launch (By Jan 31)
+- [ ] Performance optimization
+- [ ] Security audit
+- [ ] User documentation
+- [ ] Final testing and bug fixes
 
+## Key Changes to Original Plan
 
-### Checkpoint Beta 
-Expected Beta Feature Set:
-- Anonymous mode fully implemented
+1. **Accelerated**:
+   - Moved up core feedback form functionality
+   - Simplified initial authentication scope
 
-- Reviewer groups built via org chart hierarchy
+2. **Delayed**:
+   - Pushed back some advanced LLM features
+   - Postponed complex reporting to focus on core functionality
 
-- Aggregated response dashboard
+3. **New Additions**:
+   - Added more comprehensive testing requirements
+   - Included security audit as a separate milestone
 
-- Basic LLM summarization with provenance
+## Current Challenges
 
-- Polished front-end flows
+1. **Technical**:
+   - Database performance with large response sets
+   - Ensuring data consistency in distributed operations
 
-- Stable deployment
+2. **Resource**:
+   - Need to balance feature development with testing
+   - Integration testing complexity
 
-## Key Risks
-| **Risk**                                              | **Impact**                       | **Mitigation**                                             | **Fallback Option**                                          |
-| ----------------------------------------------------- | -------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
-| **Org chart hierarchy parsing is complex**            | Reviewer grouping may fail       | Start with strict CSV template + simple parent/child model | Allow manual selection of reviewers instead of auto-building |
-| **k-anonymity threshold is tricky to implement**      | Could break anonymity guarantees | Start with simple “minimum group size = k” rule            | Disable anonymity for small groups; show warning instead     |
-| **LLM summarization takes too long or is unreliable** | Poor user experience during Beta | Cache responses, limit summary length, pre-process quotes  | Provide non-AI summaries plus raw quotes                     |  
-| **Email/send-out workflow may be too complex**        | Could block Alpha                | Simulate “sending” with an in-app notification that users can see by logging in             | Full email delivery added only for Final Release             |
-| **Team bandwidth**                                    | Delays                           | Early scoping; weekly milestones                           | Cut optional features (templates, scheduling)                |
+## Next Steps
+
+1. Complete core response collection system
+2. Implement basic reporting dashboard
+3. Begin work on anonymous response handling
+4. Set up CI/CD pipeline for automated testing
+
+## Risk Assessment Updates
+
+| **Risk** | **Status** | **Impact** | **Mitigation** |
+|----------|------------|------------|----------------|
+| Data consistency | Active | High | Implementing transactions |
+| Performance | Active | Medium | Adding pagination, indexing |
+| Feature creep | Controlled | Medium | Strict scope management |
+| Integration complexity | Active | High | Early API contracts |
+
+## Team Responsibilities
+
+| **Area** | **Lead** | **Support** | **Status** |
+|----------|----------|-------------|------------|
+| **Backend Services** | Francesca | Diego | In Progress |
+| **Data Models** | Grace | Francesca | In Progress |
+| **API Development** | Diego | Grace | In Progress |
+| **Testing** | Grace | Francesca | In Progress |
+| **Documentation** | Diego | Grace | Not Started |
