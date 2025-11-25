@@ -239,7 +239,7 @@ export default class FeedbackFormConcept {
     endDate?: string;
   }): Promise<{ feedbackForms: FeedbackFormDoc[] }> {
     const query: any = {
-      createdBy: creator,
+      creator: creator,
     };
     if (startDate && endDate) {
       query.createdDate = {

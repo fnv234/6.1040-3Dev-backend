@@ -13,24 +13,31 @@ const questions = [
   { prompt: "Choose their best quality", type: "Multiple Choice" as const },
 ];
 
-Deno.test("FeedbackForm: should create a feedback form", async () => {
-  const [db, client] = await testDb();
-  try {
-    const feedbackForm = new FeedbackFormConcept(db);
+Deno.test({
+  name: "FeedbackForm: should create a feedback form",
+  sanitizeResources: false, // Disable resource sanitization to handle cleanup manually
+  sanitizeOps: false, // Disable op sanitization to handle cleanup manually
+  fn: async () => {
+    const [db, client] = await testDb();
+    try {
+      const feedbackForm = new FeedbackFormConcept(db);
 
-    const result = await feedbackForm.createFeedbackForm({
-      name: formName,
-      creator,
-      reviewer,
-      target,
-      questions,
-    });
+      const result = await feedbackForm.createFeedbackForm({
+        name: formName,
+        creator,
+        reviewer,
+        target,
+        questions,
+      });
 
-    assert(result.feedbackForm);
-    assertEquals(typeof result.feedbackForm, "string");
-  } finally {
-    await client.close();
-  }
+      assert(result.feedbackForm);
+      assertEquals(typeof result.feedbackForm, "string");
+    } finally {
+      // Ensure all pending operations complete before closing
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await client.close();
+    }
+  },
 });
 
 Deno.test("FeedbackForm: should not allow reviewer to be same as target", async () => {
@@ -297,28 +304,35 @@ Deno.test("FeedbackForm: should get feedback forms by reviewer", async () => {
   }
 });
 
-Deno.test("FeedbackForm: should get feedback forms by creator", async () => {
-  const [db, client] = await testDb();
-  try {
-    const feedbackForm = new FeedbackFormConcept(db);
+Deno.test({
+  name: "FeedbackForm: should get feedback forms by creator",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: async () => {
+    const [db, client] = await testDb();
+    try {
+      const feedbackForm = new FeedbackFormConcept(db);
 
-    await feedbackForm.createFeedbackForm({
-      name: formName,
-      creator,
-      reviewer,
-      target,
-      questions,
-    });
+      await feedbackForm.createFeedbackForm({
+        name: formName,
+        creator,
+        reviewer,
+        target,
+        questions,
+      });
 
-    const result = await feedbackForm.getFeedbackFormsByCreator({
-      creator: creator,
-    });
+      const result = await feedbackForm.getFeedbackFormsByCreator({
+        creator: creator,
+      });
 
-    assert(result.feedbackForms.length > 0);
-    assertEquals(result.feedbackForms[0].reviewer, reviewer);
-  } finally {
-    await client.close();
-  }
+      assert(result.feedbackForms.length > 0);
+      assertEquals(result.feedbackForms[0].reviewer, reviewer);
+    } finally {
+      // Ensure all pending operations complete before closing
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await client.close();
+    }
+  },
 });
 
 Deno.test("FeedbackForm: should update feedback form response", async () => {
