@@ -80,6 +80,9 @@ async function main() {
             return c.json(result);
           } catch (e) {
             console.error(`Error in ${conceptName}.${methodName}:`, e);
+            if (e instanceof Error) { // pass errors thru json
+              return c.json({ error: e.message }, 400);
+            }
             return c.json({ error: "An internal server error occurred." }, 500);
           }
         });
