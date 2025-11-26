@@ -141,6 +141,25 @@ export default class OrgGraphConcept {
   }
 
   /**
+   * deleteTeam (teamId: TeamID, owner?: string): ()
+   * **effects** permanently remove the team document (optionally scoped by owner)
+   */
+  async deleteTeam({
+    teamId,
+    owner,
+  }: {
+    teamId: TeamID;
+    owner?: string;
+  }): Promise<{}> {
+    const query = owner ? { _id: teamId, owner } : { _id: teamId };
+    const result = await this.teams.deleteOne(query);
+    if (result.deletedCount === 0) {
+      throw new Error("Team not found or not owned by this admin");
+    }
+    return {};
+  }
+
+  /**
    * createEmployee (email: String, team: Team, directReport: Set<Employee>): (employee: Employee)
    * **requires** email is not empty, team exists
    * **effects** create a new Employee with the given email
