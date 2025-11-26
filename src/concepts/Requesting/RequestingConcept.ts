@@ -290,7 +290,7 @@ export function startRequestingServer(
         if (e.message.includes("timed out")) {
           return c.json({ error: "Request timed out." }, 504); // Gateway Timeout
         }
-        return c.json({ error: "An internal server error occurred." }, 500);
+        return c.json({ error: "Wrong" }, 500);
       } else {
         return c.json({ error: "unknown error occurred." }, 418);
       }

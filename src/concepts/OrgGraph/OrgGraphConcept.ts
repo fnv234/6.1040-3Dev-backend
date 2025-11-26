@@ -14,10 +14,16 @@ interface EmployeeDoc {
   manager?: Employee;
 }
 
+interface TeamMember {
+  memberId: Employee;
+  role: string;
+}
+
 interface TeamDoc {
   _id: TeamID;
   name: string;
   members: Employee[];
+  membersWithRoles?: TeamMember[]; // New field for members with roles
 }
 
 /**
@@ -186,6 +192,50 @@ export default class OrgGraphConcept {
       _id: teamId,
       name,
       members: members || [],
+    };
+
+    await this.teams.insertOne(teamDoc);
+    return { team: teamId };
+  }
+
+  /**
+   * createTeamWithRoles (name: Text, members?: Set<Employee>, membersWithRoles?: Set<TeamMember>): (team: Team)
+   * **requires** name is not empty, no other team with same name exists
+   * **effects** create a new Team with the given name, members, and member roles
+   */
+  async createTeamWithRoles({
+    name,
+    members,
+    membersWithRoles,
+  }: {
+    name: string;
+    members?: Employee[];
+    membersWithRoles?: TeamMember[];
+  }): Promise<{ team: TeamID }> {
+    if (!name || name.trim() === "") {
+      throw new Error("Team name cannot be empty");
+    }
+
+    const existingTeam = await this.teams.findOne({ name });
+    if (existingTeam) {
+      throw new Error("Team with this name already exists");
+    }
+
+    // Combine members from both sources, avoiding duplicates
+    const allMembers = new Set<Employee>();
+    if (members) {
+      members.forEach((member) => allMembers.add(member));
+    }
+    if (membersWithRoles) {
+      membersWithRoles.forEach((member) => allMembers.add(member.memberId));
+    }
+
+    const teamId = freshID() as TeamID;
+    const teamDoc: TeamDoc = {
+      _id: teamId,
+      name,
+      members: Array.from(allMembers),
+      membersWithRoles: membersWithRoles || [],
     };
 
     await this.teams.insertOne(teamDoc);
@@ -465,5 +515,61 @@ export default class OrgGraphConcept {
     }
 
     return { members: team.members };
+  }
+
+  /**
+   * getTeamMembersByRole (teamId: TeamID, roles: string[]): (members: Employee[])
+   * **requires** team exists
+   * **effects** return members of the team that have any of the specified roles
+   */
+  async getTeamMembersByRole({
+    teamId,
+    roles,
+  }: {
+    teamId: TeamID;
+    roles: string[];
+  }): Promise<{ members: Employee[] }> {
+    const team = await this.teams.findOne({ _id: teamId });
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    if (!team.membersWithRoles || team.membersWithRoles.length === 0) {
+      // If no role information available, return empty array
+      return { members: [] };
+    }
+
+    const matchingMembers = team.membersWithRoles
+      .filter((member) => roles.includes(member.role))
+      .map((member) => member.memberId);
+
+    return { members: matchingMembers };
+  }
+
+  /**
+   * getMemberRole (teamId: TeamID, memberId: Employee): (role: string)
+   * **requires** team exists and member is in team
+   * **effects** return the role of the member in the team
+   */
+  async getMemberRole({
+    teamId,
+    memberId,
+  }: {
+    teamId: TeamID;
+    memberId: Employee;
+  }): Promise<{ role: string | null }> {
+    const team = await this.teams.findOne({ _id: teamId });
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    if (!team.membersWithRoles) {
+      return { role: null };
+    }
+
+    const memberWithRole = team.membersWithRoles.find((m) =>
+      m.memberId === memberId
+    );
+    return { role: memberWithRole ? memberWithRole.role : null };
   }
 }

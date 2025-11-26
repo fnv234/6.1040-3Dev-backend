@@ -13,6 +13,7 @@ interface FeedbackQuestion {
   prompt: string;
   type: "Multiple Choice" | "Free" | "Scale";
   response?: string;
+  targetRoles?: string[]; // Optional: if specified, only members with these roles will see this question
 }
 
 interface FeedbackFormDoc {
@@ -291,5 +292,87 @@ export default class FeedbackFormConcept {
     );
 
     return {};
+  }
+
+  /**
+   * getQuestionsForRole (feedbackForm: FeedbackForm, memberRole: string): (questions: FeedbackQuestion[])
+   * **requires** feedbackForm exists
+   * **effects** returns questions that should be shown to a member with the given role
+   */
+  async getQuestionsForRole({
+    feedbackForm,
+    memberRole,
+  }: {
+    feedbackForm: FeedbackFormID;
+    memberRole: string | null;
+  }): Promise<{ questions: FeedbackQuestion[] }> {
+    const form = await this.feedbackForms.findOne({ _id: feedbackForm });
+    if (!form) {
+      throw new Error("Feedback form not found");
+    }
+
+    // Filter questions based on role targeting
+    const filteredQuestions = form.questions.filter((question) => {
+      // If no target roles specified, show to everyone
+      if (!question.targetRoles || question.targetRoles.length === 0) {
+        return true;
+      }
+
+      // If member has no role, don't show role-targeted questions
+      if (!memberRole) {
+        return false;
+      }
+
+      // Show question if member's role is in the target roles
+      return question.targetRoles.includes(memberRole);
+    });
+
+    return { questions: filteredQuestions };
+  }
+
+  /**
+   * createFeedbackFormForTeam (name: string, creator: User, teamId: TeamID, questions: FeedbackQuestion[]): (feedbackForms: FeedbackFormID[])
+   * **requires** questions are valid, team exists
+   * **effects** creates feedback forms for all reviewer-target pairs in the team
+   */
+  async createFeedbackFormForTeam({
+    name,
+    creator,
+    teamId,
+    questions,
+    orgGraph,
+  }: {
+    name: string;
+    creator: User;
+    teamId: string; // TeamID but accepting string for flexibility
+    questions: FeedbackQuestion[];
+    orgGraph: any; // OrgGraphConcept instance - using any for simplicity
+  }): Promise<{ feedbackForms: FeedbackFormID[] }> {
+    if (!questions || questions.length === 0) {
+      throw new Error("Questions are required");
+    }
+
+    // Get team members
+    const { members } = await orgGraph.getTeamMembers({ teamId });
+
+    const createdForms: FeedbackFormID[] = [];
+
+    // Create forms for each reviewer-target pair (excluding self-reviews)
+    for (const reviewer of members) {
+      for (const target of members) {
+        if (reviewer !== target) {
+          const { feedbackForm } = await this.createFeedbackForm({
+            name: `${name} - ${reviewer} → ${target}`,
+            creator,
+            reviewer,
+            target,
+            questions,
+          });
+          createdForms.push(feedbackForm);
+        }
+      }
+    }
+
+    return { feedbackForms: createdForms };
   }
 }
