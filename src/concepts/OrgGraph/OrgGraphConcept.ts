@@ -24,6 +24,7 @@ interface TeamDoc {
   name: string;
   members: Employee[];
   membersWithRoles?: TeamMember[]; // New field for members with roles
+  owner?: string; // Optional HR admin owner to scope data per account
 }
 
 /**
@@ -45,6 +46,7 @@ export default class OrgGraphConcept {
    */
   async importRoster({
     sourceData,
+    owner,
   }: {
     sourceData: {
       employees: Array<{
@@ -52,8 +54,10 @@ export default class OrgGraphConcept {
         email: string;
         manager?: Employee;
         teamNames: string[];
+        role?: string;
       }>;
     };
+    owner?: string;
   }): Promise<{}> {
     // First, collect all unique team names
     const allTeamNames = new Set<string>();
@@ -66,13 +70,14 @@ export default class OrgGraphConcept {
     // Create or get teams
     const teamMap = new Map<string, TeamID>();
     for (const teamName of allTeamNames) {
-      let team = await this.teams.findOne({ name: teamName });
+      let team = await this.teams.findOne({ name: teamName, ...(owner ? { owner } : {}) });
       if (!team) {
         const teamId = freshID() as TeamID;
         const teamDoc: TeamDoc = {
           _id: teamId,
           name: teamName,
           members: [],
+          ...(owner ? { owner } : {}),
         };
         await this.teams.insertOne(teamDoc);
         teamMap.set(teamName, teamId);
@@ -113,9 +118,20 @@ export default class OrgGraphConcept {
       for (const teamName of empData.teamNames) {
         const teamId = teamMap.get(teamName);
         if (teamId) {
+          const update: Record<string, unknown> = {
+            $addToSet: { members: empData.id },
+          };
+
+          if (empData.role) {
+            (update.$addToSet as any).membersWithRoles = {
+              memberId: empData.id,
+              role: empData.role,
+            };
+          }
+
           await this.teams.updateOne(
             { _id: teamId },
-            { $addToSet: { members: empData.id } },
+            update,
           );
         }
       }
@@ -494,8 +510,11 @@ export default class OrgGraphConcept {
    * getAllTeams (): (teams: TeamDoc[])
    * **effects** return all teams
    */
-  async getAllTeams(): Promise<{ teams: TeamDoc[] }> {
-    const teams = await this.teams.find({}).toArray();
+  async getAllTeams({ owner }: { owner?: string } = {}): Promise<{ teams: TeamDoc[] }> {
+    // When an owner is provided, only return teams explicitly owned by that admin.
+    // This prevents any cross-account leakage of org data.
+    const query = owner ? { owner } : {};
+    const teams = await this.teams.find(query).toArray();
     return { teams };
   }
 
