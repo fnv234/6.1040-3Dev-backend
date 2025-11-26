@@ -375,4 +375,65 @@ export default class FeedbackFormConcept {
 
     return { feedbackForms: createdForms };
   }
+
+  /**
+   * updateFeedbackForm (formId: FeedbackFormID, updates: Partial<FeedbackForm>): (updatedForm: FeedbackFormDoc)
+   * **requires** form exists and is in "Created" status
+   * **effects** updates the specified fields of the feedback form
+   */
+  async updateFeedbackForm({ 
+    formId, 
+    updates 
+  }: { 
+    formId: FeedbackFormID; 
+    updates: Partial<Omit<FeedbackFormDoc, '_id' | 'creator' | 'createdDate'>>;
+  }): Promise<{ updatedForm: FeedbackFormDoc }> {
+    // Ensure the form exists and is in "Created" status
+    const existingForm = await this.feedbackForms.findOne({ _id: formId });
+    if (!existingForm) {
+      throw new Error("Feedback form not found");
+    }
+
+    if (existingForm.status !== "Created") {
+      throw new Error("Only forms in 'Created' status can be updated");
+    }
+
+    // Prevent updating certain fields
+    const { _id, creator, createdDate, ...allowedUpdates } = updates as any;
+    
+    const result = await this.feedbackForms.findOneAndUpdate(
+      { _id: formId },
+      { $set: allowedUpdates },
+      { returnDocument: 'after' }
+    );
+
+    if (!result.value) {
+      throw new Error("Failed to update feedback form");
+    }
+
+    return { updatedForm: result.value };
+  }
+
+  /**
+   * deleteFeedbackForm (formId: FeedbackFormID): ()
+   * **requires** form exists and is in "Created" status
+   * **effects** deletes the specified feedback form
+   */
+  async deleteFeedbackForm({ formId }: { formId: FeedbackFormID }): Promise<void> {
+    // Ensure the form exists and is in "Created" status
+    const existingForm = await this.feedbackForms.findOne({ _id: formId });
+    if (!existingForm) {
+      throw new Error("Feedback form not found");
+    }
+
+    if (existingForm.status !== "Created") {
+      throw new Error("Only forms in 'Created' status can be deleted");
+    }
+
+    const result = await this.feedbackForms.deleteOne({ _id: formId });
+    
+    if (result.deletedCount === 0) {
+      throw new Error("Failed to delete feedback form");
+    }
+  }
 }
