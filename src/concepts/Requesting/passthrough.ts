@@ -37,6 +37,8 @@ export const inclusions: Record<string, string> = {
     "public query to get all employees for UI dropdowns",
   "/api/OrgGraph/getAllTeams": "public query to get all teams for UI dropdowns",
   "/api/OrgGraph/getTeamMembers": "public query to display team membership",
+  "/api/OrgGraph/importRoster":
+    "action to import an org roster from a structured file uploaded by an authenticated HR admin",
 
   // Public feedback form queries
   "/api/FeedbackForm/getFeedbackForm":
@@ -75,7 +77,6 @@ export const exclusions: Array<string> = [
   "/api/FeedbackForm/updateFeedbackFormResponse",
 
   // Organizational management actions
-  "/api/OrgGraph/importRoster",
   "/api/OrgGraph/updateManager",
   "/api/OrgGraph/updateTeam",
 
