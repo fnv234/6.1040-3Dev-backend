@@ -80,10 +80,23 @@ async function main() {
             return c.json(result);
           } catch (e) {
             console.error(`Error in ${conceptName}.${methodName}:`, e);
-            if (e instanceof Error) { // pass errors thru json
-              return c.json({ error: e.message }, 400);
+            
+            // Handle different types of errors more robustly
+            let errorMessage = "An internal server error occurred.";
+            let statusCode = 500;
+            
+            if (e instanceof Error) {
+              errorMessage = e.message;
+              statusCode = 400;
+            } else if (typeof e === 'string') {
+              errorMessage = e;
+              statusCode = 400;
+            } else if (e && typeof e === 'object' && 'message' in e) {
+              errorMessage = String(e.message);
+              statusCode = 400;
             }
-            return c.json({ error: "An internal server error occurred." }, 500);
+            
+            return c.json({ error: errorMessage }, statusCode);
           }
         });
         console.log(`  - Endpoint: POST ${route}`);

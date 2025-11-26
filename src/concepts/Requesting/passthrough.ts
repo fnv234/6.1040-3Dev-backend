@@ -25,6 +25,11 @@
  */
 
 export const inclusions: Record<string, string> = {
+  // HR Admin authentication - needed for login functionality
+  "/api/HRAdmin/registerHRAdmin": "public action to allow HR admin registration",
+  "/api/HRAdmin/authenticateHRAdmin": "public action to allow HR admin login",
+  "/api/HRAdmin/getHRAdmin": "public query to get HR admin data after authentication",
+  
   // Public queries for organizational data
   "/api/OrgGraph/getAllEmployees": "public query to get all employees for UI dropdowns",
   "/api/OrgGraph/getAllTeams": "public query to get all teams for UI dropdowns",
