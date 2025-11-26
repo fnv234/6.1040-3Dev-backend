@@ -10,61 +10,25 @@ const router = Router();
  */
 router.get("/getFeedbackFormsByCreator", async (req: Request, res: Response) => {
   try {
-    const { creator, startDate, endDate } = req.query;
-
-    if (!creator) {
+    const { creatorId } = req.query;
+    
+    if (!creatorId) {
       return res.status(400).json({ 
         success: false, 
-        error: "creator query parameter is required" 
+        error: "creatorId query parameter is required" 
       });
     }
 
-    const { feedbackForms } = await FeedbackForm.getFeedbackFormsByCreator({ 
-      creator: creator as string,
-      startDate: startDate as string | undefined,
-      endDate: endDate as string | undefined,
+    const { forms } = await FeedbackForm.getFeedbackFormsByCreator({ 
+      creator: creatorId as string 
     });
-
-    res.json({ success: true, feedbackForms });
+    
+    res.json({ success: true, forms });
   } catch (error) {
     console.error("Error getting feedback forms by creator:", error);
     res.status(500).json({ 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to get feedback forms" 
-    });
-  }
-});
-
-/**
- * POST /api/FeedbackForm/getFeedbackFormsByCreator
- * Get all feedback forms created by a specific user
- * This route matches the frontend client, which sends a JSON body
- * { creator, startDate?, endDate? } and expects { feedbackForms }.
- */
-router.post("/getFeedbackFormsByCreator", async (req: Request, res: Response) => {
-  try {
-    const { creator, startDate, endDate } = req.body ?? {};
-
-    if (!creator) {
-      return res.status(400).json({
-        success: false,
-        error: "creator is required in the request body",
-      });
-    }
-
-    const { feedbackForms } = await FeedbackForm.getFeedbackFormsByCreator({
-      creator,
-      startDate,
-      endDate,
-    });
-
-    // Match the shape expected by the frontend: response.data.feedbackForms
-    res.json({ feedbackForms });
-  } catch (error) {
-    console.error("Error getting feedback forms by creator (POST):", error);
-    res.status(500).json({
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to get feedback forms",
     });
   }
 });
