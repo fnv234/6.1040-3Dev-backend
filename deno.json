@@ -3,10 +3,13 @@
         "@concepts/": "./src/concepts/",
         "@google/generative-ai": "npm:@google/generative-ai@^0.24.1",
         "@concepts": "./src/concepts/concepts.ts",
+        "@sendgrid/mail": "npm:@sendgrid/mail@^8.1.6",
         "@test-concepts": "./src/concepts/test_concepts.ts",
         "@utils/": "./src/utils/",
         "@engine": "./src/engine/mod.ts",
-        "@syncs": "./src/syncs/syncs.ts"
+        "@syncs": "./src/syncs/syncs.ts",
+        "express": "npm:express@^5.1.0",
+        "oak": "https://deno.land/x/oak@v12.6.1/mod.ts"
     },
     "tasks": {
         "start": "deno run --allow-net --allow-write --allow-read --allow-sys --allow-env src/main.ts",
