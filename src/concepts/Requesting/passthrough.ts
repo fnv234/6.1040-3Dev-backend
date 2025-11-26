@@ -79,4 +79,11 @@ export const exclusions: Array<string> = [
   "/api/ReportSynthesis/extractThemes",
   "/api/ReportSynthesis/draftSummaryLLM",
   "/api/ReportSynthesis/approveSummary",
+
+
+  "/api/Email/queueEmail",
+  "/api/Email/sendEmail",
+  "/api/Email/getEmail",
+  "/api/Email/getPendingEmails",
+  
 ];
