@@ -22,12 +22,12 @@ interface FeedbackFormDoc {
   creator: User;
   reviewer: Employee;
   target: Employee;
-  teamId?: string; // Add this field
   status: "Created" | "Sent" | "Completed";
   createdDate: string;
   completedDate?: string;
   questions: FeedbackQuestion[];
 }
+
 /**
  * FeedbackForm concept for collecting employee feedback on target employees
  */
@@ -44,20 +44,18 @@ export default class FeedbackFormConcept {
    * **effects** creates a new feedback form in the "Created" status with the given questions and createdDate set to the current time
    */
   async createFeedbackForm({
-  name,
-  creator,
-  reviewer,
-  target,
-  teamId, // Add this parameter
-  questions,
-}: {
-  name: string;
-  creator: User;
-  reviewer: Employee;
-  target: Employee;
-  teamId?: string; // Add this parameter
-  questions: FeedbackQuestion[];
-}): Promise<{ feedbackForm: FeedbackFormID }> {
+    name,
+    creator,
+    reviewer,
+    target,
+    questions,
+  }: {
+    name: string;
+    creator: User;
+    reviewer: Employee;
+    target: Employee;
+    questions: FeedbackQuestion[];
+  }): Promise<{ feedbackForm: FeedbackFormID }> {
     if (reviewer === target) {
       throw new Error("Target cannot be the same as reviewer");
     }
@@ -79,22 +77,21 @@ export default class FeedbackFormConcept {
 
     const feedbackFormId = freshID() as FeedbackFormID;
     const feedbackFormDoc: FeedbackFormDoc = {
-    _id: feedbackFormId,
-    name,
-    creator,
-    reviewer,
-    target,
-    teamId, // Add this field
-    status: "Created",
-    createdDate: new Date().toISOString(),
-    questions: questions.map((q: FeedbackQuestion) => ({
-      ...q,
-      response: undefined,
-    })),
-  };
+      _id: feedbackFormId,
+      name,
+      creator,
+      reviewer,
+      target,
+      status: "Created",
+      createdDate: new Date().toISOString(),
+      questions: questions.map((q: FeedbackQuestion) => ({
+        ...q,
+        response: undefined,
+      })),
+    };
 
-  await this.feedbackForms.insertOne(feedbackFormDoc);
-  return { feedbackForm: feedbackFormId };
+    await this.feedbackForms.insertOne(feedbackFormDoc);
+    return { feedbackForm: feedbackFormId };
   }
 
   /**
@@ -315,7 +312,7 @@ export default class FeedbackFormConcept {
     }
 
     // Filter questions based on role targeting
-    const filteredQuestions = form.questions.filter((question: FeedbackQuestion) => {
+    const filteredQuestions = form.questions.filter((question) => {
       // If no target roles specified, show to everyone
       if (!question.targetRoles || question.targetRoles.length === 0) {
         return true;
@@ -410,11 +407,11 @@ export default class FeedbackFormConcept {
       { returnDocument: 'after' }
     );
 
-    if (!result) {
+    if (!result.value) {
       throw new Error("Failed to update feedback form");
     }
 
-    return { updatedForm: result as unknown as FeedbackFormDoc };
+    return { updatedForm: result.value };
   }
 
   /**

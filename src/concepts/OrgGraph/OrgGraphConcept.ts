@@ -23,7 +23,7 @@ interface TeamDoc {
   _id: TeamID;
   name: string;
   members: Employee[];
-  membersWithRoles?: Array<{memberId: string, role: string}>; // Add this
+  membersWithRoles?: TeamMember[]; // New field for members with roles
 }
 
 /**
@@ -173,12 +173,10 @@ export default class OrgGraphConcept {
    */
   async createTeam({
     name,
-    members = [],
-    membersWithRoles = []
+    members,
   }: {
     name: string;
     members?: Employee[];
-    membersWithRoles?: Array<{ memberId: string; role: string }>;
   }): Promise<{ team: TeamID }> {
     if (!name || name.trim() === "") {
       throw new Error("Team name cannot be empty");
@@ -193,8 +191,7 @@ export default class OrgGraphConcept {
     const teamDoc: TeamDoc = {
       _id: teamId,
       name,
-      members: members as unknown as ID[],
-      membersWithRoles
+      members: members || [],
     };
 
     await this.teams.insertOne(teamDoc);
@@ -479,6 +476,20 @@ export default class OrgGraphConcept {
    * **requires** employee exists
    * **effects** return the teams that employee is a member of
    */
+  async getTeamsByEmployee({
+    employee,
+  }: {
+    employee: Employee;
+  }): Promise<{ teams: TeamDoc[] }> {
+    const emp = await this.employees.findOne({ _id: employee });
+    if (!emp) {
+      throw new Error("Employee not found");
+    }
+
+    const teams = await this.teams.find({ members: employee }).toArray();
+    return { teams };
+  }
+
   /**
    * getAllTeams (): (teams: TeamDoc[])
    * **effects** return all teams
@@ -489,10 +500,56 @@ export default class OrgGraphConcept {
   }
 
   /**
-   * Get the role of a member in a team
-   * @param teamId - The ID of the team
-   * @param memberId - The ID of the member
-   * @returns The role of the member in the team, or null if not found
+   * getTeamMembers (teamId: TeamID): (members: Employee[])
+   * **requires** team exists
+   * **effects** return all members of the team
+   */
+  async getTeamMembers({
+    teamId,
+  }: {
+    teamId: TeamID;
+  }): Promise<{ members: Employee[] }> {
+    const team = await this.teams.findOne({ _id: teamId });
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    return { members: team.members };
+  }
+
+  /**
+   * getTeamMembersByRole (teamId: TeamID, roles: string[]): (members: Employee[])
+   * **requires** team exists
+   * **effects** return members of the team that have any of the specified roles
+   */
+  async getTeamMembersByRole({
+    teamId,
+    roles,
+  }: {
+    teamId: TeamID;
+    roles: string[];
+  }): Promise<{ members: Employee[] }> {
+    const team = await this.teams.findOne({ _id: teamId });
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    if (!team.membersWithRoles || team.membersWithRoles.length === 0) {
+      // If no role information available, return empty array
+      return { members: [] };
+    }
+
+    const matchingMembers = team.membersWithRoles
+      .filter((member) => roles.includes(member.role))
+      .map((member) => member.memberId);
+
+    return { members: matchingMembers };
+  }
+
+  /**
+   * getMemberRole (teamId: TeamID, memberId: Employee): (role: string)
+   * **requires** team exists and member is in team
+   * **effects** return the role of the member in the team
    */
   async getMemberRole({
     teamId,
@@ -515,32 +572,4 @@ export default class OrgGraphConcept {
     );
     return { role: memberWithRole ? memberWithRole.role : null };
   }
-
-  /**
-   * getTeamMembers (teamId: TeamID): (members: Employee[])
-   * **requires** team exists
-   * **effects** returns all members of the specified team
-   */
-  async getTeamMembers({ teamId }: { teamId: TeamID }): Promise<{ members: Employee[] }> {
-    const team = await this.teams.findOne({ _id: teamId });
-    if (!team) {
-      throw new Error("Team not found");
-    }
-    return { members: team.members as unknown as Employee[] };
-  }
-
-  /**
-   * getTeamsByEmployee (employee: Employee): (teams: TeamDoc[])
-   * **requires** employee exists
-   * **effects** returns all teams that the employee is a member of
-   */
-  async getTeamsByEmployee({ employee }: { employee: Employee }): Promise<{ teams: TeamDoc[] }> {
-    const teams = await this.teams.find({
-      members: { $in: [employee] }
-    }).toArray();
-    
-    return { teams };
-  }
 }
-
-export type { TeamDoc, Employee, TeamID, EmployeeDoc };

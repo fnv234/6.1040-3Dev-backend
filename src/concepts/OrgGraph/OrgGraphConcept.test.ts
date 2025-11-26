@@ -1,5 +1,5 @@
 import { testDb } from "@utils/database.ts";
-import OrgGraphConcept, { TeamDoc } from "./OrgGraphConcept.ts";
+import OrgGraphConcept from "./OrgGraphConcept.ts";
 import { ID } from "@utils/types.ts";
 import { assert, assertEquals } from "jsr:@std/assert";
 
@@ -153,7 +153,7 @@ Deno.test("OrgGraph: getTeamsByEmployee", async () => {
     const { teams } = await org.getTeamsByEmployee({ employee: alice });
     assertEquals(teams.length, 2);
     assertEquals(
-      teams.map((t: TeamDoc) => t.name).sort(),
+      teams.map((t) => t.name).sort(),
       ["Engineering", "Leadership"].sort(),
     );
 
