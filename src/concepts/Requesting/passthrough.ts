@@ -61,6 +61,11 @@ export const inclusions: Record<string, string> = {
     "public query for employees to view their reports",
   "/api/ReportSynthesis/getFinalReport":
     "public query to display completed reports",
+
+  "/api/OrgGraph/createTeam": "public action to create teams",
+  "/api/OrgGraph/getEmployee": "public query to get employee details",
+  "/api/FeedbackForm/createFeedbackForm": "moved to public for easier testing",
+
 };
 
 /**
