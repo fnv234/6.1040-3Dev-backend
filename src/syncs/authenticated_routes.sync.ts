@@ -107,8 +107,11 @@ export const authenticatedFeedbackFormRoutes: Sync = (
   ]),
   where: (frames: Frames) => {
     // Check if path is a FeedbackForm route
-    const pathStr = frames.path as string;
-    return pathStr.startsWith('/FeedbackForm/') ? frames : {};
+    const pathStr = frames.path as string | undefined;
+    if (typeof pathStr === 'string' && pathStr.startsWith('/FeedbackForm/')) {
+      return frames;
+    }
+    return {};
   },
   then: actions([
     Requesting.respond,
@@ -125,8 +128,11 @@ export const authenticatedOrgGraphRoutes: Sync = (
     { request },
   ]),
   where: (frames: Frames) => {
-    const pathStr = frames.path as string;
-    return pathStr.startsWith('/OrgGraph/') ? frames : {};
+    const pathStr = frames.path as string | undefined;
+    if (typeof pathStr === 'string' && pathStr.startsWith('/OrgGraph/')) {
+      return frames;
+    }
+    return {};
   },
   then: actions([
     Requesting.respond,
@@ -143,8 +149,11 @@ export const authenticatedReviewCycleRoutes: Sync = (
     { request },
   ]),
   where: (frames: Frames) => {
-    const pathStr = frames.path as string;
-    return pathStr.startsWith('/ReviewCycle/') ? frames : {};
+    const pathStr = frames.path as string | undefined;
+    if (typeof pathStr === 'string' && pathStr.startsWith('/ReviewCycle/')) {
+      return frames;
+    }
+    return {};
   },
   then: actions([
     Requesting.respond,
@@ -161,8 +170,11 @@ export const authenticatedReportSynthesisRoutes: Sync = (
     { request }
   ]),
   where: (frames: Frames) => {
-    const pathStr = frames.path as string;
-    return pathStr.startsWith('/ReportSynthesis/') ? frames : {};
+    const pathStr = frames.path as string | undefined;
+    if (typeof pathStr === 'string' && pathStr.startsWith('/ReportSynthesis/')) {
+      return frames;
+    }
+    return {};
   },
   then: actions([
     Requesting.respond,

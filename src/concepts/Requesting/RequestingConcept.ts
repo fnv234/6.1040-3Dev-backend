@@ -254,7 +254,7 @@ export function startRequestingServer(
   const routePath = `${REQUESTING_BASE_URL}/*`;
   app.post(routePath, async (c) => {
     try {
-      const body = await c.req.json();
+      const body = await c.req.json().catch(() => ({}));
       if (typeof body !== "object" || body === null) {
         return c.json(
           { error: "Invalid request body. Must be a JSON object." },
