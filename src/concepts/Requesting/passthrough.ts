@@ -43,12 +43,6 @@ export const inclusions: Record<string, string> = {
     "public query to display feedback forms to reviewers",
   "/api/FeedbackForm/getFeedbackFormsByReviewer":
     "public query for reviewers to see their assigned forms",
-  "/api/FeedbackForm/getFeedbackFormsByCreator":
-    "public query for creators to see their created forms",
-  "/api/FeedbackForm/updateFeedbackForm":
-    "public action to update existing feedback forms",
-  "/api/FeedbackForm/deleteFeedbackForm":
-    "public action to delete feedback forms",
 
   // Public review cycle queries
   "/api/ReviewCycle/getActiveCycles":
