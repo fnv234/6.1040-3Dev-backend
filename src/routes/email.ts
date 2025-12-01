@@ -23,6 +23,7 @@ interface EmailRequest {
 const router = new Router();
 
 // Set SendGrid API key from environment variables
+const sgMail = require("@sendgrid/mail");
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 if (!SENDGRID_API_KEY) {
   throw new Error("SENDGRID_API_KEY environment variable is not set");
