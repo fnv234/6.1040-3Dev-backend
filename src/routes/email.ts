@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import sgMail from '@sendgrid/mail';
+import { Router } from "express";
+import sgMail from "@sendgrid/mail";
 
 // Define TypeScript interfaces for errors
 interface SendGridError extends Error {
@@ -23,16 +23,17 @@ interface EmailRequest {
 const router = new Router();
 
 // Set SendGrid API key from environment variables
-const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY');
+const sgMail = require("@sendgrid/mail");
+const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 if (!SENDGRID_API_KEY) {
-  throw new Error('SENDGRID_API_KEY environment variable is not set');
+  throw new Error("SENDGRID_API_KEY environment variable is not set");
 }
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 /**
  * POST /email/send
  * Sends an email with a feedback form link
- * 
+ *
  * Request body:
  * {
  *   to: string,          // Recipient email address
@@ -41,13 +42,13 @@ sgMail.setApiKey(SENDGRID_API_KEY);
  *   formLink: string     // URL to the feedback form
  * }
  */
-router.post('/send', async (ctx: any) => {
+router.post("/send", async (ctx: any) => {
   try {
     if (!ctx.request.hasBody) {
       ctx.response.status = 400;
       ctx.response.body = {
         success: false,
-        error: 'Request body is required'
+        error: "Request body is required",
       };
       return;
     }
@@ -55,25 +56,25 @@ router.post('/send', async (ctx: any) => {
     const body = ctx.request.body();
     let emailData: EmailRequest;
 
-    if (body.type === 'json') {
+    if (body.type === "json") {
       emailData = await body.value;
     } else {
       ctx.response.status = 400;
       ctx.response.body = {
         success: false,
-        error: 'Request body must be JSON'
+        error: "Request body must be JSON",
       };
       return;
     }
 
     const { to, subject, body: emailBody, formLink } = emailData;
-    
+
     // Validate required fields
     if (!to || !subject || !emailBody || !formLink) {
       ctx.response.status = 400;
       ctx.response.body = {
         success: false,
-        error: 'Missing required fields: to, subject, body, or formLink'
+        error: "Missing required fields: to, subject, body, or formLink",
       };
       return;
     }
@@ -84,21 +85,21 @@ router.post('/send', async (ctx: any) => {
       ctx.response.status = 400;
       ctx.response.body = {
         success: false,
-        error: 'Invalid email format'
+        error: "Invalid email format",
       };
       return;
     }
 
     const msg = {
       to,
-      from: Deno.env.get('EMAIL_FROM') || 'threedevteam6104@gmail.com',
+      from: Deno.env.get("SENDGRID_FROM_EMAIL") || "threedevteam6104@gmail.com",
       subject,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
             <h2 style="color: #2c3e50; margin-top: 0;">${subject}</h2>
             <div style="color: #34495e; line-height: 1.6; margin-bottom: 20px;">
-              ${emailBody.replace(/\n/g, '<br>')}
+              ${emailBody.replace(/\n/g, "<br>")}
             </div>
             <div style="text-align: center; margin: 30px 0;">
               <a href="${formLink}" 
@@ -119,29 +120,29 @@ router.post('/send', async (ctx: any) => {
     };
 
     await sgMail.send(msg);
-    
+
     ctx.response.status = 200;
-    ctx.response.body = { 
+    ctx.response.body = {
       success: true,
-      message: 'Email sent successfully' 
+      message: "Email sent successfully",
     };
-    
   } catch (error) {
-    console.error('Email sending error:', error);
-    
-    console.error('Error sending email:', error);
-    
+    console.error("Email sending error:", error);
+
+    console.error("Error sending email:", error);
+
     if (isSendGridError(error) && error.response) {
-      console.error('SendGrid error response body:', error.response.body);
+      console.error("SendGrid error response body:", error.response.body);
     }
-    
+
     ctx.response.status = 500;
-    ctx.response.body = { 
-      success: false, 
-      error: 'Failed to send email',
-      details: Deno.env.get('DENO_ENV') === 'development' && error instanceof Error 
-        ? error.message 
-        : undefined
+    ctx.response.body = {
+      success: false,
+      error: "Failed to send email",
+      details:
+        Deno.env.get("DENO_ENV") === "development" && error instanceof Error
+          ? error.message
+          : undefined,
     };
   }
 });
