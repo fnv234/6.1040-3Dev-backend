@@ -70,7 +70,10 @@ export default class OrgGraphConcept {
     // Create or get teams
     const teamMap = new Map<string, TeamID>();
     for (const teamName of allTeamNames) {
-      let team = await this.teams.findOne({ name: teamName, ...(owner ? { owner } : {}) });
+      let team = await this.teams.findOne({
+        name: teamName,
+        ...(owner ? { owner } : {}),
+      });
       if (!team) {
         const teamId = freshID() as TeamID;
         const teamDoc: TeamDoc = {
@@ -160,6 +163,68 @@ export default class OrgGraphConcept {
   }
 
   /**
+   * updateTeamInfo (teamId: TeamID, updates: Partial<TeamDoc>, owner?: string): ()
+   * **requires** team exists and is owned by the admin (if owner is provided)
+   * **effects** update the team's name, members, and/or membersWithRoles
+   */
+  async updateTeamInfo({
+    teamId,
+    updates,
+    owner,
+  }: {
+    teamId: TeamID;
+    updates: {
+      name?: string;
+      members?: Employee[];
+      membersWithRoles?: TeamMember[];
+    };
+    owner?: string;
+  }): Promise<{}> {
+    // Find the team (scoped by owner if provided)
+    const query = owner ? { _id: teamId, owner } : { _id: teamId };
+    const existingTeam = await this.teams.findOne(query);
+
+    if (!existingTeam) {
+      throw new Error("Team not found or not owned by this admin");
+    }
+
+    // If name is being updated, check for duplicates (scoped by owner)
+    if (updates.name && updates.name !== existingTeam.name) {
+      const nameQuery = owner
+        ? { name: updates.name, owner }
+        : { name: updates.name };
+      const duplicateTeam = await this.teams.findOne(nameQuery);
+      if (duplicateTeam && duplicateTeam._id !== teamId) {
+        throw new Error("A team with this name already exists");
+      }
+    }
+
+    // Build the update object
+    const updateDoc: any = {};
+    if (updates.name !== undefined) {
+      updateDoc.name = updates.name;
+    }
+    if (updates.members !== undefined) {
+      updateDoc.members = updates.members;
+    }
+    if (updates.membersWithRoles !== undefined) {
+      updateDoc.membersWithRoles = updates.membersWithRoles;
+    }
+
+    // Update the team
+    const result = await this.teams.updateOne(
+      query,
+      { $set: updateDoc },
+    );
+
+    if (result.matchedCount === 0) {
+      throw new Error("Team not found or not owned by this admin");
+    }
+
+    return {};
+  }
+
+  /**
    * createEmployee (email: String, team: Team, directReport: Set<Employee>): (employee: Employee)
    * **requires** email is not empty, team exists
    * **effects** create a new Employee with the given email
@@ -202,22 +267,26 @@ export default class OrgGraphConcept {
   }
 
   /**
-   * createTeam (name: Text, members?: Set<Employee>): (team: Team)
-   * **requires** name is not empty, no other team with same name exists
+   * createTeam (name: Text, members?: Set<Employee>, owner?: string): (team: Team)
+   * **requires** name is not empty, no other team with same name exists (scoped by owner if provided)
    * **effects** create a new Team with the given name and members, empty if none provided
    */
   async createTeam({
     name,
     members,
+    owner,
   }: {
     name: string;
     members?: Employee[];
+    owner?: string;
   }): Promise<{ team: TeamID }> {
     if (!name || name.trim() === "") {
       throw new Error("Team name cannot be empty");
     }
 
-    const existingTeam = await this.teams.findOne({ name });
+    // Check for existing team with same name (scoped by owner if provided)
+    const query = owner ? { name, owner } : { name };
+    const existingTeam = await this.teams.findOne(query);
     if (existingTeam) {
       throw new Error("Team with this name already exists");
     }
@@ -227,6 +296,7 @@ export default class OrgGraphConcept {
       _id: teamId,
       name,
       members: members || [],
+      ...(owner ? { owner } : {}),
     };
 
     await this.teams.insertOne(teamDoc);
@@ -234,24 +304,28 @@ export default class OrgGraphConcept {
   }
 
   /**
-   * createTeamWithRoles (name: Text, members?: Set<Employee>, membersWithRoles?: Set<TeamMember>): (team: Team)
-   * **requires** name is not empty, no other team with same name exists
+   * createTeamWithRoles (name: Text, members?: Set<Employee>, membersWithRoles?: Set<TeamMember>, owner?: string): (team: Team)
+   * **requires** name is not empty, no other team with same name exists (scoped by owner if provided)
    * **effects** create a new Team with the given name, members, and member roles
    */
   async createTeamWithRoles({
     name,
     members,
     membersWithRoles,
+    owner,
   }: {
     name: string;
     members?: Employee[];
     membersWithRoles?: TeamMember[];
+    owner?: string;
   }): Promise<{ team: TeamID }> {
     if (!name || name.trim() === "") {
       throw new Error("Team name cannot be empty");
     }
 
-    const existingTeam = await this.teams.findOne({ name });
+    // Check for existing team with same name (scoped by owner if provided)
+    const query = owner ? { name, owner } : { name };
+    const existingTeam = await this.teams.findOne(query);
     if (existingTeam) {
       throw new Error("Team with this name already exists");
     }
@@ -271,6 +345,7 @@ export default class OrgGraphConcept {
       name,
       members: Array.from(allMembers),
       membersWithRoles: membersWithRoles || [],
+      ...(owner ? { owner } : {}),
     };
 
     await this.teams.insertOne(teamDoc);
@@ -529,7 +604,9 @@ export default class OrgGraphConcept {
    * getAllTeams (): (teams: TeamDoc[])
    * **effects** return all teams
    */
-  async getAllTeams({ owner }: { owner?: string } = {}): Promise<{ teams: TeamDoc[] }> {
+  async getAllTeams(
+    { owner }: { owner?: string } = {},
+  ): Promise<{ teams: TeamDoc[] }> {
     // When an owner is provided, only return teams explicitly owned by that admin.
     // This prevents any cross-account leakage of org data.
     const query = owner ? { owner } : {};
