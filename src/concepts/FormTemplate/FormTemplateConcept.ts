@@ -102,4 +102,22 @@ export default class FormTemplateConcept {
 
     return { templates };
   }
+
+  /**
+   * getTemplate (templateId: FormTemplateID): (template: FormTemplate)
+   * **requires** templateId is a valid FormTemplateID
+   * **effects** returns the template with the given ID
+   */
+  async getTemplate({
+    templateId,
+  }: {
+    templateId: FormTemplateID;
+  }): Promise<{ template: FormTemplateDoc }> {
+    const template = await this.formTemplates.findOne({ _id: templateId });
+    if (!template) {
+      throw new Error("Template not found");
+    }
+
+    return { template };
+  }
 }
