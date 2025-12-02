@@ -17,6 +17,7 @@ interface EmployeeDoc {
 interface TeamMember {
   memberId: Employee;
   role: string;
+  email: string;
 }
 
 interface TeamDoc {
@@ -165,7 +166,7 @@ export default class OrgGraphConcept {
   /**
    * updateTeamInfo (teamId: TeamID, updates: Partial<TeamDoc>, owner?: string): ()
    * **requires** team exists and is owned by the admin (if owner is provided)
-   * **effects** update the team's name, members, and/or membersWithRoles
+   * **effects** update the team's name, members, and/or membersWithRoles (including employee emails)
    */
   async updateTeamInfo({
     teamId,
@@ -200,7 +201,7 @@ export default class OrgGraphConcept {
     }
 
     // Build the update object
-    const updateDoc: any = {};
+    const updateDoc: Partial<TeamDoc> = {};
     if (updates.name !== undefined) {
       updateDoc.name = updates.name;
     }
@@ -306,7 +307,7 @@ export default class OrgGraphConcept {
   /**
    * createTeamWithRoles (name: Text, members?: Set<Employee>, membersWithRoles?: Set<TeamMember>, owner?: string): (team: Team)
    * **requires** name is not empty, no other team with same name exists (scoped by owner if provided)
-   * **effects** create a new Team with the given name, members, and member roles
+   * **effects** create a new Team with the given name, members, and member roles (now including emails)
    */
   async createTeamWithRoles({
     name,
