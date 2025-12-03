@@ -34,6 +34,7 @@ async function main() {
         "http://localhost:5174",
         "http://localhost:5175",
         "http://localhost:5176",
+        "https://threedev-360-feedback.onrender.com",
       ],
       allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization"],
