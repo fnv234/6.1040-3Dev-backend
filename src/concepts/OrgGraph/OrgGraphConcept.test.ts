@@ -226,8 +226,8 @@ Deno.test("OrgGraph: createTeamWithRoles with owner scoping", async () => {
       name: "Marketing",
       members: [alice, bob],
       membersWithRoles: [
-        { memberId: alice, role: "manager" },
-        { memberId: bob, role: "contributor" },
+        { memberId: alice, role: "manager", email: "alice@example.com" },
+        { memberId: bob, role: "contributor", email: "bob@example.com" },
       ],
       owner,
     });
@@ -263,7 +263,7 @@ Deno.test("OrgGraph: updateTeamInfo", async () => {
     const { team: teamId } = await org.createTeamWithRoles({
       name: "Engineering",
       members: [alice],
-      membersWithRoles: [{ memberId: alice, role: "engineer" }],
+      membersWithRoles: [{ memberId: alice, role: "engineer", email: "alice@example.com" }],
       owner,
     });
 
@@ -283,9 +283,9 @@ Deno.test("OrgGraph: updateTeamInfo", async () => {
       updates: {
         members: [alice, bob, carol],
         membersWithRoles: [
-          { memberId: alice, role: "lead" },
-          { memberId: bob, role: "engineer" },
-          { memberId: carol, role: "engineer" },
+          { memberId: alice, role: "lead", email: "alice@example.com" },
+          { memberId: bob, role: "engineer", email: "bob@example.com" },
+          { memberId: carol, role: "engineer", email: "carol@example.com" },
         ],
       },
       owner,
