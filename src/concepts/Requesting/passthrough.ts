@@ -57,6 +57,16 @@ export const inclusions: Record<string, string> = {
     "public query for employees to view their reports",
   "/api/ReportSynthesis/getFinalReport":
     "public query to display completed reports",
+
+  // access code form
+  "/api/FeedbackForm/getFeedbackFormByAccessCode":
+    "public query to access feedback form via access code",
+  "/api/AccessCode/createAccessCode":
+    "public action to create access code for feedback form",
+  "/api/AccessCode/getAccessCode":
+    "public query to get access code for feedback form",
+  "/api/AccessCode/deleteAccessCode":
+    "public action to delete access code for feedback form",
 };
 
 /**
@@ -95,10 +105,8 @@ export const exclusions: Array<string> = [
   "/api/ReportSynthesis/draftSummaryLLM",
   "/api/ReportSynthesis/approveSummary",
 
-
   "/api/Email/queueEmail",
   "/api/Email/sendEmail",
   "/api/Email/getEmail",
   "/api/Email/getPendingEmails",
-  
 ];
