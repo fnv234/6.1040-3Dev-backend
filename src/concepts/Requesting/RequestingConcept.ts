@@ -195,7 +195,9 @@ export function startRequestingServer(
   app.use(
     "/*",
     cors({
-      origin: REQUESTING_ALLOWED_DOMAIN,
+      origin: "*",
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
     }),
   );
 
