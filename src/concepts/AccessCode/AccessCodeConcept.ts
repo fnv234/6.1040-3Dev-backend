@@ -184,14 +184,18 @@ export default class AccessCodeConcept {
     formId: FormTemplateID;
     createdBy: User;
   }): Promise<{ responses: FormResponseDoc[] }> {
-    // Verify that the user created the access codes for this form
+    // Check if the user created any access codes for this form
+    // If they did, they have permission to view responses
+    // If no access codes exist yet, that's fine - just return empty array
     const accessCodeExists = await this.accessCodes.findOne({
       formId,
       createdBy,
     });
 
+    // If user hasn't created any access codes for this form, return empty responses
+    // This allows form creators to navigate the app without errors
     if (!accessCodeExists) {
-      throw new Error("No access found to form responses");
+      return { responses: [] };
     }
 
     const responses = await this.formResponses

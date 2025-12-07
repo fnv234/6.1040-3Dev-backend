@@ -46,6 +46,11 @@ export const inclusions: Record<string, string> = {
   "/api/FeedbackForm/getFeedbackFormsByReviewer":
     "public query for reviewers to see their assigned forms",
 
+  // Public form template queries
+  "/api/FormTemplate/getTemplate": "public query to get form template by ID",
+  "/api/FormTemplate/getTemplatesByCreator":
+    "public query to get form templates by creator",
+
   // Public review cycle queries
   "/api/ReviewCycle/getActiveCycles":
     "public query to display active review cycles",
@@ -53,10 +58,16 @@ export const inclusions: Record<string, string> = {
     "public query for reviewers to see their pending tasks",
 
   // Public report queries
-  "/api/ReportSynthesis/getReportsByTarget":
-    "public query for employees to view their reports",
+  "/api/ReportSynthesis/getReportByFormTemplate":
+    "public query to get synthesized report for a form template",
+  "/api/ReportSynthesis/getAllReports":
+    "public query to display all synthesized reports",
+  "/api/ReportSynthesis/generateFormTemplateReport":
+    "public action to generate synthesis report from form template responses",
   "/api/ReportSynthesis/getFinalReport":
     "public query to display completed reports",
+  "/api/ReportSynthesis/getResponseSet":
+    "public query to get response set data",
 
   // access code form
   "/api/FeedbackForm/getFeedbackFormByAccessCode":
@@ -67,6 +78,12 @@ export const inclusions: Record<string, string> = {
     "public query to get access code for feedback form",
   "/api/AccessCode/deleteAccessCode":
     "public action to delete access code for feedback form",
+  "/api/AccessCode/getAccessCodeInfo":
+    "public query to get access code info for form access",
+  "/api/AccessCode/submitFormResponse":
+    "public action to submit form response via access code",
+  "/api/AccessCode/getFormResponses":
+    "public query to get form responses for admin viewing",
 };
 
 /**
@@ -98,7 +115,7 @@ export const exclusions: Array<string> = [
   "/api/ReviewCycle/submitFeedback",
   "/api/ReviewCycle/close",
 
-  // Report synthesis actions
+  // Report synthesis actions (exclude for security - these should go through Requesting)
   "/api/ReportSynthesis/ingestResponses",
   "/api/ReportSynthesis/applyKAnonymity",
   "/api/ReportSynthesis/extractThemes",

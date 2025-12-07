@@ -6,8 +6,8 @@ import { GeminiLLM } from "../../../gemini-llm.ts";
 const PREFIX = "ReportSynthesis" + ".";
 
 // --- Type Definitions ---
-type Employee = ID;
-type FeedbackFormID = ID;
+type Respondent = ID;
+type FormTemplateID = ID;
 type ResponseSetID = ID;
 type ReportID = ID;
 
@@ -15,13 +15,13 @@ interface Response {
   questionIndex: number;
   questionText: string;
   response: string;
-  reviewer: Employee;
+  respondent: Respondent;
+  respondentRole?: string;
 }
 
 interface ResponseSetDoc {
   _id: ResponseSetID;
-  target: Employee;
-  form: FeedbackFormID;
+  formTemplate: FormTemplateID;
   responses: Response[];
   anonymityFlag: boolean;
   kThreshold: number;
@@ -30,10 +30,11 @@ interface ResponseSetDoc {
 
 interface ReportDoc {
   _id: ReportID;
-  target: Employee;
+  formTemplate: FormTemplateID;
   textSummary: string;
+  keyThemes: string[];
   keyQuotes: string[];
-  metrics: Record<string, any>;
+  metrics: Record<string, number | Record<string, number>>;
   createdAt: string;
 }
 
@@ -54,26 +55,24 @@ export default class ReportSynthesisConcept {
   constructor(private readonly db: Db, llmConfig?: { apiKey: string }) {
     this.responseSets = this.db.collection(PREFIX + "responseSets");
     this.reports = this.db.collection(PREFIX + "reports");
-    
+
     if (llmConfig) {
       this.llm = new GeminiLLM(llmConfig);
     }
   }
 
   /**
-   * ingestResponses (target: Employee, form: FeedbackForm, responses: Set<Response>): (responseSet: ResponseSet)
-   * **requires** target exists and responses correspond to the form
-   * **effects** create a new ResponseSet with anonymityFlag and kThreshold inherited from the form
+   * ingestResponses (formTemplate: FormTemplate, responses: Set<Response>): (responseSet: ResponseSet)
+   * **requires** formTemplate exists and responses correspond to the form template
+   * **effects** create a new ResponseSet with anonymityFlag and kThreshold for aggregating all form responses
    */
   async ingestResponses({
-    target,
-    form,
+    formTemplate,
     responses,
     anonymityFlag = true,
     kThreshold = 3,
   }: {
-    target: Employee;
-    form: FeedbackFormID;
+    formTemplate: FormTemplateID;
     responses: Response[];
     anonymityFlag?: boolean;
     kThreshold?: number;
@@ -81,8 +80,7 @@ export default class ReportSynthesisConcept {
     const responseSetId = freshID() as ResponseSetID;
     const responseSetDoc: ResponseSetDoc = {
       _id: responseSetId,
-      target,
-      form,
+      formTemplate,
       responses,
       anonymityFlag,
       kThreshold,
@@ -101,8 +99,10 @@ export default class ReportSynthesisConcept {
     responseSet,
   }: {
     responseSet: ResponseSetID;
-  }): Promise<{}> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+  }): Promise<Record<PropertyKey, never>> {
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
@@ -122,7 +122,7 @@ export default class ReportSynthesisConcept {
 
     // Filter out questions with fewer than kThreshold responses
     const filteredResponses: Response[] = [];
-    for (const [questionIndex, responses] of responsesByQuestion) {
+    for (const [_questionIndex, responses] of responsesByQuestion) {
       if (responses.length >= responseSetDoc.kThreshold) {
         filteredResponses.push(...responses);
       }
@@ -130,7 +130,7 @@ export default class ReportSynthesisConcept {
 
     await this.responseSets.updateOne(
       { _id: responseSet },
-      { $set: { responses: filteredResponses } }
+      { $set: { responses: filteredResponses } },
     );
 
     return {};
@@ -146,34 +146,82 @@ export default class ReportSynthesisConcept {
   }: {
     responseSet: ResponseSetID;
   }): Promise<{ themes: string[] }> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
 
     // Simple theme extraction based on common keywords and patterns
-    const themes = new Set<string>();
+    const _themes = new Set<string>();
     const responseTexts = responseSetDoc.responses.map(
       (r: Response) => r.response.toLowerCase(),
     );
-    
+
     // Define theme keywords
     const themeKeywords = {
-      "Communication": ["communication", "communicate", "clear", "unclear", "explain", "listen"],
-      "Leadership": ["leadership", "lead", "guide", "direction", "vision", "inspire"],
-      "Collaboration": ["collaboration", "teamwork", "team", "work together", "cooperative"],
-      "Technical Skills": ["technical", "skill", "expertise", "knowledge", "proficient"],
-      "Problem Solving": ["problem", "solve", "solution", "analytical", "creative"],
-      "Time Management": ["time", "deadline", "punctual", "organized", "efficient"],
-      "Attitude": ["attitude", "positive", "negative", "motivated", "enthusiastic"],
+      "Communication": [
+        "communication",
+        "communicate",
+        "clear",
+        "unclear",
+        "explain",
+        "listen",
+      ],
+      "Leadership": [
+        "leadership",
+        "lead",
+        "guide",
+        "direction",
+        "vision",
+        "inspire",
+      ],
+      "Collaboration": [
+        "collaboration",
+        "teamwork",
+        "team",
+        "work together",
+        "cooperative",
+      ],
+      "Technical Skills": [
+        "technical",
+        "skill",
+        "expertise",
+        "knowledge",
+        "proficient",
+      ],
+      "Problem Solving": [
+        "problem",
+        "solve",
+        "solution",
+        "analytical",
+        "creative",
+      ],
+      "Time Management": [
+        "time",
+        "deadline",
+        "punctual",
+        "organized",
+        "efficient",
+      ],
+      "Attitude": [
+        "attitude",
+        "positive",
+        "negative",
+        "motivated",
+        "enthusiastic",
+      ],
       "Growth": ["growth", "development", "learn", "improve", "progress"],
     };
 
     // Count theme occurrences
     const themeCounts = new Map<string, number>();
     for (
-      const [theme, keywords] of Object.entries(themeKeywords) as
-        [string, string[]][]
+      const [theme, keywords] of Object.entries(themeKeywords) as [
+        string,
+        string[],
+      ][]
     ) {
       let count = 0;
       for (const text of responseTexts) {
@@ -209,7 +257,9 @@ export default class ReportSynthesisConcept {
     responseSet: ResponseSetID;
     themes: string[];
   }): Promise<{ draft: string }> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
@@ -226,19 +276,20 @@ export default class ReportSynthesisConcept {
       .join("\n\n");
 
     const prompt = `
-You are an HR professional creating a 360-degree feedback summary report. Based on the following feedback responses and identified themes, create a professional, constructive summary that highlights key strengths and areas for development.
+You are an HR professional creating a feedback summary report. Based on the following feedback responses and identified themes, create a professional, constructive summary that synthesizes the collective feedback.
 
-Identified Themes: ${themes.join(', ')}
+Identified Themes: ${themes.join(", ")}
 
 Feedback Responses:
 ${responseTexts}
 
 Please create a balanced, professional summary that:
-1. Highlights key strengths mentioned in the feedback
-2. Identifies areas for development constructively
-3. Incorporates the identified themes
-4. Maintains a professional, supportive tone
-5. Provides actionable insights
+1. Synthesizes common themes across all responses
+2. Highlights key insights and patterns in the feedback
+3. Identifies both strengths and areas for improvement mentioned
+4. Maintains a professional, objective tone
+5. Provides actionable insights based on the aggregated feedback
+6. Respects the anonymity of individual respondents
 
 Summary:`;
 
@@ -246,27 +297,48 @@ Summary:`;
       const draft = await this.llm.executeLLM(prompt);
       return { draft: draft.trim() };
     } catch (error) {
-      console.error("LLM draft generation failed, falling back to template:", error);
+      console.error(
+        "LLM draft generation failed, falling back to template:",
+        error,
+      );
       const draft = this.generateTemplateSummary(responseSetDoc, themes);
       return { draft };
     }
   }
 
-  private generateTemplateSummary(responseSetDoc: ResponseSetDoc, themes: string[]): string {
-    const responseCount = responseSetDoc.responses.length;
-    const topThemes = themes.slice(0, 3);
-    
-    return `
-Feedback Summary
+  private generateTemplateSummary(
+    responseSetDoc: ResponseSetDoc,
+    themes: string[],
+  ): string {
+    console.log(
+      "generateTemplateSummary called with themes:",
+      themes,
+      "type:",
+      typeof themes,
+    );
 
-This report is based on ${responseCount} feedback responses collected for the review period.
+    // Ensure themes is an array
+    const themesArray = Array.isArray(themes) ? themes : [];
+
+    const responseCount = responseSetDoc.responses.length;
+    const uniqueRespondents = new Set(
+      responseSetDoc.responses.map((r: Response) => r.respondent),
+    ).size;
+    const topThemes = themesArray.slice(0, 3);
+
+    return `
+Feedback Summary Report
+
+This report synthesizes ${responseCount} feedback responses from ${uniqueRespondents} respondents.
 
 Key Themes Identified:
-${topThemes.map(theme => `• ${theme}`).join('\n')}
+${topThemes.map((theme) => `• ${theme}`).join("\n")}
 
-The feedback indicates several areas of strength and opportunities for development. The most frequently mentioned themes suggest focus areas for continued growth and professional development.
+Analysis:
+The aggregated feedback reveals several consistent themes across responses. The most frequently mentioned themes suggest common patterns in how the team perceives and experiences the work environment.
 
-Based on the collected feedback, we recommend focusing on the identified themes to maximize professional growth and team effectiveness.
+Recommendations:
+Based on the collected feedback, we recommend focusing attention on the identified themes. These insights can help inform decisions about team development, process improvements, and organizational culture.
     `.trim();
   }
 
@@ -283,8 +355,10 @@ Based on the collected feedback, we recommend focusing on the identified themes 
     responseSet: ResponseSetID;
     finalText: string;
     keyQuotes: string[];
-  }): Promise<{}> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+  }): Promise<Record<PropertyKey, never>> {
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
@@ -292,32 +366,38 @@ Based on the collected feedback, we recommend focusing on the identified themes 
     // Calculate basic metrics
     const metrics = this.calculateMetrics(responseSetDoc);
 
+    // Extract key themes from the response set
+    const { themes } = await this.extractThemes({ responseSet });
+
     const reportId = freshID() as ReportID;
     const reportDoc: ReportDoc = {
       _id: reportId,
-      target: responseSetDoc.target,
+      formTemplate: responseSetDoc.formTemplate,
       textSummary: finalText,
+      keyThemes: themes.slice(0, 5), // Top 5 themes
       keyQuotes,
       metrics,
       createdAt: new Date().toISOString(),
     };
 
     await this.reports.insertOne(reportDoc);
-    
+
     // Update response set with report reference
     await this.responseSets.updateOne(
       { _id: responseSet },
-      { $set: { synthesizedReport: reportId } }
+      { $set: { synthesizedReport: reportId } },
     );
 
     return {};
   }
 
-  private calculateMetrics(responseSetDoc: ResponseSetDoc): Record<string, any> {
-    const metrics: Record<string, any> = {
+  private calculateMetrics(
+    responseSetDoc: ResponseSetDoc,
+  ): Record<string, number | Record<string, number>> {
+    const metrics: Record<string, number | Record<string, number>> = {
       totalResponses: responseSetDoc.responses.length,
-      uniqueReviewers: new Set(
-        responseSetDoc.responses.map((r: Response) => r.reviewer),
+      uniqueRespondents: new Set(
+        responseSetDoc.responses.map((r: Response) => r.respondent),
       ).size,
       questionsAnswered: new Set(
         responseSetDoc.responses.map((r: Response) => r.questionIndex),
@@ -328,7 +408,23 @@ Based on the collected feedback, we recommend focusing on the identified themes 
     const responseLengths = responseSetDoc.responses.map(
       (r: Response) => r.response.length,
     );
-    metrics.averageResponseLength = responseLengths.reduce((a, b) => a + b, 0) / responseLengths.length;
+    metrics.averageResponseLength = responseLengths.length > 0
+      ? responseLengths.reduce((a, b) => a + b, 0) / responseLengths.length
+      : 0;
+
+    // Calculate role distribution if available
+    const roleCount = new Map<string, number>();
+    for (const response of responseSetDoc.responses) {
+      if (response.respondentRole) {
+        roleCount.set(
+          response.respondentRole,
+          (roleCount.get(response.respondentRole) || 0) + 1,
+        );
+      }
+    }
+    if (roleCount.size > 0) {
+      metrics.roleDistribution = Object.fromEntries(roleCount);
+    }
 
     return metrics;
   }
@@ -343,7 +439,9 @@ Based on the collected feedback, we recommend focusing on the identified themes 
   }: {
     responseSet: ResponseSetID;
   }): Promise<{ report: ReportDoc }> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
@@ -352,7 +450,9 @@ Based on the collected feedback, we recommend focusing on the identified themes 
       throw new Error("No synthesized report available for this response set");
     }
 
-    const report = await this.reports.findOne({ _id: responseSetDoc.synthesizedReport });
+    const report = await this.reports.findOne({
+      _id: responseSetDoc.synthesizedReport,
+    });
     if (!report) {
       throw new Error("Synthesized report not found");
     }
@@ -370,7 +470,9 @@ Based on the collected feedback, we recommend focusing on the identified themes 
   }: {
     responseSet: ResponseSetID;
   }): Promise<{ responseSetData: ResponseSetDoc }> {
-    const responseSetDoc = await this.responseSets.findOne({ _id: responseSet });
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSet,
+    });
     if (!responseSetDoc) {
       throw new Error("Response set not found");
     }
@@ -379,16 +481,192 @@ Based on the collected feedback, we recommend focusing on the identified themes 
   }
 
   /**
-   * getReportsByTarget (target: Employee): (reports: ReportDoc[])
-   * **requires** target exists
-   * **effects** return all reports for the target employee
+   * getReportByFormTemplate (formTemplate: FormTemplate): (report: ReportDoc | null)
+   * **requires** formTemplate exists
+   * **effects** return the most recent report for the form template, or null if none exists
    */
-  async getReportsByTarget({
-    target,
+  async getReportByFormTemplate({
+    formTemplate,
   }: {
-    target: Employee;
-  }): Promise<{ reports: ReportDoc[] }> {
-    const reports = await this.reports.find({ target }).toArray();
+    formTemplate: FormTemplateID;
+  }): Promise<{ report: ReportDoc | null }> {
+    const reports = await this.reports
+      .find({ formTemplate })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .toArray();
+    return { report: reports[0] || null };
+  }
+
+  /**
+   * getAllReports (): (reports: ReportDoc[])
+   * **effects** return all synthesized reports
+   */
+  async getAllReports(): Promise<{ reports: ReportDoc[] }> {
+    const reports = await this.reports.find({}).sort({ createdAt: -1 })
+      .toArray();
     return { reports };
+  }
+
+  /**
+   * generateCompleteReport - generates a full synthesis report from form responses
+   * **requires** user is the creator of the form template
+   * **effects** creates response set, applies anonymity, extracts themes, generates summary, and returns complete report
+   */
+  async generateCompleteReport({
+    formTemplateId,
+    responses,
+    anonymityFlag = true,
+    kThreshold = 3,
+  }: {
+    formTemplateId: FormTemplateID;
+    responses: Response[];
+    anonymityFlag?: boolean;
+    kThreshold?: number;
+  }): Promise<{ report: ReportDoc }> {
+    console.log(
+      "generateCompleteReport called with",
+      responses.length,
+      "responses",
+    );
+
+    // 1. Ingest responses
+    const { responseSet: responseSetId } = await this.ingestResponses({
+      formTemplate: formTemplateId,
+      responses,
+      anonymityFlag,
+      kThreshold,
+    });
+
+    // 2. Apply k-anonymity
+    await this.applyKAnonymity({ responseSet: responseSetId });
+
+    // 3. Extract themes
+    const { themes } = await this.extractThemes({ responseSet: responseSetId });
+
+    // 4. Generate draft summary with LLM
+    const { draft } = await this.draftSummaryLLM({
+      responseSet: responseSetId,
+      themes,
+    });
+
+    // 5. Extract key quotes
+    const { keyQuotes } = this.extractKeyQuotes({
+      responses: responses as unknown[],
+    });
+
+    // 6. Approve and finalize summary
+    await this.approveSummary({
+      responseSet: responseSetId,
+      finalText: draft,
+      keyQuotes,
+    });
+
+    // 7. Get the final report
+    const { report } = await this.getFinalReport({
+      responseSet: responseSetId,
+    });
+
+    console.log("generateCompleteReport completed, returning report");
+    return { report };
+  }
+
+  /**
+   * generateFormTemplateReport (formTemplateId: FormTemplateID, createdBy: User): (report: ReportDoc)
+   * **requires** user is the creator of the form template
+   * **effects** generates synthesis report from all form responses
+   */
+  async generateFormTemplateReport({
+    formTemplateId,
+    createdBy,
+    anonymityFlag = true,
+    kThreshold = 3,
+  }: {
+    formTemplateId: FormTemplateID;
+    createdBy: ID;
+    anonymityFlag?: boolean;
+    kThreshold?: number;
+  }): Promise<{ report: ReportDoc }> {
+    // Get form template
+    const { FormTemplate, AccessCode } = await import("@concepts");
+    const { template } = await FormTemplate.getTemplate({
+      templateId: formTemplateId,
+    });
+
+    // Get form responses
+    const { responses: accessCodeResponses } = await AccessCode
+      .getFormResponses({ formId: formTemplateId, createdBy });
+
+    // Transform responses to format needed by generateCompleteReport
+    const transformedResponses: Response[] = [];
+    for (const response of accessCodeResponses) {
+      const responsesMap = response.responses as Record<string, string>;
+      for (
+        const [questionIndex, responseText] of Object.entries(responsesMap)
+      ) {
+        const question = template.questions[parseInt(questionIndex)];
+        transformedResponses.push({
+          questionIndex: parseInt(questionIndex),
+          questionText: question?.prompt ||
+            `Question ${parseInt(questionIndex) + 1}`,
+          response: responseText,
+          respondent: (response.memberId || response.memberEmail) as ID,
+          respondentRole: response.memberRole as string,
+        });
+      }
+    }
+
+    // Generate the complete report
+    return await this.generateCompleteReport({
+      formTemplateId,
+      responses: transformedResponses,
+      anonymityFlag,
+      kThreshold,
+    });
+  }
+
+  /**
+   * extractKeyQuotes (responses: FormResponseDoc[]): (keyQuotes: string[])
+   * **effects** extracts meaningful quotes from responses
+   */
+  extractKeyQuotes({
+    responses,
+    maxQuotes = 5,
+    minLength = 20,
+  }: {
+    responses: unknown[];
+    maxQuotes?: number;
+    minLength?: number;
+  }): { keyQuotes: string[] } {
+    const keyQuotes: string[] = [];
+    for (const response of responses) {
+      const responseObj = response as Record<string, unknown>;
+      if (responseObj.responses && typeof responseObj.responses === "object") {
+        for (const responseText of Object.values(responseObj.responses)) {
+          if (
+            typeof responseText === "string" &&
+            responseText.length >= minLength && keyQuotes.length < maxQuotes
+          ) {
+            keyQuotes.push(responseText);
+          }
+        }
+      }
+    }
+    return { keyQuotes };
+  }
+
+  /**
+   * _extractKeyQuotesHelper (helper action for sync)
+   */
+  _extractKeyQuotesHelper({
+    responses,
+    maxQuotes = 5,
+    minLength = 20,
+  }: {
+    responses: unknown[];
+    maxQuotes?: number;
+    minLength?: number;
+  }): { keyQuotes: string[] } {
+    return this.extractKeyQuotes({ responses, maxQuotes, minLength });
   }
 }

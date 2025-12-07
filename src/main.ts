@@ -19,9 +19,10 @@ import syncs from "@syncs";
  *   Logging.TRACE - display a trace of the actions.
  *   Logging.VERBOSE - display full record of synchronization.
  */
-Engine.logging = Logging.TRACE;
+Engine.logging = Logging.VERBOSE;
 
 // Register synchronizations
+console.log("Registering syncs:", Object.keys(syncs));
 Engine.register(syncs);
 
 // Start a server to provide the Requesting concept with external/system actions.
