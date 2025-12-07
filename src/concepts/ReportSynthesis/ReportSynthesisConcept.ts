@@ -667,4 +667,58 @@ Based on the collected feedback, we recommend focusing attention on the identifi
   }): { keyQuotes: string[] } {
     return this.extractKeyQuotes({ responses, maxQuotes, minLength });
   }
+
+  /**
+   * generateTeamSummary (teamId: string, teamName: string, members: Array<{name: string, role: string}>): (summary: string)
+   * **requires** team information
+   * **effects** generate a professional team summary using the existing LLM infrastructure
+   */
+  async generateTeamSummary({
+    teamId,
+    teamName,
+    members,
+  }: {
+    teamId: string;
+    teamName: string;
+    members: Array<{ name: string; role: string }>;
+  }): Promise<{ summary: string }> {
+    if (!this.llm) {
+      // Fallback to simple template-based summary
+      const memberCount = members.length;
+      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      return {
+        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+      };
+    }
+
+    // Prepare prompt for LLM
+    const memberDescriptions = members.map(m => `${m.name} (${m.role})`).join(", ");
+
+    const prompt = `You are an HR professional creating a team summary for a management dashboard. Based on the following team information, create a concise, professional summary.
+
+Team Name: ${teamName}
+Team Members: ${memberDescriptions}
+
+Please provide a 2-3 sentence summary that highlights:
+1. The team's composition and structure
+2. Key strengths or capabilities based on the roles
+3. A positive, forward-looking statement
+
+Keep it professional, concise, and suitable for a management dashboard.
+
+Summary:`;
+
+    try {
+      const summary = await this.llm.executeLLM(prompt);
+      return { summary: summary.trim() };
+    } catch (error) {
+      console.error("Error generating team summary with LLM:", error);
+      // Fallback to template-based summary
+      const memberCount = members.length;
+      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      return {
+        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+      };
+    }
+  }
 }

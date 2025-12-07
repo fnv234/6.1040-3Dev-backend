@@ -1,7 +1,6 @@
 import { Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { ReportSynthesis } from "@concepts";
 import { ID } from "@utils/types.ts";
-import { GeminiLLM } from "../../../gemini-llm.ts";
 
 const router = new Router();
 
@@ -226,7 +225,7 @@ router.get("/getAllReports", async (ctx: any) => {
 
 /**
  * POST /reportSynthesis/generateTeamSummary
- * Generates a team summary using Gemini LLM
+ * Generates a team summary using the existing ReportSynthesis LLM infrastructure
  *
  * Request body:
  * {
@@ -271,31 +270,24 @@ router.post("/generateTeamSummary", async (ctx: any) => {
       return;
     }
 
-    // Initialize Gemini LLM
-    const geminiLLM = new GeminiLLM({
+    // Initialize ReportSynthesis with LLM
+    const llmConfig = {
       apiKey: Deno.env.get("GEMINI_API_KEY") || "",
+    };
+    
+    const reportSynthesis = new ReportSynthesis(ctx.state.db, llmConfig);
+
+    // Generate summary using the existing ReportSynthesis infrastructure
+    const { summary } = await reportSynthesis.generateTeamSummary({
+      teamId,
+      teamName,
+      members,
     });
-
-    // Create prompt for team summary
-    const prompt = `Generate a concise, professional team summary for the following team:
-
-Team Name: ${teamName}
-Team Members: ${members.map(m => `${m.name} (${m.role})`).join(", ")}
-
-Please provide a 2-3 sentence summary that highlights:
-1. The team's composition and structure
-2. Key strengths or capabilities based on the roles
-3. A positive, forward-looking statement
-
-Keep it professional and suitable for a management dashboard.`;
-
-    // Generate summary using Gemini
-    const summary = await geminiLLM.executeLLM(prompt);
 
     ctx.response.status = 200;
     ctx.response.body = {
       success: true,
-      summary: summary.trim(),
+      summary,
       teamId,
       teamName,
     };
