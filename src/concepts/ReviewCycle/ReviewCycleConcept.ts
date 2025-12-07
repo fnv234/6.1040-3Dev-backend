@@ -118,7 +118,7 @@ export default class ReviewCycleConcept {
 
     await this.cycles.updateOne(
       { _id: cycle },
-      { $set: { assignments } }
+      { $set: { assignments } },
     );
 
     return {};
@@ -151,7 +151,7 @@ export default class ReviewCycleConcept {
     }
 
     // Add new reviewers to existing ones (avoiding duplicates)
-    const existingReviewers = new Set< Employee >(
+    const existingReviewers = new Set<Employee>(
       cycleDoc.assignments[assignmentIndex].reviewers,
     );
     const allReviewers = [
@@ -163,7 +163,7 @@ export default class ReviewCycleConcept {
 
     await this.cycles.updateOne(
       { _id: cycle },
-      { $set: { assignments: cycleDoc.assignments } }
+      { $set: { assignments: cycleDoc.assignments } },
     );
 
     return {};
@@ -187,7 +187,9 @@ export default class ReviewCycleConcept {
       throw new Error("Cycle not found");
     }
 
-    const assignmentIndex = cycleDoc.assignments.findIndex((a: ReviewAssignmentDoc) => a.target === target);
+    const assignmentIndex = cycleDoc.assignments.findIndex((
+      a: ReviewAssignmentDoc,
+    ) => a.target === target);
     if (assignmentIndex === -1) {
       throw new Error("Assignment not found for target");
     }
@@ -223,13 +225,15 @@ export default class ReviewCycleConcept {
     // Check that all assignments have reviewers
     for (const assignment of cycleDoc.assignments) {
       if (assignment.reviewers.length === 0) {
-        throw new Error(`Assignment for target ${assignment.target} has no reviewers`);
+        throw new Error(
+          `Assignment for target ${assignment.target} has no reviewers`,
+        );
       }
     }
 
     await this.cycles.updateOne(
       { _id: cycle },
-      { $set: { isActive: true } }
+      { $set: { isActive: true } },
     );
 
     return {};
@@ -287,7 +291,7 @@ export default class ReviewCycleConcept {
       .find({ cycle, target })
       .toArray();
 
-    const submittedReviewerIds = new Set< Employee >(
+    const submittedReviewerIds = new Set<Employee>(
       submittedReviewers.map((r: ResponseDoc) => r.reviewer),
     );
     const allReviewersSubmitted = assignment.reviewers.every(
@@ -303,7 +307,7 @@ export default class ReviewCycleConcept {
 
       await this.cycles.updateOne(
         { _id: cycle },
-        { $set: { assignments: cycleDoc.assignments } }
+        { $set: { assignments: cycleDoc.assignments } },
       );
     }
 
@@ -344,7 +348,7 @@ export default class ReviewCycleConcept {
           isActive: false,
           assignments: updatedAssignments,
         },
-      }
+      },
     );
 
     return {};

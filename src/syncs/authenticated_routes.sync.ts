@@ -9,7 +9,7 @@
  * which are already connected to the database and the sync engine.
  */
 
-import { FeedbackForm, OrgGraph, ReviewCycle, ReportSynthesis, Requesting } from "@concepts";
+import { OrgGraph, ReportSynthesis, Requesting, ReviewCycle } from "@concepts";
 import { actions, Frames, Sync, Vars } from "@engine";
 
 // Sync for building reviewers automatically based on org graph
@@ -17,7 +17,7 @@ export const buildReviewers: Sync = ({ cycle, target }: Vars) => ({
   when: actions([
     ReviewCycle.autoBuildReviewers,
     { cycle, target },
-    {}
+    {},
   ]),
   then: actions(
     // Get manager
@@ -36,7 +36,7 @@ export const buildReviewers: Sync = ({ cycle, target }: Vars) => ({
         ...reports,
       ],
     }],
-  )
+  ),
 });
 
 // Sync for ingesting and sanitizing feedback responses
@@ -46,7 +46,7 @@ export const ingestAndSanitize: Sync = (
   when: actions([
     ReviewCycle.submitFeedback,
     { cycle, target, reviewer, responses },
-    {}
+    {},
   ]),
   // This would typically ingest into ReportSynthesis and apply k-anonymity
   // For now, we'll just pass through the submission with no follow-up actions
@@ -58,7 +58,7 @@ export const prepareForSummary: Sync = ({ cycle }: Vars) => ({
   when: actions([
     ReviewCycle.close,
     { cycle },
-    {}
+    {},
   ]),
   then: actions([
     // Export response sets from the closed cycle
@@ -73,7 +73,7 @@ export const generateDrafts: Sync = ({ responseSet, themes }: Vars) => ({
   when: actions([
     ReportSynthesis.extractThemes,
     { responseSet },
-    { themes }
+    { themes },
   ]),
   then: actions([
     ReportSynthesis.draftSummaryLLM,
@@ -88,7 +88,7 @@ export const finalizeReports: Sync = (
   when: actions([
     ReportSynthesis.approveSummary,
     { responseSet, finalText, keyQuotes },
-    {}
+    {},
   ]),
   then: actions([
     ReportSynthesis.getFinalReport,
@@ -97,27 +97,7 @@ export const finalizeReports: Sync = (
 });
 
 // Authentication passthrough syncs (placeholder until proper auth is implemented)
-export const authenticatedFeedbackFormRoutes: Sync = (
-  { request, path, ...params }: Vars,
-) => ({
-  when: actions([
-    Requesting.request,
-    { path, ...params },
-    { request },
-  ]),
-  where: (frames: Frames) => {
-    // Check if path is a FeedbackForm route
-    const pathStr = frames.path as string | undefined;
-    if (typeof pathStr === 'string' && pathStr.startsWith('/FeedbackForm/')) {
-      return frames;
-    }
-    return {};
-  },
-  then: actions([
-    Requesting.respond,
-    { request, success: true },
-  ]),
-});
+// Note: FeedbackForm routes removed - now using FormTemplate and AccessCode concepts
 
 export const authenticatedOrgGraphRoutes: Sync = (
   { request, path, ...params }: Vars,
@@ -129,7 +109,7 @@ export const authenticatedOrgGraphRoutes: Sync = (
   ]),
   where: (frames: Frames) => {
     const pathStr = frames.path as string | undefined;
-    if (typeof pathStr === 'string' && pathStr.startsWith('/OrgGraph/')) {
+    if (typeof pathStr === "string" && pathStr.startsWith("/OrgGraph/")) {
       return frames;
     }
     return {};
@@ -150,7 +130,7 @@ export const authenticatedReviewCycleRoutes: Sync = (
   ]),
   where: (frames: Frames) => {
     const pathStr = frames.path as string | undefined;
-    if (typeof pathStr === 'string' && pathStr.startsWith('/ReviewCycle/')) {
+    if (typeof pathStr === "string" && pathStr.startsWith("/ReviewCycle/")) {
       return frames;
     }
     return {};
@@ -167,11 +147,13 @@ export const authenticatedReportSynthesisRoutes: Sync = (
   when: actions([
     Requesting.request,
     { path, ...params },
-    { request }
+    { request },
   ]),
   where: (frames: Frames) => {
     const pathStr = frames.path as string | undefined;
-    if (typeof pathStr === 'string' && pathStr.startsWith('/ReportSynthesis/')) {
+    if (
+      typeof pathStr === "string" && pathStr.startsWith("/ReportSynthesis/")
+    ) {
       return frames;
     }
     return {};
