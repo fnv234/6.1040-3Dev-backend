@@ -1,6 +1,7 @@
 import { Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { ReportSynthesis } from "@concepts";
 import { ID } from "@utils/types.ts";
+import { GeminiLLM } from "../../../gemini-llm.ts";
 
 const router = new Router();
 
@@ -220,6 +221,98 @@ router.get("/getAllReports", async (ctx: any) => {
           ? error.message
           : undefined,
     };
+  }
+});
+
+/**
+ * POST /reportSynthesis/generateTeamSummary
+ * Generates a team summary using Gemini LLM
+ *
+ * Request body:
+ * {
+ *   teamId: string,
+ *   teamName: string,
+ *   members: Array<{name: string, role: string}>
+ * }
+ */
+router.post("/generateTeamSummary", async (ctx: any) => {
+  try {
+    if (!ctx.request.hasBody) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "Request body is required",
+      };
+      return;
+    }
+
+    const body = ctx.request.body();
+    let requestData: { teamId: string; teamName: string; members: Array<{name: string; role: string}> };
+
+    if (body.type === "json") {
+      requestData = await body.value;
+    } else {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "Request body must be JSON",
+      };
+      return;
+    }
+
+    const { teamId, teamName, members } = requestData;
+
+    if (!teamId || !teamName || !members) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "teamId, teamName, and members are required",
+      };
+      return;
+    }
+
+    // Initialize Gemini LLM
+    const geminiLLM = new GeminiLLM({
+      apiKey: Deno.env.get("GEMINI_API_KEY") || "",
+    });
+
+    // Create prompt for team summary
+    const prompt = `Generate a concise, professional team summary for the following team:
+
+Team Name: ${teamName}
+Team Members: ${members.map(m => `${m.name} (${m.role})`).join(", ")}
+
+Please provide a 2-3 sentence summary that highlights:
+1. The team's composition and structure
+2. Key strengths or capabilities based on the roles
+3. A positive, forward-looking statement
+
+Keep it professional and suitable for a management dashboard.`;
+
+    // Generate summary using Gemini
+    const summary = await geminiLLM.executeLLM(prompt);
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      success: true,
+      summary: summary.trim(),
+      teamId,
+      teamName,
+    };
+
+  } catch (error) {
+    console.error("Error generating team summary:", error);
+    ctx.response.status = 500;
+    ctx.response.body = {
+      success: false,
+      error: "Failed to generate team summary",
+    };
+    
+    if (
+      Deno.env.get("DENO_ENV") === "development" && error instanceof Error
+    ) {
+      console.error(error.stack);
+    }
   }
 });
 
