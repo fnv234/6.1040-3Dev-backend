@@ -293,6 +293,12 @@ Please create a balanced, professional summary that:
 
 Summary:`;
 
+    console.log("\n=== LLM PROMPT ===");
+    console.log("Themes:", themes);
+    console.log("Number of responses:", responseSetDoc.responses.length);
+    console.log("Prompt:", prompt);
+    console.log("==================\n");
+
     try {
       const draft = await this.llm.executeLLM(prompt);
       return { draft: draft.trim() };
@@ -310,13 +316,6 @@ Summary:`;
     responseSetDoc: ResponseSetDoc,
     themes: string[],
   ): string {
-    console.log(
-      "generateTemplateSummary called with themes:",
-      themes,
-      "type:",
-      typeof themes,
-    );
-
     // Ensure themes is an array
     const themesArray = Array.isArray(themes) ? themes : [];
 
@@ -524,12 +523,6 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     anonymityFlag?: boolean;
     kThreshold?: number;
   }): Promise<{ report: ReportDoc }> {
-    console.log(
-      "generateCompleteReport called with",
-      responses.length,
-      "responses",
-    );
-
     // 1. Ingest responses
     const { responseSet: responseSetId } = await this.ingestResponses({
       formTemplate: formTemplateId,
@@ -567,7 +560,6 @@ Based on the collected feedback, we recommend focusing attention on the identifi
       responseSet: responseSetId,
     });
 
-    console.log("generateCompleteReport completed, returning report");
     return { report };
   }
 
@@ -587,15 +579,21 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     anonymityFlag?: boolean;
     kThreshold?: number;
   }): Promise<{ report: ReportDoc }> {
+    console.log("\n🔵 generateFormTemplateReport called");
+    console.log("Form Template ID:", formTemplateId);
+    console.log("Created By:", createdBy);
+
     // Get form template
     const { FormTemplate, AccessCode } = await import("@concepts");
     const { template } = await FormTemplate.getTemplate({
       templateId: formTemplateId,
     });
+    console.log("✅ Template retrieved:", template.name);
 
     // Get form responses
     const { responses: accessCodeResponses } = await AccessCode
       .getFormResponses({ formId: formTemplateId, createdBy });
+    console.log("✅ Responses retrieved:", accessCodeResponses.length);
 
     // Transform responses to format needed by generateCompleteReport
     const transformedResponses: Response[] = [];

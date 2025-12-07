@@ -9,14 +9,7 @@
  * which are already connected to the database and the sync engine.
  */
 
-import {
-  AccessCode,
-  FormTemplate,
-  OrgGraph,
-  ReportSynthesis,
-  Requesting,
-  ReviewCycle,
-} from "@concepts";
+import { OrgGraph, ReportSynthesis, Requesting, ReviewCycle } from "@concepts";
 import { actions, Frames, Sync, Vars } from "@engine";
 
 // Frame type definitions for the sync
@@ -24,131 +17,6 @@ interface IngestResponsesFrame {
   template: unknown;
   responses: unknown;
 }
-
-// Dedicated sync for generating form template reports
-export const handleGenerateFormTemplateReportRequest: Sync = (
-  { request, formTemplateId, createdBy, anonymityFlag, kThreshold }: Vars,
-) => ({
-  when: actions([
-    Requesting.request,
-    {
-      path: "/ReportSynthesis/generateFormTemplateReport",
-      formTemplateId,
-      createdBy,
-      anonymityFlag,
-      kThreshold,
-    },
-    { request },
-  ]),
-  where: (frames: Frames) => {
-    // Access the path from frames - it's stored as a Symbol
-    const frameObj = frames as unknown as Record<symbol, unknown>;
-    const pathSymbol = Object.getOwnPropertySymbols(frameObj).find(
-      (s) => s.toString() === "Symbol(path)",
-    );
-    const pathValue = pathSymbol ? frameObj[pathSymbol] : undefined;
-
-    console.log(
-      "handleGenerateFormTemplateReportRequest where clause - path:",
-      pathValue,
-    );
-
-    if (pathValue === "/ReportSynthesis/generateFormTemplateReport") {
-      console.log("handleGenerateFormTemplateReportRequest MATCHED!");
-      return frames;
-    }
-    console.log("handleGenerateFormTemplateReportRequest SKIPPED");
-    return null as unknown as Frames;
-  },
-  then: actions(
-    // Get form template
-    [FormTemplate.getTemplate, { templateId: formTemplateId }, {
-      template: "template",
-    }],
-    // Get form responses from AccessCode
-    [AccessCode.getFormResponses, { formId: formTemplateId, createdBy }, {
-      responses: "responses",
-    }],
-    // Call the comprehensive report generation method
-    [
-      ReportSynthesis.generateCompleteReport,
-      {
-        formTemplateId,
-        responses: (frames: Frames) => {
-          console.log("Sync received frames:", frames);
-
-          // Access Symbol-based properties from frames
-          const frameObj = frames as unknown as Record<symbol, unknown>;
-          const templateSymbol = Object.getOwnPropertySymbols(frameObj).find(
-            (s) => s.toString() === "Symbol(template)",
-          );
-          const responsesSymbol = Object.getOwnPropertySymbols(frameObj).find(
-            (s) => s.toString() === "Symbol(responses)",
-          );
-
-          const template = templateSymbol
-            ? frameObj[templateSymbol]
-            : undefined;
-          const responses = responsesSymbol
-            ? frameObj[responsesSymbol]
-            : undefined;
-
-          console.log("Sync received template:", template);
-          console.log("Sync received responses:", responses);
-
-          // Transform AccessCode responses to ReportSynthesis format
-          const templateData = template as Record<string, unknown>;
-          const responsesData = responses as Array<Record<string, unknown>>;
-          console.log("Transformed responsesData:", responsesData);
-
-          const transformedResponses = [];
-          for (const response of responsesData) {
-            const responseObj = response as Record<string, unknown>;
-            const responsesMap = responseObj.responses as Record<
-              string,
-              unknown
-            >;
-            for (
-              const [questionIndex, responseText] of Object.entries(
-                responsesMap,
-              )
-            ) {
-              const questions = templateData.questions as Array<
-                Record<string, unknown>
-              >;
-              const question = questions[parseInt(questionIndex)];
-              transformedResponses.push({
-                questionIndex: parseInt(questionIndex),
-                questionText: (question as Record<string, unknown>)?.prompt ||
-                  `Question ${parseInt(questionIndex) + 1}`,
-                response: responseText as string,
-                respondent: (responseObj.memberId as string) ||
-                  (responseObj.memberEmail as string),
-                respondentRole: responseObj.memberRole as string,
-              });
-            }
-          }
-          return transformedResponses;
-        },
-        anonymityFlag,
-        kThreshold,
-      },
-      { report: "report" },
-    ],
-    // Respond with the report
-    [Requesting.respond, {
-      request,
-      report: (frames: Frames) => {
-        const frameObj = frames as unknown as Record<symbol, unknown>;
-        const reportSymbol = Object.getOwnPropertySymbols(frameObj).find(
-          (s) => s.toString() === "Symbol(report)",
-        );
-        return reportSymbol ? frameObj[reportSymbol] : undefined;
-      },
-    }],
-  ),
-});
-
 // Sync for building reviewers automatically based on org graph
 export const buildReviewers: Sync = ({ cycle, target }: Vars) => ({
   when: actions([
@@ -293,7 +161,6 @@ export const authenticatedReportSynthesisRoutes: Sync = (
     const pathStr = (frames as unknown as Record<string, unknown>).path as
       | string
       | undefined;
-    console.log("authenticatedReportSynthesisRoutes checking path:", pathStr);
     if (
       typeof pathStr === "string" &&
       pathStr.startsWith("/ReportSynthesis/") &&

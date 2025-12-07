@@ -86,6 +86,9 @@ export const Engine = new SyncConcept();\n`;
   const dbImportFunc = isTest ? "testDb" : "getDb";
   const dbImport = `import { ${dbImportFunc} } from "@utils/database.ts";\n`;
 
+  // Add LLM config import for ReportSynthesis
+  const llmConfigImport = isTest ? "" : `\nimport "jsr:@std/dotenv/load";`;
+
   const conceptClassImports = concepts
     .map((c) => `import ${c.name}Concept from "${c.importPath}";`)
     .join("\n");
@@ -103,14 +106,27 @@ export const [db, client] = await ${dbImportFunc}();
 `;
 
   const instantiations = concepts
-    .map((c) =>
-      `export const ${c.name} = Engine.instrumentConcept(new ${c.name}Concept(db));`
-    )
+    .map((c) => {
+      if (c.name === "ReportSynthesis" && !isTest) {
+        // Special handling for ReportSynthesis with LLM config
+        return `// Load LLM configuration for ReportSynthesis
+const llmConfig = {
+  apiKey: Deno.env.get("GEMINI_API_KEY"),
+  model: Deno.env.get("GEMINI_MODEL"),
+  configPath: Deno.env.get("GEMINI_CONFIG")
+};
+
+export const ${c.name} = Engine.instrumentConcept(new ${c.name}Concept(db, llmConfig));`;
+      } else {
+        return `export const ${c.name} = Engine.instrumentConcept(new ${c.name}Concept(db));`;
+      }
+    })
     .join("\n");
 
   return [
     header,
     dbImport,
+    llmConfigImport,
     conceptClassImports,
     "", // newline
     conceptTypeExports,
