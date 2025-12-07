@@ -721,4 +721,60 @@ Summary:`;
       };
     }
   }
+
+  /**
+   * Static method to generate team summary without database dependency
+   * This can be used in routes where database context isn't available
+   */
+  static async generateTeamSummaryStatic({
+    teamName,
+    members,
+  }: {
+    teamName: string;
+    members: Array<{ name: string; role: string }>;
+  }): Promise<{ summary: string }> {
+    // Check if Gemini API key is available
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    
+    if (!apiKey) {
+      // Fallback to simple template-based summary
+      const memberCount = members.length;
+      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      return {
+        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+      };
+    }
+
+    try {
+      const llm = new GeminiLLM({ apiKey });
+
+      // Prepare prompt for LLM
+      const memberDescriptions = members.map(m => `${m.name} (${m.role})`).join(", ");
+
+      const prompt = `You are an HR professional creating a team summary for a management dashboard. Based on the following team information, create a concise, professional summary.
+
+Team Name: ${teamName}
+Team Members: ${memberDescriptions}
+
+Please provide a 2-3 sentence summary that highlights:
+1. The team's composition and structure
+2. Key strengths or capabilities based on the roles
+3. A positive, forward-looking statement
+
+Keep it professional, concise, and suitable for a management dashboard.
+
+Summary:`;
+
+      const summary = await llm.executeLLM(prompt);
+      return { summary: summary.trim() };
+    } catch (error) {
+      console.error("Error generating team summary with LLM:", error);
+      // Fallback to template-based summary
+      const memberCount = members.length;
+      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      return {
+        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+      };
+    }
+  }
 }

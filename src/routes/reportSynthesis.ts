@@ -1,5 +1,5 @@
 import { Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
-import { ReportSynthesis } from "@concepts";
+import ReportSynthesisConcept from "@concepts/ReportSynthesis/ReportSynthesisConcept.ts";
 import { ID } from "@utils/types.ts";
 
 const router = new Router();
@@ -270,16 +270,8 @@ router.post("/generateTeamSummary", async (ctx: any) => {
       return;
     }
 
-    // Initialize ReportSynthesis with LLM
-    const llmConfig = {
-      apiKey: Deno.env.get("GEMINI_API_KEY") || "",
-    };
-    
-    const reportSynthesis = new ReportSynthesis(ctx.state.db, llmConfig);
-
-    // Generate summary using the existing ReportSynthesis infrastructure
-    const { summary } = await reportSynthesis.generateTeamSummary({
-      teamId,
+    // Generate summary using the static method (no database needed)
+    const { summary } = await ReportSynthesisConcept.generateTeamSummaryStatic({
       teamName,
       members,
     });
