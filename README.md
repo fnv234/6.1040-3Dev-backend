@@ -12,3 +12,6 @@ Click [here](https://youtu.be/AW1pj0ti9iE) to view our project pitch.
 ## Functional Design
 See [@functional_design](./functional_design)
 
+## User Testing
+See [@user-testing](./user_testing)
+
