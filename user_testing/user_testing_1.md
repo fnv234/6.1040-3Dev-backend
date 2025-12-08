@@ -1,8 +1,11 @@
 # User Testing Report - 360 Feedback Web Application
 
 **Date:** December 7, 2025  
+
 **Testing Session Duration:** ~60 minutes
+
 **Number of Participants:** 3, members of Diego's team at his workplace
+
 **Participant Roles:**
 - Participant 1 (P1): HR Admin/Form Creator
 - Participant 2 (P2): Team Member/Respondent
