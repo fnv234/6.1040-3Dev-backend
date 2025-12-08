@@ -19,7 +19,6 @@
 | 6 | Review Dashboard Analytics | Navigate to the Dashboard and review response metrics across all three debate teams. Examine response rates, completion status, and team-specific statistics. | Tests whether users can interpret the dashboard's data visualization and find value in the metrics presented. We want to see if the information hierarchy makes sense, if users understand what they're looking at, and whether they feel they can make informed decisions based on the data shown. |
 | 7 | Generate and Review AI Summary | From the Form Responses view, generate an AI-powered synthesis report for the "Tournament Performance Review" form and evaluate its usefulness. | Tests the discoverability and perceived value of the LLM summary feature. We want to observe: Can users find the report generation button? Do they understand what it will produce? Does the generated content feel useful and actionable? This is a premium feature we're highlighting, so understanding its reception is critical. |
 
----
 
 ## Participant 1 Summary (Debate Coach/Admin)
 

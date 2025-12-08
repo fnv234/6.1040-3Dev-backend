@@ -19,9 +19,7 @@
 | 7      | Generate AI Summary Report                         | From the form responses view, generate an AI-powered summary report for the completed feedback forms and teams.                                       | Tests the discoverability and usability of the LLM summary feature. Here, we want to observe whether users can find the report generation button for the teams in the Dashboard and the forms in the form responses view, understand what it does, and whether the generated report appears useful and informative.                                                                                                                                    |
 
 
-## Lesson Summary
-
-### Participant 1 (HR Admin / Form Creator, Responder)
+## Participant 1 (HR Admin / Form Creator, Responder)
 
 P1 moved through the basic auth tasks (Task 1) pretty smoothly. They were able to register, log out, and log back in without confusion. They did comment that they would have liked clearer feedback when a login failed (e.g. wrong password) versus when an account simply didn't exist instead of a generic "invalid" message.
 
@@ -33,7 +31,7 @@ Sending access codes (Task 4) mostly worked as intended. P1 liked that the email
 
 Finally, when they generated AI summaries (Task 7), they liked the idea a lot ("this is what I'd actually use"), but the content felt a bit generic. They said they would want more concrete callouts or trends rather than just a re-phrasing of what people wrote, or a more visual export that they could share with their team or upper management.
 
-### Participant 2 (Team Member / Respondent)
+## Participant 2 (Team Member / Respondent)
 
 P2's main path was Tasks 4, 5, 6, and 7 as a respondent. They got the access code email, clicked the link, and then got confused when they hit a login page instead of being dropped directly into the form. Their mental model was "the code *is* the access," not "log in, then use the code." Once we prompted them to look for the access-code option, they were able to proceed, but they likely wouldn't have discovered it alone.
 
@@ -43,7 +41,7 @@ We also tested interruption and recovery: they partially filled out the form, na
 
 On the analytics side (Task 6), P2 didn't have direct access to the dashboard in our current design, but we asked them what they expected. They said they'd like to see at least some aggregated view (e.g. overall sentiment or a few high-level numbers) after submitting/a receipt.
 
-### Participant 3 (Team Member / Respondent)
+## Participant 3 (Team Member / Respondent)
 
 P3's run was identical to P2's, also focused on Tasks 4, 5, 6, and 7. Their first reaction was to the access code email itself. They expressed similar distaste for the plainness of the invite email.
 
