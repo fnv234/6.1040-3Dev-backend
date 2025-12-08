@@ -1,6 +1,7 @@
 # User Testing - 1
 
 **Number of Participants:** 3, members of Diego's team at his workplace
+
 **Participant Roles:**
 - Participant 1 (P1): HR Admin/Form Creator
 - Participant 2 (P2): Team Member/Respondent
