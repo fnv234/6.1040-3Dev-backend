@@ -1,4 +1,5 @@
 import { Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
+import { ReportSynthesis } from "@concepts";
 import ReportSynthesisConcept from "@concepts/ReportSynthesis/ReportSynthesisConcept.ts";
 import { ID } from "@utils/types.ts";
 
@@ -225,7 +226,7 @@ router.get("/getAllReports", async (ctx: any) => {
 
 /**
  * POST /reportSynthesis/generateTeamSummary
- * Generates a team summary using the existing ReportSynthesis LLM infrastructure
+ * Generates a summary of team member feedback responses using the existing ReportSynthesis LLM infrastructure
  *
  * Request body:
  * {
@@ -270,11 +271,16 @@ router.post("/generateTeamSummary", async (ctx: any) => {
       return;
     }
 
-    // Generate summary using the static method (no database needed)
-    const { summary } = await ReportSynthesisConcept.generateTeamSummaryStatic({
+    console.log('Generating feedback summary for team:', { teamName, teamId, membersCount: members.length });
+
+    // Use the existing ReportSynthesis infrastructure to get team feedback
+    const { summary } = await ReportSynthesisConcept.generateTeamFeedbackSummary({
+      teamId,
       teamName,
       members,
     });
+
+    console.log('Generated feedback summary:', summary);
 
     ctx.response.status = 200;
     ctx.response.body = {
@@ -285,11 +291,17 @@ router.post("/generateTeamSummary", async (ctx: any) => {
     };
 
   } catch (error) {
-    console.error("Error generating team summary:", error);
+    console.error("Error generating team feedback summary:", error);
+    if (error instanceof Error) {
+      console.error("Error details:", error.message, error.stack);
+    }
     ctx.response.status = 500;
     ctx.response.body = {
       success: false,
-      error: "Failed to generate team summary",
+      error: "Failed to generate team feedback summary",
+      details: Deno.env.get("DENO_ENV") === "development" && error instanceof Error 
+        ? error.message 
+        : undefined,
     };
     
     if (
