@@ -23,7 +23,7 @@
 
 ## Participant 1 Summary (Debate Coach/Admin)
 
-P1 moved through authentication (Task 1) smoothly and successfully registered, logged out, and logged back in without confusion. They appreciated the clean interface but noted the system felt somewhat generic, commenting it could benefit from more contextual guidance for first-time users.
+P1 moved through authentication (Task 1) smoothly and successfully registered, logged out, and logged back in without confusion. They appreciated the clean interface but noted the system felt somewhat generic, commenting it could benefit from more contextual guidance for first-time users. We don't have this on the login page, but have added a resource guide and FAQ section on the landing page after authentication to instruct admins on how to use the system. 
 
 During team creation (Task 2), P1 understood the role assignment feature intuitively, immediately grasping how Captains, Speakers, and Researchers mapped to their actual team structure. They successfully created all three teams (Varsity, JV, Novice) and appreciated the clear organization. However, after adding members one-by-one to the first team, they asked about bulk import options, expressing they already maintain rosters in spreadsheets. They were pleased to learn the import feature exists but noted they didn't typically have rosters in JSON format.
 
@@ -56,7 +56,7 @@ P3 successfully submitted their form without issues. Interestingly, they had a u
 During the mobile discussion, P3 asked if this website would work well on mobile phones since most people in their use case would probably do it on their phone between classes. They completed the form on laptop but accurately predicted their peers' likely usage pattern.
 
 
-## Key Findings and Opportunities
+## Key Findings and Opportunities (includes analysis of flaws/opportunities for improvement)
 
 
 ### 1. **Role-Targeted Questions Resonate With Hierarchical Teams**
