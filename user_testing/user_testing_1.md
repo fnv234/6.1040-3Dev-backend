@@ -1,4 +1,4 @@
-# User Testing Report - 360 Feedback Web Application
+# User Testing - 1
 
 **Date:** December 7, 2025  
 
@@ -10,8 +10,6 @@
 - Participant 1 (P1): HR Admin/Form Creator
 - Participant 2 (P2): Team Member/Respondent
 - Participant 3 (P3): Team Member/Respondent
-
----
 
 ## Task List
 
@@ -26,59 +24,51 @@
 | 7      | Generate AI Summary Report                         | From the form responses view, generate an AI-powered summary report for the completed feedback forms and teams.                                       | Tests the discoverability and usability of the LLM summary feature. Here, we want to observe whether users can find the report generation button for the teams in the Dashboard and the forms in the form responses view, understand what it does, and whether the generated report appears useful and informative.                                                                                                                                    |
 
 
----
-
 ## Lesson Summary
 
 ### Participant 1 (HR Admin / Form Creator, Responder)
 
-P1 moved through the basic auth tasks (Task 1) pretty smoothly. They were able to register, log out, and log back in without confusion. They did comment that they would have liked clearer feedback when a login failed (e.g. wrong password) versus when an account simply didn’t exist instead of a generic "invalid" message.
+P1 moved through the basic auth tasks (Task 1) pretty smoothly. They were able to register, log out, and log back in without confusion. They did comment that they would have liked clearer feedback when a login failed (e.g. wrong password) versus when an account simply didn't exist instead of a generic "invalid" message.
 
-For team creation (Task 2), P1 understood the idea of teams and roles, but got stuck on the workflow. They expected some way to paste or upload a list of people instead of adding everyone one by one. I noted the ability to import, but I didn't prepare a file for them to try to import nor did we explore this further. They also didn’t immediately realize the point for roles (since it's not evident they would matter later for forms), but they understood after explaining it to them.
+For team creation (Task 2), P1 understood the idea of teams and roles, but got stuck on the workflow. They expected some way to paste or upload a list of people instead of adding everyone one by one. I noted the ability to import, but I didn't prepare a file for them to try to import nor did we explore this further. They also didn't immediately realize the point for roles (since it's not evident they would matter later for forms), but they understood after explaining it to them.
 
-Form creation (Task 3) went okay for the basic questions and the interface for role selection was "clear enough". They did express it might be good to have role targeting to live at a higher level (section or whole form) in case they wanted to make a specific form for a given role, which comes down to differences in the nomenclatures between team and role which aren't really clear. They also wanted a way to “preview as Manager vs Developer” to sanity check the questions each role would see, like they saw when they tested the form responding.
+Form creation (Task 3) went okay for the basic questions and the interface for role selection was "clear enough". They did express it might be good to have role targeting to live at a higher level (section or whole form) in case they wanted to make a specific form for a given role, which comes down to differences in the nomenclatures between team and role which aren't really clear. They also wanted a way to "preview as Manager vs Developer" to sanity check the questions each role would see, like they saw when they tested the form responding.
 
-Sending access codes (Task 4) mostly worked as intended. P1 liked that the emails were generated for them, but they didn’t feel comfortable with how plain the email looked. They mentioned they’d want company branding and maybe some boilerplate text they could customize. They did successfully send codes to the other participants.
+Sending access codes (Task 4) mostly worked as intended. P1 liked that the emails were generated for them, but they didn't feel comfortable with how plain the email looked. They mentioned they'd want company branding and maybe some boilerplate text they could customize. They did successfully send codes to the other participants.
 
-Finally, when they generated AI summaries (Task 7), they liked the idea a lot (“this is what I’d actually use”), but the content felt a bit generic. They said they would want more concrete callouts or trends rather than just a re-phrasing of what people wrote, or a more visual export that they could share with their team or upper management.
-
----
+Finally, when they generated AI summaries (Task 7), they liked the idea a lot ("this is what I'd actually use"), but the content felt a bit generic. They said they would want more concrete callouts or trends rather than just a re-phrasing of what people wrote, or a more visual export that they could share with their team or upper management.
 
 ### Participant 2 (Team Member / Respondent)
 
-P2’s main path was Tasks 4, 5, 6, and 7 as a respondent. They got the access code email, clicked the link, and then got confused when they hit a login page instead of being dropped directly into the form. Their mental model was “the code *is* the access,” not “log in, then use the code.” Once we prompted them to look for the access-code option, they were able to proceed, but they likely wouldn’t have discovered it alone.
+P2's main path was Tasks 4, 5, 6, and 7 as a respondent. They got the access code email, clicked the link, and then got confused when they hit a login page instead of being dropped directly into the form. Their mental model was "the code *is* the access," not "log in, then use the code." Once we prompted them to look for the access-code option, they were able to proceed, but they likely wouldn't have discovered it alone.
 
-While filling out the form (Task 5), they liked that there was an indicator for questions that applied to their role. They did, however, ask whether their responses were anonymous and whether their manager or HR would see individual answers, something the UI didn’t answer.
+While filling out the form (Task 5), they liked that there was an indicator for questions that applied to their role. They did, however, ask whether their responses were anonymous and whether their manager or HR would see individual answers, something the UI didn't answer.
 
 We also tested interruption and recovery: they partially filled out the form, navigated away, then came back with the same code expecting to resume. They were surprised and frustrated that their previous answers were gone.
 
-On the analytics side (Task 6), P2 didn’t have direct access to the dashboard in our current design, but we asked them what they expected. They said they’d like to see at least some aggregated view (e.g. overall sentiment or a few high-level numbers) after submitting/a receipt.
-
----
+On the analytics side (Task 6), P2 didn't have direct access to the dashboard in our current design, but we asked them what they expected. They said they'd like to see at least some aggregated view (e.g. overall sentiment or a few high-level numbers) after submitting/a receipt.
 
 ### Participant 3 (Team Member / Respondent)
 
-P3’s run was identical to P2's, also focused on Tasks 4, 5, 6, and 7. Their first reaction was to the access code email itself. They expressed similar distaste for the plainness of the invite email.
+P3's run was identical to P2's, also focused on Tasks 4, 5, 6, and 7. Their first reaction was to the access code email itself. They expressed similar distaste for the plainness of the invite email.
 
 Once in the app, P3 found where to enter the access code and got to the form without too much trouble, but they did note it was a bit strange how the login page and the form answering page are very similar and they found that unappealing.
 
 In the debrief, P3, like P2, said they would want some kind of follow-up after the forms are submitted, like a receipt or confirmation. This lines up with the idea of a feedback loop feature. They also noted it would be useful to provide a way to give feedback to forms themselves in order to provide admins with constructive feedback on their creation, which could then be presented to them through the Dashboard or something similar.
 
----
-
 ## Key Findings and Opportunities
 
 1. **Progress Saving and Repeat Uploads** (*to be fixed*)
-   P2 ran into problems when they left the form and came back. They expected their answers to still be there after re-entering the access code, but the form had reset. This felt like “lost work” and was the most frustrating part of the flow. Right now there’s no clear model of when things are saved, and no warning before someone navigates away. P3 also observed it was possible to submit a form more than once.
+   P2 ran into problems when they left the form and came back. They expected their answers to still be there after re-entering the access code, but the form had reset. This felt like "lost work" and was the most frustrating part of the flow. Right now there's no clear model of when things are saved, and no warning before someone navigates away. P3 also observed it was possible to submit a form more than once.
 
 2. **Privacy and Anonymity Messaging** (*to be fixed*)
-   Respondents asked who would see their answers and whether their manager could tie responses back to them. The current UI doesn’t clearly explain what level of anonymity or privacy they should expect, which can impact how honest people are.
+   Respondents asked who would see their answers and whether their manager could tie responses back to them. The current UI doesn't clearly explain what level of anonymity or privacy they should expect, which can impact how honest people are.
 
 3. **Role-Based Question Filtering**  
    Once in the form, respondents appreciated that they saw indicators for questions that were matched their role.
 
 4. **Core Admin Flow Works End-to-End**  
-   P1 was able to go from logging in (Task 1) to creating teams (Task 2), creating forms (Task 3), sending access codes (Task 4), and viewing results (Tasks 6–7). There were rough edges, but the overall flow is coherent and doesn’t dead-end.
+   P1 was able to go from logging in (Task 1) to creating teams (Task 2), creating forms (Task 3), sending access codes (Task 4), and viewing results (Tasks 6–7). There were rough edges, but the overall flow is coherent and doesn't dead-end.
 
 5. **Dashboard and Analytics**  
    When looking at the dashboard, P1 understood the basic metrics (response counts, status, etc.) and found the team division useful. They saw it as a good overview of the key throughlines without having to dive into each form.
@@ -88,5 +78,3 @@ In the debrief, P3, like P2, said they would want some kind of follow-up after t
 
 7. **Form Feedback**
    P3 expressed interest in letting respondents provide a simple text feedback on the form after submitting it, which we could tie back into Dashboard and the metrics we show to Admins and through which they can evaluate forms or teams by.
-
----

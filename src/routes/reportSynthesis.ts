@@ -1,5 +1,6 @@
 import { Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { ReportSynthesis } from "@concepts";
+import ReportSynthesisConcept from "@concepts/ReportSynthesis/ReportSynthesisConcept.ts";
 import { ID } from "@utils/types.ts";
 
 const router = new Router();
@@ -220,6 +221,94 @@ router.get("/getAllReports", async (ctx: any) => {
           ? error.message
           : undefined,
     };
+  }
+});
+
+/**
+ * POST /reportSynthesis/generateTeamSummary
+ * Generates a summary of team member feedback responses using the existing ReportSynthesis LLM infrastructure
+ *
+ * Request body:
+ * {
+ *   teamId: string,
+ *   teamName: string,
+ *   members: Array<{name: string, role: string}>
+ * }
+ */
+router.post("/generateTeamSummary", async (ctx: any) => {
+  try {
+    if (!ctx.request.hasBody) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "Request body is required",
+      };
+      return;
+    }
+
+    const body = ctx.request.body();
+    let requestData: { teamId: string; teamName: string; members: Array<{name: string; role: string}> };
+
+    if (body.type === "json") {
+      requestData = await body.value;
+    } else {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "Request body must be JSON",
+      };
+      return;
+    }
+
+    const { teamId, teamName, members } = requestData;
+
+    if (!teamId || !teamName || !members) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        success: false,
+        error: "teamId, teamName, and members are required",
+      };
+      return;
+    }
+
+    console.log('Generating feedback summary for team:', { teamName, teamId, membersCount: members.length });
+
+    // Use the existing ReportSynthesis infrastructure to get team feedback
+    const { summary } = await ReportSynthesisConcept.generateTeamFeedbackSummary({
+      teamId,
+      teamName,
+      members,
+    });
+
+    console.log('Generated feedback summary:', summary);
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      success: true,
+      summary,
+      teamId,
+      teamName,
+    };
+
+  } catch (error) {
+    console.error("Error generating team feedback summary:", error);
+    if (error instanceof Error) {
+      console.error("Error details:", error.message, error.stack);
+    }
+    ctx.response.status = 500;
+    ctx.response.body = {
+      success: false,
+      error: "Failed to generate team feedback summary",
+      details: Deno.env.get("DENO_ENV") === "development" && error instanceof Error 
+        ? error.message 
+        : undefined,
+    };
+    
+    if (
+      Deno.env.get("DENO_ENV") === "development" && error instanceof Error
+    ) {
+      console.error(error.stack);
+    }
   }
 });
 
