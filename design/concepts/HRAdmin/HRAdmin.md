@@ -1,4 +1,4 @@
-# concept: HRAdmin[HRAdmin]
+# concept: HRAdmin
 
   **purpose**
 

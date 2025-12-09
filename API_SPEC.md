@@ -14,10 +14,10 @@ All endpoints require proper authentication. Authentication is handled through t
 
 The system is built around five main concepts:
 - **HRAdmin**: Manages HR administrator authentication
-- **FeedbackForm**: Manages feedback forms and questions
 - **OrgGraph**: Maintains organizational hierarchy
-- **ReviewCycle**: Coordinates feedback cycles
-- **ReportSynthesis**: Generates privacy-preserving reports
+- **FormTemplate**: Stores HR-admin-created form templates
+- **AccessCode**: Manages unique access codes for forms and response storage
+- **ReportSynthesis**: Generates privacy-preserving feedback reports
 
 ---
 
@@ -99,186 +99,6 @@ POST /api/HRAdmin/getHRAdmin
 
 ---
 
-## FeedbackForm Endpoints
-
-### Create Feedback Form
-```http
-POST /api/FeedbackForm/createFeedbackForm
-```
-
-**Request Body:**
-```json
-{
-  "name": "Q3 2024 Performance Review",
-  "creator": "user-id",
-  "reviewer": "employee-id",
-  "target": "employee-id", 
-  "questions": [
-    {
-      "prompt": "How is their communication?",
-      "type": "Free"
-    },
-    {
-      "prompt": "Rate their leadership skills (1-10)",
-      "type": "Scale"
-    },
-    {
-      "prompt": "Choose their best quality",
-      "type": "Multiple Choice"
-    }
-  ]
-}
-```
-
-**Response:**
-```json
-{
-  "feedbackForm": "form-id"
-}
-```
-
-**Notes:**
-- `name` is required for the feedback form
-- `creator` is the user who created the form
-- Valid question types: "Free", "Scale", "Multiple Choice"
-- Target cannot be the same as reviewer
-
-### Send Feedback Form
-```http
-POST /api/FeedbackForm/sendFeedbackForm
-```
-
-**Request Body:**
-```json
-{
-  "feedbackForm": "form-id"
-}
-```
-
-**Response:**
-```json
-{
-  "link": "/feedback/form-id"
-}
-```
-
-### Submit Feedback Form
-```http
-POST /api/FeedbackForm/submitFeedbackForm
-```
-
-**Request Body:**
-```json
-{
-  "feedbackForm": "form-id",
-  "responses": {
-    "0": "Great communication skills",
-    "1": "8",
-    "2": "Leadership"
-  }
-}
-```
-
-**Response:**
-```json
-{}
-```
-
-### Get Feedback Form
-```http
-POST /api/FeedbackForm/getFeedbackForm
-```
-
-**Request Body:**
-```json
-{
-  "id": "form-id"
-}
-```
-
-**Response:**
-```json
-{
-  "feedbackForm": {
-    "_id": "form-id",
-    "reviewer": "employee-id",
-    "target": "employee-id",
-    "status": "Created|Sent|Completed",
-    "createdDate": "2024-01-01T00:00:00.000Z",
-    "completedDate": "2024-01-01T00:00:00.000Z",
-    "questions": [...]
-  }
-}
-```
-
-### Get Feedback Forms by Target
-```http
-POST /api/FeedbackForm/getFeedbackFormsByTarget
-```
-
-**Request Body:**
-```json
-{
-  "target": "employee-id",
-  "startDate": "2024-01-01T00:00:00.000Z",
-  "endDate": "2024-12-31T23:59:59.999Z"
-}
-```
-
-### Get Feedback Forms by Reviewer
-```http
-POST /api/FeedbackForm/getFeedbackFormsByReviewer
-```
-
-**Request Body:**
-```json
-{
-  "reviewer": "employee-id"
-}
-```
-
-### Get Feedback Forms by Creator
-```http
-POST /api/FeedbackForm/getFeedbackFormsByCreator
-```
-
-**Request Body:**
-```json
-{
-  "creator": "user-id",
-  "startDate": "2024-01-01T00:00:00.000Z",
-  "endDate": "2024-12-31T23:59:59.999Z"
-}
-```
-
-**Notes:**
-- `startDate` and `endDate` are optional
-
-### Update Feedback Form Response
-```http
-POST /api/FeedbackForm/updateFeedbackFormResponse
-```
-
-**Request Body:**
-```json
-{
-  "feedbackForm": "form-id",
-  "questionIndex": 0,
-  "response": "Updated response text"
-}
-```
-
-**Response:**
-```json
-{}
-```
-
-**Notes:**
-- Form must be in "Sent" status
-- Used to update individual question responses before final submission
-
----
-
 ## OrgGraph Endpoints
 
 ### Import Roster
@@ -295,152 +115,26 @@ POST /api/OrgGraph/importRoster
         "id": "employee-id",
         "email": "employee@example.com",
         "manager": "manager-id",
-        "teamNames": ["Engineering", "Innovation"]
+        "teamNames": ["Engineering", "Innovation"],
+        "role": "Developer"
       }
     ]
-  }
+  },
+  "owner": "admin-id"
 }
+```
+
+**Response:**
+```json
+{}
 ```
 
 **Notes:**
 - `teamNames` is an array of team names the employee belongs to
 - `email` is required for each employee
-- `manager` is optional (for top-level employees)
+- `manager` and `role` are optional
 - Prevents circular reporting relationships
-
-### Update Manager
-```http
-POST /api/OrgGraph/updateManager
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id",
-  "newManager": "manager-id"
-}
-```
-
-### Create Employee
-```http
-POST /api/OrgGraph/createEmployee
-```
-
-**Request Body:**
-```json
-{
-  "email": "newemployee@example.com",
-  "teamId": "team-id",
-  "manager": "manager-id"
-}
-```
-
-**Response:**
-```json
-{
-  "employee": "employee-id"
-}
-```
-
-**Notes:**
-- `teamId` and `manager` are optional
-
-### Create Team
-```http
-POST /api/OrgGraph/createTeam
-```
-
-**Request Body:**
-```json
-{
-  "name": "Product Team",
-  "members": ["employee-id-1", "employee-id-2"]
-}
-```
-
-**Response:**
-```json
-{
-  "team": "team-id"
-}
-```
-
-**Notes:**
-- `members` is optional
-- Team name must be unique
-
-### Update Team
-```http
-POST /api/OrgGraph/updateTeam
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id",
-  "newTeamId": "team-id"
-}
-```
-
-**Notes:**
-- Removes employee from all current teams and adds to new team
-
-### Get Manager
-```http
-POST /api/OrgGraph/getManager
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id"
-}
-```
-
-**Response:**
-```json
-{
-  "manager": "manager-id"
-}
-```
-
-### Get Direct Reports
-```http
-POST /api/OrgGraph/getDirectReports
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id"
-}
-```
-
-**Response:**
-```json
-{
-  "reports": ["employee-id-1", "employee-id-2"]
-}
-```
-
-### Get Peers
-```http
-POST /api/OrgGraph/getPeers
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id"
-}
-```
-
-**Response:**
-```json
-{
-  "peers": ["peer-id-1", "peer-id-2"]
-}
-```
+- `owner` is optional for multi-tenant scenarios
 
 ### Get All Employees
 ```http
@@ -454,102 +148,15 @@ POST /api/OrgGraph/getAllEmployees
 }
 ```
 
-### Get Employee
-```http
-POST /api/OrgGraph/getEmployee
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id"
-}
-```
-
-**Response:**
-```json
-{
-  "employeeData": {
-    "_id": "employee-id",
-    "email": "employee@example.com",
-    "manager": "manager-id"
-  }
-}
-```
-
 ### Get All Teams
 ```http
 POST /api/OrgGraph/getAllTeams
 ```
 
-**Response:**
-```json
-{
-  "teams": [
-    {
-      "_id": "team-id",
-      "name": "Engineering",
-      "members": ["employee-id-1", "employee-id-2"]
-    }
-  ]
-}
-```
-
-### Get Team
-```http
-POST /api/OrgGraph/getTeam
-```
-
 **Request Body:**
 ```json
 {
-  "teamId": "team-id"
-}
-```
-
-**Response:**
-```json
-{
-  "team": {
-    "_id": "team-id",
-    "name": "Engineering",
-    "members": ["employee-id-1", "employee-id-2"]
-  }
-}
-```
-
-### Get Team by Name
-```http
-POST /api/OrgGraph/getTeamByName
-```
-
-**Request Body:**
-```json
-{
-  "teamName": "Engineering"
-}
-```
-
-**Response:**
-```json
-{
-  "team": {
-    "_id": "team-id",
-    "name": "Engineering",
-    "members": ["employee-id-1", "employee-id-2"]
-  }
-}
-```
-
-### Get Teams by Employee
-```http
-POST /api/OrgGraph/getTeamsByEmployee
-```
-
-**Request Body:**
-```json
-{
-  "employee": "employee-id"
+  "owner": "admin-id"
 }
 ```
 
@@ -560,11 +167,22 @@ POST /api/OrgGraph/getTeamsByEmployee
     {
       "_id": "team-id",
       "name": "Engineering",
-      "members": ["employee-id-1", "employee-id-2"]
+      "members": ["employee-id-1", "employee-id-2"],
+      "membersWithRoles": [
+        {
+          "memberId": "employee-id-1",
+          "role": "Developer",
+          "email": "dev@example.com"
+        }
+      ],
+      "owner": "admin-id"
     }
   ]
 }
 ```
+
+**Notes:**
+- `owner` parameter is optional for multi-tenant scenarios
 
 ### Get Team Members
 ```http
@@ -585,323 +203,348 @@ POST /api/OrgGraph/getTeamMembers
 }
 ```
 
-### Check K-Anonymity
+---
+
+## FormTemplate Endpoints
+
+### Get Template
 ```http
-POST /api/OrgGraph/checkKAnonymity
+POST /api/FormTemplate/getTemplate
 ```
 
 **Request Body:**
 ```json
 {
-  "group": ["employee-id-1", "employee-id-2", "employee-id-3"],
-  "k": 3
+  "templateId": "template-id"
 }
 ```
 
 **Response:**
 ```json
 {
-  "ok": true
+  "template": {
+    "_id": "template-id",
+    "name": "Q3 2024 Performance Review",
+    "creator": "admin-id",
+    "teamId": "team-id",
+    "status": "Created|Sent|Completed",
+    "createdDate": "2024-01-01T00:00:00.000Z",
+    "questions": [
+      {
+        "prompt": "How is their communication?",
+        "type": "Multiple Choice|Free|Scale",
+        "targetRoles": ["Developer", "Manager"]
+      }
+    ]
+  }
 }
 ```
 
 **Notes:**
-- Returns true if group size >= k, false otherwise
-- Used to ensure privacy thresholds are met
+- Valid question types: "Multiple Choice", "Free", "Scale"
+- `targetRoles` is optional - if specified, only members with these roles will see the question
 
----
-
-## ReviewCycle Endpoints
-
-### Create Cycle
+### Get Templates by Creator
 ```http
-POST /api/ReviewCycle/createCycle
+POST /api/FormTemplate/getTemplatesByCreator
 ```
 
 **Request Body:**
 ```json
 {
-  "creator": "employee-id",
-  "form": "form-id",
-  "startDate": "2024-01-01T00:00:00.000Z",
-  "endDate": "2024-01-31T23:59:59.999Z"
+  "creator": "admin-id"
 }
 ```
 
 **Response:**
 ```json
 {
-  "cycle": "cycle-id"
+  "templates": [
+    {
+      "_id": "template-id",
+      "name": "Q3 2024 Performance Review",
+      "creator": "admin-id",
+      "teamId": "team-id",
+      "status": "Created|Sent|Completed",
+      "createdDate": "2024-01-01T00:00:00.000Z",
+      "questions": [...]
+    }
+  ]
 }
 ```
 
-### Configure Assignments
+**Notes:**
+- Returns templates sorted by creation date (newest first)
+
+---
+
+## AccessCode Endpoints
+
+### Create Access Code
 ```http
-POST /api/ReviewCycle/configureAssignments
+POST /api/AccessCode/createAccessCode
 ```
 
 **Request Body:**
 ```json
 {
-  "cycle": "cycle-id",
-  "targets": ["employee-id-1", "employee-id-2"]
+  "accessCode": "ABC123",
+  "formId": "form-template-id",
+  "teamId": "team-id",
+  "memberId": "employee-id",
+  "memberEmail": "employee@example.com",
+  "memberRole": "Developer",
+  "createdBy": "admin-id"
 }
 ```
 
-### Add Reviewers
+**Response:**
+```json
+{
+  "accessCodeId": "access-code-id"
+}
+```
+
+**Notes:**
+- `accessCode` must be unique
+- `memberRole` is optional
+- All other fields are required
+
+### Get Access Code
 ```http
-POST /api/ReviewCycle/addReviewers
+POST /api/AccessCode/getAccessCode
 ```
 
 **Request Body:**
 ```json
 {
-  "cycle": "cycle-id",
-  "target": "employee-id",
-  "reviewers": ["reviewer-id-1", "reviewer-id-2"]
+  "accessCode": "ABC123"
 }
 ```
 
-### Activate Cycle
+**Response:**
+```json
+{
+  "accessCode": {
+    "_id": "access-code-id",
+    "accessCode": "ABC123",
+    "formId": "form-template-id",
+    "used": false
+  }
+}
+```
+
+**Notes:**
+- Returns basic access code information
+- Returns error if access code is invalid
+
+### Get Access Code Info
 ```http
-POST /api/ReviewCycle/activate
+POST /api/AccessCode/getAccessCodeInfo
 ```
 
 **Request Body:**
 ```json
 {
-  "cycle": "cycle-id"
+  "accessCode": "ABC123"
 }
 ```
 
-### Submit Feedback
+**Response:**
+```json
+{
+  "accessCodeInfo": {
+    "_id": "access-code-id",
+    "accessCode": "ABC123",
+    "formId": "form-template-id",
+    "teamId": "team-id",
+    "memberId": "employee-id",
+    "memberEmail": "employee@example.com",
+    "memberRole": "Developer",
+    "createdBy": "admin-id",
+    "createdDate": "2024-01-01T00:00:00.000Z",
+    "used": false,
+    "usedDate": null
+  }
+}
+```
+
+**Notes:**
+- Returns detailed access code information including metadata
+- Returns error if access code is invalid
+
+### Submit Form Response
 ```http
-POST /api/ReviewCycle/submitFeedback
+POST /api/AccessCode/submitFormResponse
 ```
 
 **Request Body:**
 ```json
 {
-  "cycle": "cycle-id",
-  "target": "employee-id",
-  "reviewer": "reviewer-id",
+  "accessCode": "ABC123",
   "responses": {
-    "0": "Great communication",
+    "0": "Great communication skills",
     "1": "8",
     "2": "Leadership"
   }
 }
 ```
 
-### Close Cycle
-```http
-POST /api/ReviewCycle/close
-```
-
-**Request Body:**
-```json
-{
-  "cycle": "cycle-id"
-}
-```
-
-### Get Active Cycles
-```http
-POST /api/ReviewCycle/getActiveCycles
-```
-
 **Response:**
 ```json
 {
-  "cycles": [
-    {
-      "_id": "cycle-id",
-      "createdBy": "employee-id",
-      "isActive": true,
-      "startDate": "2024-01-01T00:00:00.000Z",
-      "endDate": "2024-01-31T23:59:59.999Z"
-    }
-  ]
+  "responseId": "response-id"
 }
 ```
 
-### Get Reviewer Tasks
+**Notes:**
+- Access code must be valid and not already used
+- All response values must be non-empty
+- Marks access code as used after successful submission
+
+### Get Form Responses
 ```http
-POST /api/ReviewCycle/getReviewerTasks
+POST /api/AccessCode/getFormResponses
 ```
 
 **Request Body:**
 ```json
 {
-  "reviewer": "employee-id"
+  "formId": "form-template-id",
+  "createdBy": "admin-id"
 }
 ```
 
 **Response:**
 ```json
 {
-  "tasks": [
+  "responses": [
     {
-      "cycle": "cycle-id",
-      "target": "employee-id",
-      "form": "form-id",
-      "endDate": "2024-01-31T23:59:59.999Z"
+      "_id": "response-id",
+      "accessCode": "ABC123",
+      "formId": "form-template-id",
+      "teamId": "team-id",
+      "memberId": "employee-id",
+      "memberEmail": "employee@example.com",
+      "memberRole": "Developer",
+      "responses": {
+        "0": "Great communication skills",
+        "1": "8",
+        "2": "Leadership"
+      },
+      "submittedDate": "2024-01-01T00:00:00.000Z"
     }
   ]
 }
 ```
 
 **Notes:**
-- Returns only pending tasks (where reviewer has not yet submitted feedback)
-- Only includes tasks from active cycles
+- User must be the creator of the form template
+- Returns responses sorted by submission date (newest first)
 
-### Get Cycle
+### Delete Access Code
 ```http
-POST /api/ReviewCycle/getCycle
+POST /api/AccessCode/deleteAccessCode
 ```
 
 **Request Body:**
 ```json
 {
-  "cycle": "cycle-id"
+  "accessCode": "ABC123"
+}
+```
+
+**Response:**
+```json
+{}
+```
+
+**Notes:**
+- Permanently removes the access code
+- Returns error if access code doesn't exist
+
+---
+
+## ReportSynthesis Endpoints
+
+### Get Report by Form Template
+```http
+POST /api/ReportSynthesis/getReportByFormTemplate
+```
+
+**Request Body:**
+```json
+{
+  "formTemplate": "form-template-id"
 }
 ```
 
 **Response:**
 ```json
 {
-  "cycleData": {
-    "_id": "cycle-id",
-    "createdBy": "employee-id",
-    "form": "form-id",
-    "startDate": "2024-01-01T00:00:00.000Z",
-    "endDate": "2024-01-31T23:59:59.999Z",
-    "isActive": true,
-    "assignments": [],
+  "report": {
+    "_id": "report-id",
+    "formTemplate": "form-template-id",
+    "textSummary": "Based on the feedback collected, the employee demonstrates strong communication skills...",
+    "keyThemes": ["Communication", "Leadership", "Collaboration"],
+    "keyQuotes": ["Great communication", "Strong leadership"],
+    "metrics": {
+      "totalResponses": 5,
+      "uniqueRespondents": 3,
+      "questionsAnswered": 3,
+      "averageResponseLength": 25.5,
+      "roleDistribution": {
+        "Developer": 2,
+        "Manager": 1
+      }
+    },
     "createdAt": "2024-01-01T00:00:00.000Z"
-  }
+  } | null
 }
 ```
 
-### Get Cycles by Creator
+**Notes:**
+- Returns the most recent report for the form template
+- Returns null if no report exists
+
+### Get All Reports
 ```http
-POST /api/ReviewCycle/getCyclesByCreator
-```
-
-**Request Body:**
-```json
-{
-  "creator": "employee-id"
-}
+POST /api/ReportSynthesis/getAllReports
 ```
 
 **Response:**
 ```json
 {
-  "cycles": [
+  "reports": [
     {
-      "_id": "cycle-id",
-      "createdBy": "employee-id",
-      "form": "form-id",
-      "startDate": "2024-01-01T00:00:00.000Z",
-      "endDate": "2024-01-31T23:59:59.999Z",
-      "isActive": true,
-      "assignments": [],
+      "_id": "report-id",
+      "formTemplate": "form-template-id",
+      "textSummary": "Based on the feedback collected...",
+      "keyThemes": ["Communication", "Leadership"],
+      "keyQuotes": ["Great communication"],
+      "metrics": {
+        "totalResponses": 5,
+        "uniqueRespondents": 3
+      },
       "createdAt": "2024-01-01T00:00:00.000Z"
     }
   ]
 }
 ```
 
-### Get Responses by Cycle
-```http
-POST /api/ReviewCycle/getResponsesByCycle
-```
-
-**Request Body:**
-```json
-{
-  "cycle": "cycle-id"
-}
-```
-
-**Response:**
-```json
-{
-  "responses": [
-    {
-      "reviewer": "employee-id",
-      "target": "employee-id",
-      "cycle": "cycle-id",
-      "responses": {
-        "0": "Response text",
-        "1": "8"
-      },
-      "submittedAt": "2024-01-15T12:00:00.000Z"
-    }
-  ]
-}
-```
-
-### Export for Synthesis
-```http
-POST /api/ReviewCycle/exportForSynthesis
-```
-
-**Request Body:**
-```json
-{
-  "cycle": "cycle-id"
-}
-```
-
-**Response:**
-```json
-{
-  "responseSets": [
-    {
-      "target": "employee-id",
-      "form": "form-id",
-      "responses": [
-        {
-          "reviewer": "employee-id",
-          "responses": {
-            "0": "Response text"
-          },
-          "submittedAt": "2024-01-15T12:00:00.000Z"
-        }
-      ]
-    }
-  ]
-}
-```
-
 **Notes:**
-- Cycle must not be active (must be closed first)
-- Returns response sets grouped by target for downstream ReportSynthesis processing
+- Returns all synthesized reports sorted by creation date (newest first)
 
----
-
-## ReportSynthesis Endpoints
-
-### Ingest Responses
+### Generate Form Template Report
 ```http
-POST /api/ReportSynthesis/ingestResponses
+POST /api/ReportSynthesis/generateFormTemplateReport
 ```
 
 **Request Body:**
 ```json
 {
-  "target": "employee-id",
-  "form": "form-id",
-  "responses": [
-    {
-      "questionIndex": 0,
-      "questionText": "How is their communication?",
-      "response": "Great communication skills",
-      "reviewer": "reviewer-id"
-    }
-  ],
+  "formTemplateId": "form-template-id",
+  "createdBy": "admin-id",
   "anonymityFlag": true,
   "kThreshold": 3
 }
@@ -910,74 +553,22 @@ POST /api/ReportSynthesis/ingestResponses
 **Response:**
 ```json
 {
-  "responseSet": "response-set-id"
+  "report": {
+    "_id": "report-id",
+    "formTemplate": "form-template-id",
+    "textSummary": "Generated summary text...",
+    "keyThemes": ["Communication", "Leadership"],
+    "keyQuotes": ["Key quote 1", "Key quote 2"],
+    "metrics": {...},
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  }
 }
 ```
 
-### Apply K-Anonymity
-```http
-POST /api/ReportSynthesis/applyKAnonymity
-```
-
-**Request Body:**
-```json
-{
-  "responseSet": "response-set-id"
-}
-```
-
-### Extract Themes
-```http
-POST /api/ReportSynthesis/extractThemes
-```
-
-**Request Body:**
-```json
-{
-  "responseSet": "response-set-id"
-}
-```
-
-**Response:**
-```json
-{
-  "themes": ["Communication", "Leadership", "Collaboration"]
-}
-```
-
-### Draft Summary with LLM
-```http
-POST /api/ReportSynthesis/draftSummaryLLM
-```
-
-**Request Body:**
-```json
-{
-  "responseSet": "response-set-id",
-  "themes": ["Communication", "Leadership"]
-}
-```
-
-**Response:**
-```json
-{
-  "draft": "Based on the feedback collected, the employee demonstrates strong communication skills..."
-}
-```
-
-### Approve Summary
-```http
-POST /api/ReportSynthesis/approveSummary
-```
-
-**Request Body:**
-```json
-{
-  "responseSet": "response-set-id",
-  "finalText": "Final approved summary text",
-  "keyQuotes": ["Great communication", "Strong leadership"]
-}
-```
+**Notes:**
+- User must be the creator of the form template
+- Complete workflow that ingests responses, applies anonymity, extracts themes, and generates summary
+- `anonymityFlag` defaults to true, `kThreshold` defaults to 3
 
 ### Get Final Report
 ```http
@@ -996,48 +587,21 @@ POST /api/ReportSynthesis/getFinalReport
 {
   "report": {
     "_id": "report-id",
-    "target": "employee-id",
-    "textSummary": "Final summary text",
-    "keyQuotes": ["Quote 1", "Quote 2"],
+    "formTemplate": "form-template-id",
+    "textSummary": "Final approved summary text",
+    "keyThemes": ["Communication", "Leadership"],
+    "keyQuotes": ["Great communication", "Strong leadership"],
     "metrics": {
       "totalResponses": 5,
-      "uniqueReviewers": 3
+      "uniqueRespondents": 3
     },
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
 }
 ```
 
-### Get Reports by Target
-```http
-POST /api/ReportSynthesis/getReportsByTarget
-```
-
-**Request Body:**
-```json
-{
-  "target": "employee-id"
-}
-```
-
-**Response:**
-```json
-{
-  "reports": [
-    {
-      "_id": "report-id",
-      "target": "employee-id",
-      "textSummary": "Final summary text",
-      "keyQuotes": ["Quote 1", "Quote 2"],
-      "metrics": {
-        "totalResponses": 5,
-        "uniqueReviewers": 3
-      },
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
+**Notes:**
+- Returns error if response set doesn't exist or has no synthesized report
 
 ### Get Response Set
 ```http
@@ -1056,14 +620,14 @@ POST /api/ReportSynthesis/getResponseSet
 {
   "responseSetData": {
     "_id": "response-set-id",
-    "target": "employee-id",
-    "form": "form-id",
+    "formTemplate": "form-template-id",
     "responses": [
       {
         "questionIndex": 0,
         "questionText": "How is their communication?",
         "response": "Great communication skills",
-        "reviewer": "reviewer-id"
+        "respondent": "employee-id",
+        "respondentRole": "Developer"
       }
     ],
     "anonymityFlag": true,
@@ -1109,29 +673,55 @@ For Vue.js frontend integration:
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'https://six-1040-3dev-backend.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 export const feedbackAPI = {
-  createForm: (data: CreateFormRequest) => 
-    api.post('/FeedbackForm/createFeedbackForm', data),
+  // HR Admin
+  authenticate: (email: string, password: string) => 
+    api.post('/HRAdmin/authenticateHRAdmin', { email, password }),
   
-  submitForm: (data: SubmitFormRequest) => 
-    api.post('/FeedbackForm/submitFeedbackForm', data),
+  // Form Templates
+  getTemplates: (creator: string) => 
+    api.post('/FormTemplate/getTemplatesByCreator', { creator }),
+  getTemplate: (templateId: string) =>
+    api.post('/FormTemplate/getTemplate', { templateId }),
   
-  getReviewerTasks: (reviewer: string) => 
-    api.post('/ReviewCycle/getReviewerTasks', { reviewer }),
+  // Access Codes
+  createAccessCode: (data: CreateAccessCodeRequest) => 
+    api.post('/AccessCode/createAccessCode', data),
+  getAccessCode: (accessCode: string) =>
+    api.post('/AccessCode/getAccessCode', { accessCode }),
+  getAccessCodeInfo: (accessCode: string) =>
+    api.post('/AccessCode/getAccessCodeInfo', { accessCode }),
+  submitFormResponse: (accessCode: string, responses: Record<string, string>) =>
+    api.post('/AccessCode/submitFormResponse', { accessCode, responses }),
+  getFormResponses: (formId: string, createdBy: string) =>
+    api.post('/AccessCode/getFormResponses', { formId, createdBy }),
+  deleteAccessCode: (accessCode: string) =>
+    api.post('/AccessCode/deleteAccessCode', { accessCode }),
+  
+  // Reports
+  generateReport: (formTemplateId: string, createdBy: string) => 
+    api.post('/ReportSynthesis/generateFormTemplateReport', { 
+      formTemplateId, 
+      createdBy 
+    }),
+  getReportByFormTemplate: (formTemplate: string) =>
+    api.post('/ReportSynthesis/getReportByFormTemplate', { formTemplate }),
+  getAllReports: () =>
+    api.post('/ReportSynthesis/getAllReports', {}),
 };
 ```
 
 ### Key Frontend Features to Implement:
 
-1. **Dashboard**: Show reviewer tasks and cycle status
-2. **Form Builder**: Create and configure feedback forms
-3. **Feedback Submission**: User-friendly form interface
+1. **Dashboard**: Show form templates and generated reports
+2. **Form Builder**: Create and configure feedback form templates
+3. **Access Code Management**: Generate and manage access codes for team members
 4. **Org Chart Viewer**: Visualize organizational structure
-5. **Report Viewer**: Display generated feedback reports
-6. **Admin Panel**: Manage cycles and view analytics
+5. **Report Viewer**: Display generated feedback reports with themes and metrics
+6. **Admin Panel**: Manage templates, access codes, and view analytics

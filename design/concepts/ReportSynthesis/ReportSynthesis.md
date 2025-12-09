@@ -1,4 +1,4 @@
-# concept: ReportSynthesis[OrgGraph, FormTemplate, AccessCode]
+# concept: ReportSynthesis
 
   **purpose**
 
@@ -80,9 +80,10 @@
       **requires** user is the creator of the form template
       **effects** creates response set, applies anonymity, extracts themes, generates summary, and returns complete report
 
-    generateFormTemplateReport (formTemplateId: FormTemplateID, createdBy: User, anonymityFlag?: Boolean, kThreshold?: Number): (report: Report)
-      **requires** user is the creator of the form template
-      **effects** generates synthesis report from all form responses
+    **note**: generateFormTemplateReport action removed - report generation is now 
+    coordinated via synchronizations in src/syncs/report_generation.sync.ts that 
+    maintain concept independence while orchestrating FormTemplate, AccessCode, 
+    and ReportSynthesis concepts
 
     extractKeyQuotes (responses: FormResponseDoc[], maxQuotes?: Number, minLength?: Number): (keyQuotes: String[])
       **effects** extracts meaningful quotes from responses

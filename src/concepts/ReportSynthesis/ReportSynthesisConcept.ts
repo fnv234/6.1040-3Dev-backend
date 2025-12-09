@@ -253,9 +253,15 @@ export default class ReportSynthesisConcept {
   async draftSummaryLLM({
     responseSet,
     themes,
+    teamName,
+    roleDistribution,
+    totalResponses,
   }: {
     responseSet: ResponseSetID;
     themes: string[];
+    teamName?: string;
+    roleDistribution?: Record<string, number>;
+    totalResponses?: number;
   }): Promise<{ draft: string }> {
     const responseSetDoc = await this.responseSets.findOne({
       _id: responseSet,
@@ -275,20 +281,29 @@ export default class ReportSynthesisConcept {
       .map((r: Response) => `Q: ${r.questionText}\nA: ${r.response}`)
       .join("\n\n");
 
+    const teamContext = teamName ? `Team: ${teamName}` : "Team";
+    const roleInfo = roleDistribution
+      ? Object.entries(roleDistribution)
+        .map(([role, count]) => `${count} ${role}${count > 1 ? "s" : ""}`)
+        .join(", ")
+      : "team members";
+
     const prompt = `
 You are an HR professional creating a feedback summary report. Based on the following feedback responses and identified themes, create a professional, constructive summary that synthesizes the collective feedback.
 
-Identified Themes: ${themes.join(", ")}
+Team Context: ${teamContext} (${roleInfo})
+Total Responses: ${totalResponses || responseSetDoc.responses.length}
+Key Themes: ${themes.join(", ")}
 
-Feedback Responses:
+Raw Feedback Responses:
 ${responseTexts}
 
 Please create a balanced, professional summary that:
 1. Synthesizes common themes across all responses
 2. Highlights key insights and patterns in the feedback
-3. Identifies both strengths and areas for improvement mentioned
+3. Identifies concerns and opportunities for improvement
 4. Maintains a professional, objective tone
-5. Provides actionable insights based on the aggregated feedback
+5. Provides actionable insights
 6. Respects the anonymity of individual respondents
 
 Summary:`;
@@ -517,11 +532,13 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     responses,
     anonymityFlag = true,
     kThreshold = 3,
+    teamName,
   }: {
     formTemplateId: FormTemplateID;
     responses: Response[];
     anonymityFlag?: boolean;
     kThreshold?: number;
+    teamName?: string;
   }): Promise<{ report: ReportDoc }> {
     // 1. Ingest responses
     const { responseSet: responseSetId } = await this.ingestResponses({
@@ -538,9 +555,18 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     const { themes } = await this.extractThemes({ responseSet: responseSetId });
 
     // 4. Generate draft summary with LLM
+    // Calculate metrics to get role distribution
+    const responseSetDoc = await this.responseSets.findOne({
+      _id: responseSetId,
+    });
+    const metrics = this.calculateMetrics(responseSetDoc!);
+
     const { draft } = await this.draftSummaryLLM({
       responseSet: responseSetId,
       themes,
+      teamName,
+      roleDistribution: metrics.roleDistribution as Record<string, number>,
+      totalResponses: metrics.totalResponses as number,
     });
 
     // 5. Extract key quotes
@@ -561,66 +587,6 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     });
 
     return { report };
-  }
-
-  /**
-   * generateFormTemplateReport (formTemplateId: FormTemplateID, createdBy: User): (report: ReportDoc)
-   * **requires** user is the creator of the form template
-   * **effects** generates synthesis report from all form responses
-   */
-  async generateFormTemplateReport({
-    formTemplateId,
-    createdBy,
-    anonymityFlag = true,
-    kThreshold = 3,
-  }: {
-    formTemplateId: FormTemplateID;
-    createdBy: ID;
-    anonymityFlag?: boolean;
-    kThreshold?: number;
-  }): Promise<{ report: ReportDoc }> {
-    console.log("\n🔵 generateFormTemplateReport called");
-    console.log("Form Template ID:", formTemplateId);
-    console.log("Created By:", createdBy);
-
-    // Get form template
-    const { FormTemplate, AccessCode } = await import("@concepts");
-    const { template } = await FormTemplate.getTemplate({
-      templateId: formTemplateId,
-    });
-    console.log("✅ Template retrieved:", template.name);
-
-    // Get form responses
-    const { responses: accessCodeResponses } = await AccessCode
-      .getFormResponses({ formId: formTemplateId, createdBy });
-    console.log("✅ Responses retrieved:", accessCodeResponses.length);
-
-    // Transform responses to format needed by generateCompleteReport
-    const transformedResponses: Response[] = [];
-    for (const response of accessCodeResponses) {
-      const responsesMap = response.responses as Record<string, string>;
-      for (
-        const [questionIndex, responseText] of Object.entries(responsesMap)
-      ) {
-        const question = template.questions[parseInt(questionIndex)];
-        transformedResponses.push({
-          questionIndex: parseInt(questionIndex),
-          questionText: question?.prompt ||
-            `Question ${parseInt(questionIndex) + 1}`,
-          response: responseText,
-          respondent: (response.memberId || response.memberEmail) as ID,
-          respondentRole: response.memberRole as string,
-        });
-      }
-    }
-
-    // Generate the complete report
-    return await this.generateCompleteReport({
-      formTemplateId,
-      responses: transformedResponses,
-      anonymityFlag,
-      kThreshold,
-    });
   }
 
   /**
@@ -685,16 +651,20 @@ Based on the collected feedback, we recommend focusing attention on the identifi
     if (!this.llm) {
       // Fallback to simple template-based summary
       const memberCount = members.length;
-      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      const roles = [...new Set(members.map((m) => m.role))].join(", ");
       return {
-        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+        summary:
+          `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`,
       };
     }
 
     // Prepare prompt for LLM
-    const memberDescriptions = members.map(m => `${m.name} (${m.role})`).join(", ");
+    const memberDescriptions = members.map((m) => `${m.name} (${m.role})`).join(
+      ", ",
+    );
 
-    const prompt = `You are an HR professional creating a team summary for a management dashboard. Based on the following team information, create a concise, professional summary.
+    const prompt =
+      `You are an HR professional creating a team summary for a management dashboard. Based on the following team information, create a concise, professional summary.
 
 Team Name: ${teamName}
 Team Members: ${memberDescriptions}
@@ -715,9 +685,10 @@ Summary:`;
       console.error("Error generating team summary with LLM:", error);
       // Fallback to template-based summary
       const memberCount = members.length;
-      const roles = [...new Set(members.map(m => m.role))].join(", ");
+      const roles = [...new Set(members.map((m) => m.role))].join(", ");
       return {
-        summary: `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`
+        summary:
+          `${teamName} is a team of ${memberCount} members with roles including ${roles}. The team is structured to support collaborative work and effective communication.`,
       };
     }
   }
@@ -735,48 +706,56 @@ Summary:`;
     teamName: string;
     members: Array<{ name: string; role: string }>;
   }): Promise<{ summary: string }> {
-    console.log('Starting team feedback summary generation for team:', teamName);
-    
+    console.log(
+      "Starting team feedback summary generation for team:",
+      teamName,
+    );
+
     try {
       // For now, create a mock summary since we don't have access to the database in static method
       // In a real implementation, this would:
       // 1. Query the database for all forms associated with this team
       // 2. Get all responses for those forms
       // 3. Use the existing ReportSynthesis infrastructure to analyze and summarize
-      
+
       const mockFeedbackThemes = [
         "team collaboration and communication",
         "workload management and deadlines, project planning",
         "leadership and management support",
-        "professional development opportunities"
+        "professional development opportunities",
       ];
 
-      console.log('Mock feedback themes prepared:', mockFeedbackThemes);
+      console.log("Mock feedback themes prepared:", mockFeedbackThemes);
 
       // Check if Gemini API key is available
       const apiKey = Deno.env.get("GEMINI_API_KEY");
-      console.log('GEMINI_API_KEY available for feedback summary:', !!apiKey);
-      
+      console.log("GEMINI_API_KEY available for feedback summary:", !!apiKey);
+
       if (!apiKey) {
-        console.log('No API key found, using fallback feedback summary');
-        const fallbackSummary = `Team ${teamName} has provided feedback across several key areas including ${mockFeedbackThemes.join(', ')}. Overall sentiment appears positive with suggestions for improvement in workload distribution and professional development opportunities.`;
-        console.log('Returning fallback summary:', fallbackSummary);
+        console.log("No API key found, using fallback feedback summary");
+        const fallbackSummary =
+          `Team ${teamName} has provided feedback across several key areas including ${
+            mockFeedbackThemes.join(", ")
+          }. Overall sentiment appears positive with suggestions for improvement in workload distribution and professional development opportunities.`;
+        console.log("Returning fallback summary:", fallbackSummary);
         return { summary: fallbackSummary };
       }
 
-      console.log('Attempting to initialize GeminiLLM...');
+      console.log("Attempting to initialize GeminiLLM...");
       const llm = new GeminiLLM({ apiKey });
-      console.log('GeminiLLM initialized successfully');
+      console.log("GeminiLLM initialized successfully");
 
       // Create a more contextual prompt using the team members information
-      const memberDescriptions = members.map(m => `${m.name} (${m.role})`).join(", ");
+      const memberDescriptions = members.map((m) => `${m.name} (${m.role})`)
+        .join(", ");
 
-      const prompt = `You are an HR professional analyzing team feedback. Generate a concise summary for team "${teamName}" based on the following team composition and identified feedback themes.
+      const prompt =
+        `You are an HR professional analyzing team feedback. Generate a concise summary for team "${teamName}" based on the following team composition and identified feedback themes.
 
 Team Composition: ${memberDescriptions}
 
 Identified Feedback Themes:
-${mockFeedbackThemes.map((theme, index) => `${index + 1}. ${theme}`).join('\n')}
+${mockFeedbackThemes.map((theme, index) => `${index + 1}. ${theme}`).join("\n")}
 
 Please provide a 2-3 sentence summary that:
 1. Synthesizes the key themes from team feedback
@@ -787,22 +766,27 @@ Please provide a 2-3 sentence summary that:
 
 Team Feedback Summary:`;
 
-      console.log('Sending prompt to LLM...');
+      console.log("Sending prompt to LLM...");
       const summary = await llm.executeLLM(prompt);
-      console.log('Received LLM response:', summary);
-      
+      console.log("Received LLM response:", summary);
+
       const trimmedSummary = summary.trim();
-      console.log('Generated LLM feedback summary for team:', teamName, trimmedSummary);
+      console.log(
+        "Generated LLM feedback summary for team:",
+        teamName,
+        trimmedSummary,
+      );
       return { summary: trimmedSummary };
     } catch (error) {
       console.error("Error in generateTeamFeedbackSummary:", error);
       if (error instanceof Error) {
         console.error("Error stack:", error.stack);
       }
-      
+
       // Fallback to template-based summary
-      const fallbackSummary = `Team ${teamName} has provided feedback across several key areas. Overall sentiment appears positive with suggestions for improvement in workload distribution and professional development opportunities.`;
-      console.log('Returning emergency fallback summary:', fallbackSummary);
+      const fallbackSummary =
+        `Team ${teamName} has provided feedback across several key areas. Overall sentiment appears positive with suggestions for improvement in workload distribution and professional development opportunities.`;
+      console.log("Returning emergency fallback summary:", fallbackSummary);
       return { summary: fallbackSummary };
     }
   }

@@ -50,8 +50,6 @@ export const inclusions: Record<string, string> = {
     "public query to get synthesized report for a form template",
   "/api/ReportSynthesis/getAllReports":
     "public query to display all synthesized reports",
-  "/api/ReportSynthesis/generateFormTemplateReport":
-    "public action to generate synthesis report from form template responses",
   "/api/ReportSynthesis/getFinalReport":
     "public query to display completed reports",
   "/api/ReportSynthesis/getResponseSet":
@@ -93,6 +91,7 @@ export const exclusions: Array<string> = [
   "/api/ReportSynthesis/extractThemes",
   "/api/ReportSynthesis/draftSummaryLLM",
   "/api/ReportSynthesis/approveSummary",
+  "/api/ReportSynthesis/generateFormTemplateReport",
 
   "/api/Email/queueEmail",
   "/api/Email/sendEmail",

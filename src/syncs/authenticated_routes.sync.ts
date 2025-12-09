@@ -52,11 +52,15 @@ export const authenticatedOrgGraphRoutes: Sync = (
     { request },
   ]),
   where: (frames: Frames) => {
-    const pathStr = frames.path as string | undefined;
-    if (typeof pathStr === "string" && pathStr.startsWith("/OrgGraph/")) {
-      return frames;
+    // Filter frames to only those with OrgGraph paths
+    const result = new Frames();
+    for (const frame of frames) {
+      const pathStr = frame[path] as string | undefined;
+      if (typeof pathStr === "string" && pathStr.startsWith("/OrgGraph/")) {
+        result.push(frame);
+      }
     }
-    return null as unknown as Frames;
+    return result;
   },
   then: actions([
     Requesting.respond,
@@ -73,17 +77,19 @@ export const authenticatedReportSynthesisRoutes: Sync = (
     { request },
   ]),
   where: (frames: Frames) => {
-    const pathStr = (frames as unknown as Record<string, unknown>).path as
-      | string
-      | undefined;
-    if (
-      typeof pathStr === "string" &&
-      pathStr.startsWith("/ReportSynthesis/") &&
-      pathStr !== "/ReportSynthesis/generateFormTemplateReport"
-    ) {
-      return frames;
+    // Filter frames to only those with ReportSynthesis paths (excluding generateFormTemplateReport)
+    const result = new Frames();
+    for (const frame of frames) {
+      const pathStr = frame[path] as string | undefined;
+      if (
+        typeof pathStr === "string" &&
+        pathStr.startsWith("/ReportSynthesis/") &&
+        pathStr !== "/ReportSynthesis/generateFormTemplateReport"
+      ) {
+        result.push(frame);
+      }
     }
-    return null as unknown as Frames;
+    return result;
   },
   then: actions([
     Requesting.respond,
