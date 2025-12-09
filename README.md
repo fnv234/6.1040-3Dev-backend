@@ -15,3 +15,6 @@ See [@functional_design](./functional_design)
 ## User Testing
 See [@user-testing](./user_testing)
 
+## Weekly Mentoring Meeting Records
+See [@project-updates](./project_updates)
+
