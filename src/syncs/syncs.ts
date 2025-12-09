@@ -6,6 +6,7 @@ import type { Sync } from "@engine";
 
 import * as sync_authenticated_routes from "./authenticated_routes.sync.ts";
 import * as sync_email from "./email.sync.ts";
+import * as sync_report_generation from "./report_generation.sync.ts";
 
 const allSyncs: Record<string, Sync> = {};
 
@@ -18,6 +19,11 @@ for (const [name, func] of Object.entries(sync_authenticated_routes)) {
 for (const [name, func] of Object.entries(sync_email)) {
   if (typeof func === "function") {
     allSyncs[`email.${name}`] = func as Sync;
+  }
+}
+for (const [name, func] of Object.entries(sync_report_generation)) {
+  if (typeof func === "function") {
+    allSyncs[`report_generation.${name}`] = func as Sync;
   }
 }
 

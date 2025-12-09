@@ -9,8 +9,11 @@ See updated [@problem_framing](./problem_framing.md)
 ## Project Pitch
 Click [here](https://youtu.be/AW1pj0ti9iE) to view our project pitch. 
 
-## Functional Design
+## Functional Design Submission
 See [@functional_design](./functional_design)
+
+## Concept Specs
+See [@concepts](./design/concepts)
 
 ## User Testing
 See [@user-testing](./user_testing)
