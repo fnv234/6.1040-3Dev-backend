@@ -2,7 +2,7 @@
 
 Our 360-degree feedback system underwent significant design evolution from the original functional design to the final implementation. The core mission remained, which was to streamline HR feedback collection and analysis, but we made several strategic changes to improve usability, simplify deployment, and focus on essential features based on user feedback and implementation constraints.
 
-## 4 Major Design Changes
+## Major Design Changes
 
 ### 1. Form Distribution Mechanism
 
@@ -49,6 +49,19 @@ Our 360-degree feedback system underwent significant design evolution from the o
 - Maintained essential privacy protection
 - Reduced complexity of privacy calculations
 - Focused on practical anonymity rather than mathematical guarantees
+
+
+## Technical Changes
+
+### Changes to Concepts
+
+Our initial design used a `FeedbackForm` targeted concept that directly imported and called other concepts like `ReviewCycle` and `ReportSynthesis` with syncs to organize and synthesize these. With the shift to `FormTemplate`, we scrapped the `ReviewCycle` concept and repurposed `ReportSynthesis` to instead handle generating feedback at the team level based on form responses. 
+
+### Changes to Syncs
+
+With the change to `FormTemplate`, we had to adjust the syncs we previously documented
+
+To avoid calling the FormTemplate concept to synthesize reports in `ReportSynthesis`, we intercept the call to generate a report with a sync to pass the necessary parameters without referencing the external database state.
 
 ## Retained Core Features
 

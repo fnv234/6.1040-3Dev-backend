@@ -1,7 +1,9 @@
 # 6.104 Team 3Dev Final Reflections 
 
 ## Diego Peon 
-TODO
+Working on our 360-degree HR feedback app was a great learning experience, not just technically in developing with Vue or MongoDB but also tackling a larger project with concept design. The longer planning phase that included the public pitch and iterating based on feedback was also novel and helpful in being more akin to an experience in industry. By virtue of our web app’s functionality, we also had to think about some interesting problems regarding handling user data in a real implementation situation which is something I think is learned best in practice than in class. 
+
+My personal project from earlier in the class was a music stats and recommendations web app and so its interesting problems mostly taught me about using external APIs. In contrast, our app’s data structure is much more sophisticated in how it had to be organized into concepts. This brought us some headaches and led to reworking concepts and syncs as we explained above, but in the end I think it bought me more into the idea of concept design.
 
 ## Francesca Venditti 
 TODO 
