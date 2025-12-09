@@ -18,3 +18,12 @@ See [@concepts](./design/concepts)
 ## User Testing
 See [@user-testing](./user_testing)
 
+## Weekly Mentoring Meeting Records
+See [@project-updates](./project_updates)
+
+## Design Summary 
+See [@design-summary](./DESIGNSUMMARY.md)
+
+## Individual Reflections 
+See [@final-reflections](./REFLECTION.md)
+
