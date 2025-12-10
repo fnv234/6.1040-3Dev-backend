@@ -345,7 +345,7 @@ Feedback Summary Report
 
 This report synthesizes ${responseCount} feedback responses from ${uniqueRespondents} respondents.
 
-Key Themes Identified:
+Key Themes Identified (IMP. NOTE: ONLY present for forms with substantial free responses):
 ${topThemes.map((theme) => `• ${theme}`).join("\n")}
 
 Analysis:

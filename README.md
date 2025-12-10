@@ -27,3 +27,6 @@ See [@design-summary](./DESIGNSUMMARY.md)
 ## Individual Reflections 
 See [@final-reflections](./REFLECTION.md)
 
+## FINAL Video Demo
+Click [here](https://youtu.be/3Z6Q-lF_L70) to view our final demo video. 
+
